@@ -1,13 +1,13 @@
 ﻿@{
-    var mail = "";
+    string mail = "";
     mail = Session["mail"].ToString();
 
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
 
-    var getUser = "SELECT Rank FROM [Profiel] WHERE Email = @0";
-    var rank = db.QuerySingle(getUser, mail);
+    string getUser = "SELECT Rank FROM [Profiel] WHERE Email = @0";
+    string rank = db.QuerySingle(getUser, mail).Rank;
     if(rank != "Student" && rank != "Teacher" && rank != "Owner")
     {
         Response.Redirect("~/login.cshtml");

@@ -6,7 +6,7 @@
 
     var selectUsers = db.Query("SELECT Username, Email, Rank FROM [Profiel]");
     var gridUser = new WebGrid(source: selectUsers, rowsPerPage: 10);
-    var selectPost = db.Query("SELECT Post_Id, Post_Title, Profiel_Username FROM [Post] WHERE Report = @0", "True");
+    var selectPost = db.Query("SELECT Post_Id, Post_Title, Profiel_Username FROM [Post] WHERE Report = @0", "1");
     var gridPost = new WebGrid(source: selectPost, rowsPerPage: 10);
 
 }
