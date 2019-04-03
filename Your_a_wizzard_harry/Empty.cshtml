@@ -1,4 +1,4 @@
-﻿@{
+﻿@*@{
 
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
 
@@ -15,9 +15,9 @@
     int counter = 1;
     int lesson_Id = 3;
     string selectexam = "SELECT exam_name From Exam WHERE Lesson_Id = @0";
-    var GetExam = db.QueryValue(selectexam, lesson_Id);
+    var GetExam = db.QueryValue(selectexam, lesson_Id);*@
 
-    private string Getquestions(int questionindex)
+    @*private string Getquestions(int questionindex)
     {
         Getexamid = "SELECT exam_Id form exam where Lesson_Id = @0";
         Exam_Id = db.QueryValue(Getexamid, lesson_Id);
@@ -50,4 +50,4 @@
         }
 
 
-</ul>
+</ul>*@
