@@ -2,6 +2,38 @@
     Layout = "~/_SiteLayout.cshtml";
     Page.Title = "Hufflepuff";
     PageData["current"] = "Houses";
+
+    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
+    string provider = "System.Data.SqlClient";
+    Database db = Database.OpenConnectionString(connectionString, provider);
+
+    int students = db.QuerySingle("SELECT COUNT(Username) AS Amount FROM Profiel WHERE House_House_Id = 2").Amount;
+
+    int points = Convert.ToInt32(db.QuerySingle("SELECT Points FROM HOUSE WHERE House_Id = 2").Points);
+
+    var positions = db.Query("SELECT House_Id FROM HOUSE ORDER BY Points DESC");
+    string position = "";
+    int count = 1;
+
+    foreach (var house in positions)
+    {
+        switch (count)
+        {
+            case 1 when house.House_Id == 2:
+                position = "1st";
+                break;
+            case 2 when house.House_Id == 2:
+                position = "2nd";
+                break;
+            case 3 when house.House_Id == 2:
+                position = "3rd";
+                break;
+            case 4 when house.House_Id == 2:
+                position = "4th";
+                break;
+        }
+        count++;
+    }
 }
 <!DOCTYPE html>
 <head>
@@ -44,22 +76,22 @@
                             <ul style="color: #dddddd" class="nav nav-pills pull-left countlist" role="tablist">
                                 <li role="presentation">
                                     <h3>
-                                        1500<br>
-                                        <small class="sub-text">STUDENTS</small>
+                                        @position<br>
+                                        <small class="sub-text">POSITION</small>
                                     </h3>
                                 </li>
                                 <div style="padding-left: 35px;"></div>
                                 <li role="presentation">
                                     <h3>
-                                        250<br>
+                                        @points<br>
                                         <small class="sub-text">POINTS</small>
                                     </h3>
                                 </li>
                                 <div style="padding-left: 35px;"></div>
                                 <li role="presentation">
                                     <h3>
-                                        3rd<br>
-                                        <small class="sub-text">POSITION</small>
+                                        @students<br>
+                                        <small class="sub-text">STUDENTS</small>
                                     </h3>
                                 </li>
                             </ul>
