@@ -1,0 +1,92 @@
+﻿@{
+
+    Layout = "~/_SiteLayout.cshtml";
+    Page.Title = "PostPage";
+
+    string ForumName = "";
+    string PostTitle = "";
+    int Upvote = 0;
+    int Downvote = 0;
+    var Forum_Forum_Id = 1;
+    //var Forum_Forum_Id = Request.QueryString["ForumId"];
+    string Username = "";
+    int Post_Id = 0;
+
+    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
+    string provider = "System.Data.SqlClient";
+    Database db = Database.OpenConnectionString(connectionString, provider);
+    var SelectForumTitle = db.QuerySingle("SELECT Forum_name FROM [Forum] WHERE Forum_Id = @0", Forum_Forum_Id).Forum_name;
+
+
+    var SelectPost = db.Query("SELECT * FROM [Post] WHERE Forum_Forum_Id = @0 ORDER BY Post_ID DESC", Forum_Forum_Id);
+
+
+
+
+}
+<!DOCTYPE html>
+<html>
+<head>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="~/Forum.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body style="background-color: #202225;">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <div class="container">
+        <div class="row" style="padding:20px">
+            <div class="col-lg-12">
+                <div class="wrapper wrapper-content animated fadeInRight">
+                    <div class="ibox-content forum-container" style="background-color: #343a40">
+                        <div class="forum-title">
+                            <h3 style="color:white">@SelectForumTitle</h3>
+                        </div>
+                        @foreach (var post in SelectPost)
+                        {
+                            PostTitle = post.Post_Title;
+                            Upvote = post.Upvote;
+                            Downvote = post.Downtvote;
+                            Username = post.Profiel_Username;
+                            Post_Id = post.Post_Id;
+
+                            <div class="forum-item active" style="color:white">
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <div class="forum-icon">
+                                            <i class="fa fa-bolt" style="color:#007aff"></i>
+                                        </div>
+                                        <a href="Comments.chtml?PostId=@Post_Id" class="forum-item-title" style="color:#007aff">@PostTitle </a>
+                                        <div class="forum-sub-title" style="color:white">@Username</div>
+                                    </div>
+                                    <div class="col-md-1 forum-info">
+                                        <span class="views-number" style="color:white">
+                                            @Upvote
+                                        </span>
+                                        <div>
+                                            <small style="color:white">Upvotes</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 forum-info">
+                                        <span class="views-number" style="color:white">
+                                            @Downvote
+                                        </span>
+                                        <div>
+                                            <small style="color:white">Downvotes</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html> 
