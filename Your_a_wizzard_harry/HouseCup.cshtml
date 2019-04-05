@@ -1,6 +1,138 @@
 ﻿@{
-    var House = "";
-    var points = "";
+    string Rank = "Student";
+    int Gryf = 1;
+    int Huf = 2;
+    int Rav = 3;
+    int Slyth = 4;
+    string nr1house = "";
+    int nr1points = 0;
+    string nr2house = "";
+    int nr2points = 0;
+    string nr3house = "";
+    int nr3points = 0;
+    string nr4house = "";
+    int nr4points = 0;
+    var pointdifference = 0;
+    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
+    string provider = "System.Data.SqlClient";
+    Database db = Database.OpenConnectionString(connectionString, provider);
+
+    var SelectTotalPointsGryf = "SELECT SUM(User_Points) AS Total FROM Profiel Where House_House_Id = @0";
+    var TotalPointsGryf = db.QuerySingle(SelectTotalPointsGryf, Gryf);
+    var TotalGryfDing = TotalPointsGryf.Total;
+
+    var SelectTotalPointsHuf = "SELECT SUM(User_Points) AS Total FROM Profiel Where House_House_Id = @0";
+    var TotalPointsHuf = db.QuerySingle(SelectTotalPointsHuf, Huf);
+    var TotalHufDing = TotalPointsHuf.Total;
+
+    var SelectTotalPointsRav = "SELECT SUM(User_Points) AS Total FROM Profiel Where House_House_Id = @0";
+    var TotalPointsRav = db.QuerySingle(SelectTotalPointsRav, Rav);
+    var TotalRavDing = TotalPointsRav.Total;
+
+    var SelectTotalPointsSlyth = "SELECT SUM(User_Points) AS Total FROM Profiel Where House_House_Id = @0";
+    var TotalPointsSlyth = db.QuerySingle(SelectTotalPointsSlyth, Slyth);
+    var TotalSlythDing = TotalPointsSlyth.Total;
+
+    if (TotalGryfDing > TotalHufDing)
+    {
+        if (TotalGryfDing > TotalRavDing)
+        {
+            if (TotalGryfDing > TotalSlythDing)
+            {
+                nr1house = "Gryffindor";
+                nr1points = TotalGryfDing;
+                nr2house = "Slytherin";
+                nr2points = TotalSlythDing;
+                pointdifference = nr1points - nr2points;
+            }
+            else
+            {
+                nr2house = "Gryffindor";
+                nr2points = TotalGryfDing;
+                nr1house = "Slytherin";
+                nr1points = TotalSlythDing;
+                pointdifference = nr1points - nr2points;
+            }
+            if (TotalRavDing > TotalHufDing)
+            {
+                nr3house = "Ravenclaw";
+                nr3points = TotalRavDing;
+                nr4house = "Huffelpuf";
+                nr4points = TotalHufDing;
+            }
+            else
+            {
+                nr4house = "Ravenclaw";
+                nr4points = TotalRavDing;
+                nr3house = "Huffelpuf";
+                nr3points = TotalHufDing;
+            }
+        }
+    }
+    if (TotalRavDing > TotalSlythDing)
+    {
+        if (TotalRavDing > TotalGryfDing)
+        {
+            if (TotalRavDing > TotalHufDing)
+            {
+                nr1house = "Ravenclaw";
+                nr1points = TotalRavDing;
+                nr2house = "Huffelpuf";
+                nr2points = TotalHufDing;
+                pointdifference = nr1points - nr2points;
+            }
+            else
+            {
+                nr2house = "Ravenclaw";
+                nr2points = TotalRavDing;
+                nr1house = "Huffelpuf";
+                nr1points = TotalHufDing;
+                pointdifference = nr1points - nr2points;
+            }
+            if (TotalGryfDing > TotalSlythDing)
+            {
+                nr3house = "Gryffindor";
+                nr3points = TotalGryfDing;
+                nr4house = "Slytherin";
+                nr4points = TotalSlythDing;
+            }
+            else
+            {
+                nr4house = "Gryffindor";
+                nr4points = TotalGryfDing;
+                nr3house = "Slytherin";
+                nr3points = TotalSlythDing;
+            }
+        }
+    }
+
+
+
+    // Gryf punten ding
+    var SelectGryfUserPoints = "SELECT Username, User_Points FROM Profiel WHERE Rank = @0 AND House_House_Id = @1 ORDER BY User_Points DESC";
+    var GryfPointRow = db.Query(SelectGryfUserPoints, Rank, Gryf);
+
+    var gridGryf = new WebGrid(source: GryfPointRow);
+
+    // Huf punten ding
+    var SelectHufUserPoints = "SELECT Username, User_Points FROM Profiel WHERE Rank = @0 AND House_House_Id = @1 ORDER BY User_Points DESC";
+    var HufPointRow = db.Query(SelectHufUserPoints, Rank, Huf);
+
+    var gridHuf = new WebGrid(source: HufPointRow);
+
+    // Rav punten ding
+    var SelectRavUserPoints = "SELECT Username, User_Points FROM Profiel WHERE Rank = @0 AND House_House_Id = @1 ORDER BY User_Points DESC";
+    var RavPointRow = db.Query(SelectRavUserPoints, Rank, Rav);
+
+    var gridRav = new WebGrid(source: RavPointRow);
+
+    // slyth punten ding
+    var SelectSlythUserPoints = "SELECT Username, User_Points FROM Profiel WHERE Rank = @0 AND House_House_Id = @1 ORDER BY User_Points DESC";
+    var SlythPointRow = db.Query(SelectSlythUserPoints, Rank, Slyth);
+
+    var gridSlyth = new WebGrid(source: SlythPointRow);
+
+
 }
 
 <!DOCTYPE html>
@@ -9,6 +141,12 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>Page Title</title>
     <link href="https://fonts.googleapis.com/css?family=Cabin+Condensed" rel="stylesheet">
+    <style>
+        th {
+            padding-right:40px;
+
+        }
+    </style>
 </head>
 <body style="background-image: url(Images/HC.png); background-size: cover">
 
@@ -17,7 +155,7 @@
         <!-- Page Heading -->
         <h1 class="my-4" style="color: white; font-family: 'Cabin Condensed', sans-serif;">
             HouseCup standing
-            <br /><small style="color: white; font-family: Papyrus">@House  is in the lead with @points points</small>
+            <br /><small style="color: white; font-family: Papyrus">@nr1house  is in the lead with @pointdifference points</small>
         </h1>
 
         <div class="row">
@@ -28,7 +166,9 @@
                         <h4 class="card-title">
                             <a href="#">Project One</a>
                         </h4>
-                        <p class="card-text" style="color: white">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet numquam aspernatur eum quasi sapiente nesciunt? Voluptatibus sit, repellat sequi itaque deserunt, dolores in, nesciunt, illum tempora ex quae? Nihil, dolorem!</p>
+                        <div style="color: white">
+                            @gridGryf.GetHtml(columns: gridGryf.Columns(gridGryf.Column("Username"), gridGryf.Column("User_Points")))
+                        </div>
                     </div>
                 </div>
             </div>
@@ -39,7 +179,9 @@
                         <h4 class="card-title">
                             <a href="#">Project Two</a>
                         </h4>
-                        <p class="card-text" style="color: white">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra euismod odio, gravida pellentesque urna varius vitae.</p>
+                        <div style="color: white">
+                            @gridHuf.GetHtml(tableStyle: "webgrid", columns: gridHuf.Columns(gridHuf.Column("Username"), gridHuf.Column("User_Points")))
+                        </div>
                     </div>
                 </div>
             </div>
@@ -50,7 +192,9 @@
                         <h4 class="card-title">
                             <a href="#">Project Three</a>
                         </h4>
-                        <p class="card-text" style="color: white">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos quisquam, error quod sed cumque, odio distinctio velit nostrum temporibus necessitatibus et facere atque iure perspiciatis mollitia recusandae vero vel quam!</p>
+                        <div style="color: white">
+                            @gridRav.GetHtml(columns: gridRav.Columns(gridRav.Column("Username"), gridRav.Column("User_Points")))
+                        </div>
                     </div>
                 </div>
             </div>
@@ -61,7 +205,9 @@
                         <h4 class="card-title">
                             <a href="#">Project Four</a>
                         </h4>
-                        <p class="card-text" style="color: white">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra euismod odio, gravida pellentesque urna varius vitae.</p>
+                        <div style="color: white">
+                            @gridSlyth.GetHtml(columns: gridSlyth.Columns(gridSlyth.Column("Username"), gridSlyth.Column("User_Points")))
+                        </div>
                     </div>
                 </div>
             </div>
