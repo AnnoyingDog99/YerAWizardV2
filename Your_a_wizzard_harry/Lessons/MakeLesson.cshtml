@@ -37,15 +37,27 @@
         {
             isactive = 0;
         }
+
         string pushlesson = "INSERT INTO Lesson (lesson_name , Teacher , Lesson_Material , Selected_Lesson) VALUES (@0 , @1 , @2 , @3)";
         var insertinto = db.Execute(pushlesson, titel, teacher , content, isactive);
+
+        //get latest lesson_id
+        string getlesson_id = "SELECT MAX(lesson_Id) FROM Lesson";
+        int latestlesson_id = db.QueryValue(getlesson_id);
+
+        //voeg les toe aan een exam
+        string insertintoexam = "INSERT INTO exam (lesson_Id) VALUES (@0)";
+        insertinto = db.Execute(insertintoexam, latestlesson_id);
+        Response.Redirect("/Lessons/enterinfo.cshtml");
     }
-    string GetOtherTitels = "SELECT Lesson_name, Teacher , Lesson_Id ,Selected_Lesson  FROM Lesson ";
+
+    string GetOtherTitels = "SELECT Lesson_name, Teacher , Lesson_Id ,Selected_Lesson  FROM Lesson Where Lesson_Id <> 8";
     var rows = db.Query(GetOtherTitels);
+
 }
 
 <div>
-    <form method="post">
+    <form method="post" >
         <div>
             <label>leraar </label>
             <br />
@@ -74,6 +86,7 @@
     </form>
 
 </div>
+
 <div>
     <ul>
         @foreach (var row in rows)

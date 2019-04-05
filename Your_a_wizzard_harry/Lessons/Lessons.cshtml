@@ -2,7 +2,6 @@
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
 
     string provider = "System.Data.SqlClient";
-
     Database db = Database.OpenConnectionString(connectionString, provider);
 
     string GetTeacher;
@@ -11,7 +10,8 @@
     string lesson_Titel; ;
     string GetLessonInfo;
     string lesson_Info;
-
+    string getlesson_Id;
+    int lesson_id = Request.QueryString["Lesson_Id"].AsInt();
     if (!Request.QueryString["Lesson_Id"].IsEmpty() && Request.QueryString["Lesson_Id"].IsInt())
     {
         int Lesson_Id = Request.QueryString["Lesson_Id"].AsInt();
@@ -28,7 +28,6 @@
     }
     else
     {
-        //zou in void methode kunnen
         //haalt de teacher op
         GetTeacher = "SELECT Teacher FROM Lesson WHERE Selected_Lesson = @0";
         Teacher = db.QueryValue(GetTeacher, 1);
@@ -41,12 +40,14 @@
         GetLessonInfo = "SELECT Lesson_Material FROM Lesson WHERE Selected_Lesson = @0 ";
         lesson_Info = db.QueryValue(GetLessonInfo, 1);
 
+        getlesson_Id = "SELECT Lesson_Id FROM Lesson WHERE Selected_Lesson = @0";
+        lesson_id = db.QueryValue(getlesson_Id, 1);
 
         //
     }
     //haalt alle lessen op
-    string GetOtherTitels = "SELECT Lesson_name, Teacher , Lesson_Id ,Selected_Lesson  FROM Lesson ";
-    var rows = db.Query(GetOtherTitels);
+    string GetOtherTitels = "SELECT Lesson_name, Teacher , Lesson_Id ,Selected_Lesson  FROM Lesson WHERE Lesson_Id <> @0";
+    var rows = db.Query(GetOtherTitels, 8 );
 }
 
 <div>
@@ -54,7 +55,10 @@
 
     <h2>@lesson_Info</h2>
     <br />
-    <h3>doe hier het ding om de les te voltooien</h3>
+    <form method="post" action="~/Lessons/exampage?lesson_id=@lesson_id">
+        <button>quiz</button>
+    </form>
+   
 </div>
 <ul>
     @foreach (var row in rows)

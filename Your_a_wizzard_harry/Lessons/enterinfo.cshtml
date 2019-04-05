@@ -1,0 +1,41 @@
+﻿@{
+    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
+
+    string provider = "System.Data.SqlClient";
+
+    Database db = Database.OpenConnectionString(connectionString, provider);
+
+    string examname = Request.Form["exam"];
+
+    int amountofquestions = Request.Form["amountofquestions"].AsInt();
+
+
+    if (IsPost)
+    {
+
+        string getlesson_id = "SELECT MAX(lesson_Id) FROM Lesson";
+        int lesson_id = db.QueryValue(getlesson_id);
+
+        string addexamname = "Insert into exam (exam_name, Lesson_Id,amount_of_questions) Values (@0,@1)";
+        var insertexam = db.Execute(addexamname, examname, lesson_id);
+        
+     
+        Response.Redirect("/Lessons/MakeQuiz.cshtml?amountofquestions=" + @amountofquestions);
+
+    }
+
+}
+
+<form method="post">
+    <div>
+        <label>wat is de naam van je exam?</label>
+        <br />
+        <input type="text" name="exam" />
+    </div>
+    <div>
+        <label>hoeveel vragen heeft je exam</label>
+        <br />
+        <input type="text" name="amountofquestions" value="@Request.Form["amountofquestions"]" />
+    </div>
+    <button type="submit">Add</button>
+</form>

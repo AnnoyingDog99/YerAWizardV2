@@ -8,7 +8,7 @@
 
     var getUser = "SELECT Rank FROM [Profiel] WHERE Email = @0";
     var rank = db.QuerySingle(getUser, mail);
-    if(rank != "Student" && rank != "Teacher" && rank != "Owner")
+    if(rank.rank != "Student" && rank.rank != "Teacher" && rank.rank != "Owner")
     {
         Response.Redirect("~/login.cshtml");
     }
