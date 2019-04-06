@@ -2,7 +2,6 @@
 
 
 body {
-    color: #5a5a5a;
     font-family: 'Open Sans',Arial,sans-serif;
     font-size: 15px;
 }
@@ -27,9 +26,7 @@ a, a:hover, .btn {
     font-size: 15px;
 }
 
-    .active, .collapsible:hover {
-        background-color: #555;
-    }
+    
 
 .content {
     padding: 0 18px;
