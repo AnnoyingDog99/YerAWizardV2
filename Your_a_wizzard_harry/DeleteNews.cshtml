@@ -3,7 +3,7 @@
     Page.Title = "Delete News";
     
     int Id = 1;
-    string Titel = "";
+    string Title = "";
     string Description = "";
 
     if (Request.QueryString["NewsId"] != null)
@@ -17,7 +17,7 @@
     Database db = Database.OpenConnectionString(connectionString, provider);
 
     var Data = db.QuerySingle("SELECT * FROM News WHERE News_Id = @0", Id);
-    Titel = Data.Titel;
+    Title = Data.Title;
     Description = Data.Description;
 
     if (IsPost)
@@ -158,7 +158,7 @@
                                     <div class="forum-icon">
                                         <i class="fa fa-book"></i>
                                     </div>
-                                    <a href="forum_post.html" class="forum-item-title">@Titel</a>
+                                    <a href="forum_post.html" class="forum-item-title">@Title</a>
                                     <div class="forum-sub-title">@Description</div>
                                 </div>
                                 <div class="col-md-1 forum-info">
@@ -186,7 +186,7 @@
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                         </div>
                                         <div class="modal-body">
-                                            <p>Are you sure you want to delete the forum:<br /> <span style="font-weight: bold;">@Titel</span>?<br /> This will remove all it's posts, this action cannot be undone</p>
+                                            <p>Are you sure you want to delete the forum:<br /> <span style="font-weight: bold;">@Title</span>?<br /> This will remove all it's posts, this action cannot be undone</p>
                                         </div>
                                         <form class="modal-footer" method="post">
                                             <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>

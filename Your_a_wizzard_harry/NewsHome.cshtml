@@ -1,34 +1,21 @@
 ﻿@{
     Layout = "~/_Sitelayout.cshtml";
     Page.Title = "News ";
+
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
-
     var News = db.Query("SELECT * FROM News");
 }
+<head>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" href="~/NewsStyle.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
-    <script>
-        $('#myTab a').click(function (e) {
-            e.preventDefault()
-            $(this).tab('show')
-        }
-        $(window).load(function () {
-                var boxheight = $('#myCarousel .carousel-inner').innerHeight();
-                var itemlength = $('#myCarousel .item').length;
-                var triggerheight = Math.round(boxheight / itemlength + 1);
-                $('#myCarousel .list-group-item').outerHeight(triggerheight);
-            });
-
-         $('#Date').html(dayNames[newDate.getDay()] + ", " + newDate.getDate() + ' ' + monthNames[newDate.getMonth()] + ' ' + newDate.getFullYear());
-    </script>
-    <head>
-        <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-        <link rel="stylesheet" href="~/NewsStyle.css">
-        <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-        <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-
-    </head>
+</head>
  <body>
         <section class="banner-sec">
             <div class="container">
@@ -134,29 +121,33 @@
             <div class="container">
                 <h3 class="heading-large">News Feed</h3>
                 <!-- var title -->
-                @foreach (var id in News)
-                {
-                    <div class="row">
-                        <div class="col-lg-8 col-md-12" style="padding-top: 5px ;">
-                            <div id="EdDel">
-                                <button class="collapsible">@id.Title</button>
-                                <a href="~/AddNews.cshtml?NewsId=@id.News_Id">Edit</a>
-                                &nbsp;
-                                @*<a style="color: #a00000" href="~/NewsDelete.cshtml?NewsId=@id.News_Id">Delete</a>*@
-                            </div>
-                            <div class="content">
-                                <div class="lg-6 md-2">
-                                    <img src="@id.Image" width="100" height="200" style="margin:10px;" />
+                    @foreach (var id in News)
+                     { 
+                        <div class="row">
+                            <div class="col-lg-8 col-md-12" style="padding-top: 5px ;">
+                                <div class="newsarticle">
+                                    <button type="button" class="btn btn-info" data-toggle="collapse" datatarget="#item">@id.Title</button>
+                                    <div class="float-right">
+                                        <a href="~/AddNews.cshtml?NewsId=@id.News_Id">Edit</a>
+                                        &nbsp;
+                                        <a style="color: #a00000" href="~/DeleteNews.cshtml?NewsId=@id.News_Id">Delete</a>
+                                    </div>
                                 </div>
-                                <div class="lg-2 md-10">
-                                    <!-- var inhoud/ image-->
-                                    <p>@id.Description </p>
+                                <div id="item" class="collapse">
+                                    <div class="content">
+                                        @*<div class="lg-6 md-2">
+                                            <img src="@id.Image" width="100" height="200" style="margin:10px;" />
+                                        </div>*@
+                                        <div class="lg-2 md-10">
+                                            <!-- var inhoud/ image-->
+                                            <p>@id.Description </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                }
-                <aside class="col-lg-4 side-bar col-md-12">
+                     }
+                <aside class="col-lg-4 side-bar col-md-12 float-right">
                     @if (Roles.IsUserInRole("owner"))
                     {
 
@@ -170,27 +161,9 @@
                         </div>
                     </div>
                 </aside>
-            </div>          
+            </div>
         </section>
-        <script>
-            var coll = document.getElementsByClassName("collapsible");
-            var i;
-
-            for (i = 0; i < coll.length; i++) {
-                coll[i].addEventListener("click", function () {
-                    this.classList.toggle("active");
-                    var content = this.nextElementSibling;
-                    if (content.style.display === "block") {
-                        content.style.display = "none";
-                    } else {
-                        content.style.display = "block";
-                    }
-                });
-            }
-        </script>
- </body>
-
-
+</body>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>

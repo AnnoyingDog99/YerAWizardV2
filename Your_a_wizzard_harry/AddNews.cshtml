@@ -1,6 +1,6 @@
 ﻿@{
     Layout = "~/_SiteLayout.cshtml";
-    Page.Title = "Add news";
+    Page.Title = "Manage news";
     @*if (Roles.IsUserInRole("Owner"))
     {
         <span> Welcome <b>@WebSecurity.CurrentUserName</b>! </span>
@@ -30,9 +30,9 @@
         Description = Request.Form["description"];
         Image = Request.Form["image"];
 
-        if (Request.QueryString["News_Id"] != null)
+        if (Request.QueryString["NewsId"] != null)
         {
-            db.Execute("UPDATE News SET Title = @0, Description = @1, WHERE News_Id = @3", Title, Description, Request.QueryString["News_Id"].AsInt());
+            db.Execute("UPDATE News SET Title = @0, Description = @1, WHERE News_Id = @3", Title, Description, Request.QueryString["NewsId"].AsInt());
             Response.Redirect("~/NewsHome.cshtml");
         }
         else
