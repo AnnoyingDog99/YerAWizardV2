@@ -7,7 +7,7 @@
 
     //scholen en het punten dat ze hebben aan het einde van de quize
     int gryffindorP = 0, hufflepuffP = 0, ravenclawP = 0, slytherinP = 0, questionindex = 1;
-    List<string> houses = new List<string> { "Gryffindor", "Hufflepuff", "Ravenclaw", "	Slytherin" };
+    List<string> houses = new List<string> { "Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin" };
     string winninghouse = "";
     string mail = "";
     int house_Id = 0;
@@ -85,6 +85,7 @@
             var house_id = db.QueryValue(gethouseid, house);
             string insertuserintohouse = "UPDATE PROFIEL SET House_House_ID = @0 WhERE EMail = @1";
             var push = db.Execute(insertuserintohouse, house_id , mail);
+           
         }
         win = false;
 
@@ -93,10 +94,6 @@
     //haalt het House_Id op 
     string SearchHouse = "SELECT House_Id FROM House WHERE House_name = @0";
     int HouseIdd = db.QueryValue(SearchHouse, winninghouse);
-
-    //voeg gebruiker toe aan house en geef user house
-    string AddHouse = "UPDATE Profiel  SET House_House_ID  = @0 WHERE Username = @1";
-    db.Execute(AddHouse,house_Id , WebSecurity.CurrentUserName);
 
     Session["mail"] = mail;
 }

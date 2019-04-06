@@ -4,22 +4,27 @@
     string provider = "System.Data.SqlClient";
 
     Database db = Database.OpenConnectionString(connectionString, provider);
+    Validation.RequireField("exam", "vul een examen naam in");
+    Validation.Add("exam", Validator.StringLength(50, 3, "de examen naam moet tussen de 3 en 50 characters zijn"));
+    Validation.RequireField("amountofquestions", "vul het aantal vragen in van je examen in");
+    Validation.Add("amountofquestions", Validator.Integer("het moet een getal zijn"));
+    Validation.Add("amountofquestions", Validator.Range(1, 15, "het aantal vragen moet tussen de 1 en de 15 zijn "));
 
     string examname = Request.Form["exam"];
 
     int amountofquestions = Request.Form["amountofquestions"].AsInt();
 
 
-    if (IsPost)
+    if (IsPost && Validation.IsValid())
     {
 
         string getlesson_id = "SELECT MAX(lesson_Id) FROM Lesson";
         int lesson_id = db.QueryValue(getlesson_id);
 
-        string addexamname = "Insert into exam (exam_name, Lesson_Id,amount_of_questions) Values (@0,@1)";
-        var insertexam = db.Execute(addexamname, examname, lesson_id);
-        
-     
+        string addexamname = "UPDATE exam SET exam_name = @0 , Lesson_Id = @1 ,amount_of_questions = @2";
+        var insertexam = db.Execute(addexamname, examname, lesson_id,amountofquestions);
+
+
         Response.Redirect("/Lessons/MakeQuiz.cshtml?amountofquestions=" + @amountofquestions);
 
     }
@@ -30,12 +35,14 @@
     <div>
         <label>wat is de naam van je exam?</label>
         <br />
-        <input type="text" name="exam" />
+        <input type="text" name="exam" value="@Request.Form["exam"]"/>
+        @Html.ValidationMessage("exam")
     </div>
     <div>
         <label>hoeveel vragen heeft je exam</label>
         <br />
         <input type="text" name="amountofquestions" value="@Request.Form["amountofquestions"]" />
+        @Html.ValidationMessage("amountofquestions")
     </div>
     <button type="submit">Add</button>
 </form>

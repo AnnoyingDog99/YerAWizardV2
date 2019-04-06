@@ -1,15 +1,26 @@
 ﻿@{
+    Layout = "~/_SiteLayout.cshtml";
+
+    <link href="~/CSS-Ding/makelesson.css" rel="stylesheet" type="text/css" />
+
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
 
     string provider = "System.Data.SqlClient";
 
     Database db = Database.OpenConnectionString(connectionString, provider);
+    Validation.RequireField("teacher" , "vul alsjeblieft een teacher in");
+    Validation.Add("teacher", Validator.StringLength(25, 3, "teacher moet tussen de 3 en 25 charracters zijn"));
+    Validation.RequireField("titel" , "vul alsjeblieft een titel in");
+    Validation.Add("titel", Validator.StringLength(25, 3, "titel moet tussen de 3 en 25 charracters zijn"));
+    Validation.RequireField("content", "vul alsjeblieft les content in");
+    Validation.Add("content", Validator.StringLength(1000, 100, "titel moet tussen de 100 en 1000 charracters zijn"));
+
 
     if (!Request.QueryString["deleteId"].IsEmpty() && Request.QueryString["deleteId"].IsInt())
     {
         int deleteId = Request.QueryString["deleteId"].AsInt();
         string delete = "DELETE FROM Lesson WHERE Lesson_Id = @0";
-        db.Execute(delete, deleteId );
+        db.Execute(delete, deleteId);
     }
 
     if (!Request.QueryString["Lesson_Id"].IsEmpty() && Request.QueryString["Lesson_Id"].IsInt())
@@ -22,13 +33,13 @@
         var updatelesson2 = db.Execute(updatelesson, 1, lesson_Id);
     }
 
-    if (IsPost)
+    if (IsPost && Validation.IsValid())
     {
         string teacher = Request.Form["teacher"];
         string titel = Request.Form["titel"];
         string content = Request.Form["content"];
         int isactive = Request.Form["Isactive"].AsInt();
-        if(isactive == 1)
+        if (isactive == 1)
         {
             string getactivelesson = "UPDATE Lesson SET Selected_Lesson = @0 WHERE Selected_Lesson = @1";
             var updatelessons = db.Execute(getactivelesson, 0, 1);
@@ -39,7 +50,7 @@
         }
 
         string pushlesson = "INSERT INTO Lesson (lesson_name , Teacher , Lesson_Material , Selected_Lesson) VALUES (@0 , @1 , @2 , @3)";
-        var insertinto = db.Execute(pushlesson, titel, teacher , content, isactive);
+        var insertinto = db.Execute(pushlesson, titel, teacher, content, isactive);
 
         //get latest lesson_id
         string getlesson_id = "SELECT MAX(lesson_Id) FROM Lesson";
@@ -55,34 +66,36 @@
     var rows = db.Query(GetOtherTitels);
 
 }
-
+<div align ="center">
+    <h1>lessen maken</h1>
+</div>
 <div>
-    <form method="post" >
-        <div>
-            <label>leraar </label>
-            <br />
-            <input type="text" name="teacher" />
+    
+    <form method="post">
 
+        <div align="left">
+            <label class="teacher2"> leraar </label>
+            <br />
+            <input type="text" name="teacher" class="teacher" value="@Request.Form["teacher"]"  placeholder="vul hier de leraar in" />
+            @Html.ValidationMessage("teacher")
         </div>
-        <div>
-            <label>les titel</label>
+        <div align="left">
+            <label class="lestitel1">les titel</label>
             <br />
-            <input type="text" name="titel" />
-
-        </div>   
-        <div>
-            <label>content</label>
-            <br />
-            <input type="text" name="content" />
-
+            <input type="text" class="lestitel2" name="titel" value="@Request.Form["titel"]"  placeholder="vul hier de les titel in"/>
+            @Html.ValidationMessage("titel");
         </div>
-        <div>
-            <label>maak dit de active les</label>
-            <input type="checkbox" name="Isactive" value="1"><br>
+        <div class="form-group shadow-textarea" align="left">
+            <label class="labelcontent" for="exampleFormControlTextarea6">Content</label>
+            <textarea value="@Request.Form["content"]" class="form-control z-depth-1" name="content" exampleFormControlTextarea6" rows="3"  placeholder="vul hier de content van de les in"></textarea>
+            @Html.ValidationMessage("content");
         </div>
         <br />
-        <button type="submit">Add</button>
-
+        <label>wil je dit als de active les maken</label>
+        <input type="checkbox" value="1" name="isactive" />
+        <br />
+        <button type="submit">maak je les af door de quize te maken</button>
+        
     </form>
 
 </div>
@@ -94,11 +107,11 @@
 
             if (row.Selected_Lesson == true)
             {
-                <li><a href="~/Lessons/Lessonprefew.cshtml?Lesson_Id=@row.Lesson_Id">@row.Lesson_name</a> --- @row.Teacher Is active </li>
+                <li>Dit is de active les : <a href="~/Lessons/Lessons.cshtml?Lesson_Id=@row.Lesson_Id">@row.Lesson_name</a> van @row.Teacher</li>
             }
             else
             {
-                <li><a href="~/Lessons/Lessonprefew.cshtml?Lesson_Id=@row.Lesson_Id">@row.Lesson_name</a> --- @row.Teacher <a href="~/Lessons/MakeLesson.cshtml?Lesson_Id=@row.Lesson_Id">maak deze les actief</a> --- <a href="~/Lessons/MakeLesson.cshtml?deleteId=@row.Lesson_Id"> verwijder deze les</a> </li>
+                <li>les : <a href="~/Lessons/Lesson.cshtml?Lesson_Id=@row.Lesson_Id">@row.Lesson_name</a> van @row.Teacher <a href="~/Lessons/MakeLesson.cshtml?Lesson_Id=@row.Lesson_Id"><i class="fas fa-check"></i></a>  <a href="~/Lessons/MakeLesson.cshtml?deleteId=@row.Lesson_Id"><i class="far fa-trash-alt"></i></a> </li>
             }
 
         }

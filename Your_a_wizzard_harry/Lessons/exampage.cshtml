@@ -4,6 +4,7 @@
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
 
+
     string mail = "";
     string GetquestionId;
     string Getquestion;
@@ -15,7 +16,6 @@
     int Exam_Id;
     int counter = Request.QueryString["counter"].AsInt();
     int lesson_Id = Request.QueryString["lesson_id"].AsInt();
-
 
 
     Getexamid = "SELECT exam_Id from exam where Lesson_Id = @0";
@@ -81,7 +81,10 @@
         counter++;
 
     }
-
+    if(counter==0)
+    {
+        counter++;
+    }
     string selectexam = "SELECT exam_name From Exam WHERE Lesson_Id = @0";
     var GetExam = db.QueryValue(selectexam, lesson_Id);
 
@@ -109,7 +112,8 @@
 
         <input type="radio" name="Q1" value="@answer.answer_Id" />@answer.answer<br />
         <br />
-        @totalpoints;
+
     }
+    @totalpoints;
     <input type="submit" value="next question" />
 </form>
