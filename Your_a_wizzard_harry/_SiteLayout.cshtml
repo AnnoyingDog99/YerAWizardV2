@@ -1,18 +1,34 @@
-﻿<!DOCTYPE html>
+﻿@{
+    string Username = "";
+    string mail = "";
+    if (Session["mail"] != null)
+    {
+        mail = Session["mail"].ToString();
+        string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
+        string provider = "System.Data.SqlClient";
+        Database db = Database.OpenConnectionString(connectionString, provider);
+
+        Username = db.QuerySingle("SELECT Username FROM Profiel WHERE Email = @0", Session["mail"]).Username;
+    }
+    /*else if (PageData["current"] != "Home")
+    {
+        Session.Abandon();
+        Response.Redirect("~/login.cshtml");
+    }*/
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <title>@Page.Title - Yer a wizzard harry</title>
     <!--<link href="~/Content/themes/base/jquery.ui.all.css" rel="stylesheet" type="text/css" />-->
-    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-    <link rel="stylesheet" href="~/Scripts/Layout.css" type="text/css" />
-    <link rel="stylesheet" href="style ding.css">
-    <link href="~/Scripts/bootstrap.min.css" rel="stylesheet" type="text/css" />
-
+    <link href="~/Stylesheets/Layout.css" rel="stylesheet" type="text/css" />
+    <link href="~/Stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Stylesheets/style ding.css" rel="stylesheet" type="text/css" />
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
-
     <meta name="viewport" content="width=device-width" />
 </head>
 <body>
@@ -86,6 +102,25 @@
                     </li>
                 }
                 <div class="nav-space"></div>
+                @if (PageData["current"] == "Houses")
+                {
+                    <li class="nav-item active">
+                        <a class="nav-link" href="~/Houses.cshtml">
+                            <i class="fab fa-fort-awesome-alt"></i>
+                            Houses
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" href="~/Houses.cshtml">
+                            <i class="fab fa-fort-awesome-alt"></i>
+                            Houses
+                        </a>
+                    </li>
+                }
+                <div class="nav-space"></div>
                 @if (PageData["current"] == "About" || PageData["current"] == "Contact")
                 {
                     <li class="nav-item dropdown active">
@@ -106,9 +141,6 @@
                 {
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-envelope-o">
-                                <span class="badge badge-primary"></span>
-                            </i>
                             Info
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -129,13 +161,27 @@
                 </li>
             </ul>
             &nbsp; &nbsp;
-            <div>
-                <center>
-                    <a id="loginbtn" onclick="window.location.href = 'Login.cshtml';" class="btn btn-outline-danger">Login</a>
-                    &nbsp;
-                    <a id="registerbtn" onclick="window.location.href = 'Register.cshtml';" class="btn btn-outline-danger">Register</a>
-                </center>
-            </div>
+            @if (mail != "")
+            {
+                <li id="logged-in" class="nav-item dropdown">
+                    <a style="color: white;" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        @Username
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a style="color: #efefef" class="dropdown-item" href="~/login.cshtml">Logout</a>
+                    </div>
+                </li>
+            }
+            else
+            {
+                <div>
+                    <center>
+                        <a id="loginbtn" onclick="window.location.href = 'Login.cshtml';" class="btn btn-outline-danger">Login</a>
+                        &nbsp;
+                        <a id="registerbtn" onclick="window.location.href = 'Register.cshtml';" class="btn btn-outline-danger">Register</a>
+                    </center>
+                </div>
+            }
         </div>
     </nav>
     <!-- Navigation bar -->
