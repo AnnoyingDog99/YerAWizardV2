@@ -1,0 +1,45 @@
+﻿@{
+    Layout = "~/_SiteLayout.cshtml";
+    Page.Title = "Add news";
+    @*if (Roles.IsUserInRole("Owner"))
+    {
+        <span> Welcome <b>@WebSecurity.CurrentUserName</b>! </span>
+    }
+    else
+    {
+        Response.Redirect("~/Homepage.cshtml");
+    }*@
+}
+
+<div>
+    @*@if (IsPost)
+    {
+        var errors = String.Empty;
+        if (Request[“Titel”].IsEmpty())
+        {
+            errors += “< li > You must provide a Titel</ li >”;
+        }
+        if (Request[“body”].IsEmpty())
+        {
+            errors += “< li > You must provide an introduction</ li >”;
+        }
+        if (errors.isEmpty())
+        {
+            <h3>The following errors need correcting:</h3>
+            <ul>
+                @Html.Raw(errors)
+            </ul>
+        }*@
+
+     <h3>Add your story</h3>
+
+    }
+    <form action="~/NewsHome.cshtml" method="post">
+        <div>Titel:</div>
+        <input type="text" name="Titel" />
+        <div>Content:</div>
+        <textarea name="body"></textarea>
+        <input type="submit" value="Add Story" />
+    </form>
+
+</div>
