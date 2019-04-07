@@ -1,7 +1,13 @@
 ﻿@{
     Layout = "~/_SiteLayout.cshtml";
     Page.Title = "Delete News";
-    
+
+    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
+    string provider = "System.Data.SqlClient";
+    Database db = Database.OpenConnectionString(connectionString, provider);
+
+
+
     int Id = 1;
     string Title = "";
     string Description = "";
@@ -11,10 +17,6 @@
         Id = Request.QueryString["NewsId"].AsInt();
     }
     else { Response.Redirect("~/NewsHome.cshtml"); }
-
-    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
-    string provider = "System.Data.SqlClient";
-    Database db = Database.OpenConnectionString(connectionString, provider);
 
     var Data = db.QuerySingle("SELECT * FROM News WHERE News_Id = @0", Id);
     Title = Data.Title;
@@ -155,19 +157,8 @@
                         <div class="forum-item active">
                             <div class="row">
                                 <div class="col-md-11">
-                                    <div class="forum-icon">
-                                        <i class="fa fa-book"></i>
-                                    </div>
                                     <a href="forum_post.html" class="forum-item-title">@Title</a>
                                     <div class="forum-sub-title">@Description</div>
-                                </div>
-                                <div class="col-md-1 forum-info">
-                                    <span class="views-number">
-                                        #
-                                    </span>
-                                    <div>
-                                        <small>Posts</small>
-                                    </div>
                                 </div>
                             </div>
                             <center>
@@ -179,9 +170,6 @@
                                 <div class="modal-dialog modal-confirm">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <div class="icon-box">
-                                                <i class="material-icons"></i>
-                                            </div>
                                             <h4 class="modal-title">Are you sure?</h4>
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                         </div>

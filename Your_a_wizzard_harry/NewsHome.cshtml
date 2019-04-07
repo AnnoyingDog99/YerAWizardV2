@@ -5,7 +5,10 @@
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
+    int i = 1;
     var News = db.Query("SELECT * FROM News");
+    //var Owner = db.Query("SELECT * Rank FROM Profiel WHERE Rank = 'Owner'");
+
 }
 <head>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
@@ -120,47 +123,58 @@
         <section class="banner-sec">
             <div class="container">
                 <h3 class="heading-large">News Feed</h3>
-                <!-- var title -->
-                    @foreach (var id in News)
-                     { 
-                        <div class="row">
-                            <div class="col-lg-8 col-md-12" style="padding-top: 5px ;">
-                                <div class="newsarticle">
-                                    <button type="button" class="btn btn-info" data-toggle="collapse" datatarget="#item">@id.Title</button>
-                                    <div class="float-right">
-                                        <a href="~/AddNews.cshtml?NewsId=@id.News_Id">Edit</a>
-                                        &nbsp;
-                                        <a style="color: #a00000" href="~/DeleteNews.cshtml?NewsId=@id.News_Id">Delete</a>
-                                    </div>
-                                </div>
-                                <div id="item" class="collapse">
-                                    <div class="content">
-                                        @*<div class="lg-6 md-2">
-                                            <img src="@id.Image" width="100" height="200" style="margin:10px;" />
-                                        </div>*@
-                                        <div class="lg-2 md-10">
-                                            <!-- var inhoud/ image-->
-                                            <p>@id.Description </p>
-                                        </div>
-                                    </div>
+
+                <!--News feed-->
+                @foreach (var id in News)
+                {
+                    <div class="row">
+                        <div class="col-lg-8 col-md-12" style="padding-top: 5px ;">
+                            <div class="newsarticle">
+                                <a style="color:black" href="#item'@i'" data-toggle="collapse">@id.Title</a>
+                                <div class="float-right" style="">
+                                    <a href="~/AddNews.cshtml?NewsId=@id.News_Id">Edit</a>
+                                    &nbsp;
+                                    <a style="color: #a00000" href="~/DeleteNews.cshtml?NewsId=@id.News_Id">Delete</a>
                                 </div>
                             </div>
-                        </div>
-                     }
-                <aside class="col-lg-4 side-bar col-md-12 float-right">
-                    @if (Roles.IsUserInRole("owner"))
-                    {
-
-                    }
-                    <div class="video-sec">
-                        <h3 class="heading-small">Featured Video</h3>
-                        <div class="video-block">
-                            <div class="embed-responsive embed-responsive-4by3">
-                                <iframe class="embed-responsive-item" src="//www.youtube.com/embed/TKSlH-1XZho" allowfullscreen></iframe>
+                            <div id="item'@i'" class="collapse">
+                                <div class="newscontent">
+                                    <!-- var inhoud/ image-->
+                                    <p>@id.Description </p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </aside>
+                    i++;
+                }
+               
+                <!--/Newsfeed-->
+                    <aside class="col-lg-4 side-bar col-md-12 float-right">
+                        <!--Owner add news-->
+                        @if (Request.QueryString["Owner"] != null)
+                        {
+
+                        }
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="heading-large">Add Newsarticle</h3>
+                                <div align="center" style="padding-top: 10px">
+                                    <a href="~/AddNews.cshtml" type="button" class="btn btn-warning btn-lg"> Add News</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Video box-->
+                        <div class="video-sec">
+                            <h3 class="heading-large">Featured Video</h3>
+                            <div class="video-block">
+                                <div class="embed-responsive embed-responsive-4by3">
+                                    <iframe class="embed-responsive-item" src="//www.youtube.com/embed/TKSlH-1XZho" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+
             </div>
         </section>
 </body>

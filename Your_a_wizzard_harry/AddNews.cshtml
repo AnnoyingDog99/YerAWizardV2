@@ -28,11 +28,10 @@
     {
         Title = Request.Form["title"];
         Description = Request.Form["description"];
-        Image = Request.Form["image"];
-
+        
         if (Request.QueryString["NewsId"] != null)
         {
-            db.Execute("UPDATE News SET Title = @0, Description = @1, WHERE News_Id = @3", Title, Description, Request.QueryString["NewsId"].AsInt());
+            db.Execute("UPDATE News SET Title = @0, Description = @1 WHERE News_Id = @2", Title, Description, Request.QueryString["NewsId"].AsInt());
             Response.Redirect("~/NewsHome.cshtml");
         }
         else
@@ -83,19 +82,7 @@
                         </div>
                         
                     </div>
-                    <!--Image-->
-                    @*<div id="">
-                        <label style="color: black;" for="image">Image</label>
-                        @if (Image != "")
-                        {
-                            <input type="file" name="pic" accept="image/*" value="@Image">
-                        }
-                        else
-                        {
-                            <input type="file" name="pic" accept="image/*">
-                        }
-                    </div>*@
-                      <!--Submit-->               
+                    <!--Submit-->               
                     <div class="form-group">
                         @if (Request.QueryString["NewsId"] != null)
                         {
@@ -106,7 +93,6 @@
                             <input type="submit" id="add-more" name="add" class="btn btn-primary" value="Add News" />
                         }
                     </div>
-
                 </form>
             </div>
         </center>

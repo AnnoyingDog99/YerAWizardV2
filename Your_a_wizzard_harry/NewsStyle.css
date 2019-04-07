@@ -13,11 +13,17 @@ h1, h2, h3, h4, h5 {
 a, a:hover, .btn {
     outline: none !important;
 }
-.newsarticle{
-    background-color: dimgrey;
+.newsarticle {
+    background-color: white;
+    padding:10px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
 }
-.item{
-
+.newscontent {
+    background-color: white;
+    font-family: 'Montserrat', sans-serif;
+    padding: 5px;
+    font-size: 14px;
 }
 
 .collapsible {
@@ -26,7 +32,7 @@ a, a:hover, .btn {
     cursor: pointer;
     padding: 18px;
     width: 100%;
-    border: none;
+    border: 1px solid;
     text-align: left;
     outline: none;
     font-size: 15px;
