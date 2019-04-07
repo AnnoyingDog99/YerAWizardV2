@@ -1,0 +1,101 @@
+﻿@{
+    Layout = "~/_SiteLayout.cshtml";
+    Page.Title = "Manage news";
+    @*if (Roles.IsUserInRole("Owner"))
+    {
+        <span> Welcome <b>@WebSecurity.CurrentUserName</b>! </span>
+    }
+    else
+    {
+        Response.Redirect("~/Homepage.cshtml");
+    }*@
+    string Title = "";
+    string Description = "";
+    string Image = "";
+
+    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
+    string provider = "System.Data.SqlClient";
+    Database db = Database.OpenConnectionString(connectionString, provider);
+    if (Request.QueryString["NewsId"] != null)
+    {
+        var Data = db.QuerySingle("SELECT * FROM News WHERE News_Id = @0", Request.QueryString["NewsId"].AsInt());
+        Title = Data.Title;
+        Description = Data.Description;
+        Image = Data.Image;
+    }
+
+    if (IsPost)
+    {
+        Title = Request.Form["title"];
+        Description = Request.Form["description"];
+        
+        if (Request.QueryString["NewsId"] != null)
+        {
+            db.Execute("UPDATE News SET Title = @0, Description = @1 WHERE News_Id = @2", Title, Description, Request.QueryString["NewsId"].AsInt());
+            Response.Redirect("~/NewsHome.cshtml");
+        }
+        else
+        {
+            db.Execute("INSERT INTO News(Title, Description) VALUES(@0, @1)", Title, Description);
+            Response.Redirect("~/Newshome.cshtml");
+        }
+    }
+}
+<head>
+    <link href="~/Stylesheets/bootstrap.min.css" rel="stylesheet" id="bootstrap-css" />
+    <link href="~/NewsStyle.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="container">
+        <center>
+            <div style="padding-bottom: 50px; padding-bottom: 50px;"></div>
+            <div class="col-md-4">
+                <form class="form-horizontal" action="" method="post" id="">
+                    <div class="form-group">
+                        <label style="color: black;" for="title">News Title</label>
+                        @if (Title != "")
+                        {
+                            <input type="text" class="form-control" id="question" name="title" cols="40" rows="5" style="resize:vertical;" value="@Title" required>
+                        }
+                        else
+                        {
+                            <input type="text" class="form-control" id="question" name="title" cols="40" rows="5" style="resize:vertical;" required>
+                        }
+                    </div>
+                    <div id="">
+                        <div id="">
+                            <!-- Text input-->
+                            <hr />
+                            <div class="form-group">
+                                <label style="color: black;">News Content</label>
+                                @if (Description != "")
+                                {
+                                    <textarea type="text" class="form-control" name="description" cols="40" rows="10" style="resize:vertical;" required>@Description</textarea>
+                                }
+                                else
+                                {
+                                    <textarea type="text" class="form-control" name="description" cols="40" rows="10" style="resize:vertical;" required></textarea>
+                                }
+                            </div>
+                            <hr />
+                        </div>
+                        
+                    </div>
+                    <!--Submit-->               
+                    <div class="form-group">
+                        @if (Request.QueryString["NewsId"] != null)
+                        {
+                            <input type="submit" id="add-more" name="add" class="btn btn-primary" value="Edit News" />
+                        }
+                        else
+                        {
+                            <input type="submit" id="add-more" name="add" class="btn btn-primary" value="Add News" />
+                        }
+                    </div>
+                </form>
+            </div>
+        </center>
+    </div>
+
+</body>
