@@ -5,9 +5,19 @@
     string IsPrivate = "";
     string Icon = "";
 
+    var mail = "";
+    mail = Session["mail"].ToString();
+
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
+
+    var getUser = "SELECT Rank FROM [Profiel] WHERE Email = @0";
+    var rank = db.QuerySingle(getUser, mail);
+    if (rank != "Teacher" && rank != "Owner")
+    {
+        Response.Redirect("~/login.cshtml");
+    }
 
     if (Request.QueryString["ForumId"] != null)
     {
