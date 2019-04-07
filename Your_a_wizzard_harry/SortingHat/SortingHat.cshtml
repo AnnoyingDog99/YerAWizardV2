@@ -19,11 +19,8 @@
         mail = Convert.ToString(Session["mail"]);
     }
 
-<<<<<<< HEAD
-    //kijkt wat de antwoorden van de vragen zijn 
-=======
-    //kijkt wat de antwoorden van de vragen zijn
->>>>>>> test
+
+    //kijkt wat de antwoorden van de vragen zijn  
     for (int i = 0; i < 10; i++)
     {
         if (!Request["Q" + questionindex].IsEmpty())
@@ -88,12 +85,7 @@
             string gethouseid = "SELECT House_Id FROM HOUSE where house_Name = @0";
             var house_id = db.QueryValue(gethouseid, house);
             string insertuserintohouse = "UPDATE PROFIEL SET House_House_ID = @0 WhERE EMail = @1";
-<<<<<<< HEAD
-            var push = db.Execute(insertuserintohouse, house_id , mail);
-=======
             var push = db.Execute(insertuserintohouse, house_id, mail);
-
->>>>>>> test
         }
         win = false;
 
@@ -103,13 +95,13 @@
     string SearchHouse = "SELECT House_Id FROM House WHERE House_name = @0";
     int HouseIdd = db.QueryValue(SearchHouse, winninghouse);
 
-<<<<<<< HEAD
+
     //voeg gebruiker toe aan house en geef user house
     string AddHouse = "UPDATE Profiel  SET House_House_ID  = @0 WHERE Username = @1";
-    db.Execute(AddHouse,house_Id , WebSecurity.CurrentUserName);
+    db.Execute(AddHouse, house_Id, WebSecurity.CurrentUserName);
 
     Session["mail"] = mail;
-=======
+
     Session["mail"] = mail;
     if (winninghouse == "Gryffindor")
     {
@@ -127,5 +119,4 @@
     {
         Response.Redirect("~/Slytherin.cshtml");
     }
->>>>>>> test
 }
