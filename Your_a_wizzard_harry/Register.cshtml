@@ -1,8 +1,11 @@
 ﻿@{
     Validation.RequireField("Username", "You must enter an Username");
+    Validation.Add("Username", Validator.StringLength(50, 3, "Your Username can not be longer than 50 characters in length or shorter than 3 characters"));
     Validation.RequireField("Password", "You must enter a Password");
+    Validation.Add("Password", Validator.StringLength(50, 3, "Your Password can not be longer than 50 characters in length or shorter than 3 characters"));
     Validation.RequireField("ConfirmPassword", "You must confirm your Password");
     Validation.RequireField("Email", "You must enter an Email");
+    Validation.Add("Email", Validator.StringLength(50, 3, "Your Email can not be longer than 50 characters in length or shorter than 3 characters"));
     Validation.RequireField("ConfirmEmail", "You must confrim your Email");
 
 

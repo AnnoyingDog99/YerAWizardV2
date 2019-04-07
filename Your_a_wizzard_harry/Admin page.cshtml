@@ -8,7 +8,7 @@
     Database db = Database.OpenConnectionString(connectionString, provider);
 
     var getUser = "SELECT Rank FROM [Profiel] WHERE Email = @0";
-    var rank = db.QuerySingle(getUser, mail);
+    var rank = db.QuerySingle(getUser, mail).rank;
     if (rank != "Owner")
     {
         Response.Redirect("~/login.cshtml");
@@ -63,7 +63,7 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <link href="../../assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
     <!-- Custom styles for this template -->
-    <link href="~/StyleHP.css" rel="stylesheet">
+    <link href="~/Stylesheets/StyleHP.css" rel="stylesheet">
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
     <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
@@ -128,7 +128,6 @@
                 </div>
                 <section>
                     <article>
-                        <h2 class="sub-header">Section title</h2>
                         <div class="table-responsive">
                             @gridUser.GetHtml(tableStyle: "grid", headerStyle: "head", alternatingRowStyle: "alt", columns: gridUser.Columns(gridUser.Column("Username"), gridUser.Column("Email"), gridUser.Column("Rank"), gridUser.Column(format: @<a href="~/BanUser.cshtml?User=@item.Username">Ban</a>)))
 

@@ -3,15 +3,25 @@
     var Post_Title = "";
     var Profiel_Username = "";
 
+    var mail = "";
+    mail = Session["mail"].ToString();
+
+    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
+    string provider = "System.Data.SqlClient";
+    Database db = Database.OpenConnectionString(connectionString, provider);
+
+    var getUser = "SELECT Rank FROM [Profiel] WHERE Email = @0";
+    var rank = db.QuerySingle(getUser, mail).rank;
+    if (rank != "Owner")
+    {
+        Response.Redirect("~/login.cshtml");
+    }
+
     if (!IsPost)
     {
         if (!Request.QueryString["PostId"].IsEmpty())
         {
             Post_Id = Request.QueryString["PostId"];
-
-            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
-            string provider = "System.Data.SqlClient";
-            Database db = Database.OpenConnectionString(connectionString, provider);
 
             var SelectPost = "SELECT * FROM [Post] WHERE Post_Id = @0";
             var postrow = db.QuerySingle(SelectPost, Post_Id);
@@ -28,9 +38,6 @@
         if (!Request.QueryString["PostId"].IsEmpty())
         {
             Post_Id = Request.QueryString["PostId"];
-            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
-            string provider = "System.Data.SqlClient";
-            Database db = Database.OpenConnectionString(connectionString, provider);
             var deletePost = "DELETE FROM [Post] WHERE Post_Id = @0";
             db.Execute(deletePost, Post_Id);
             Response.Redirect("~/Admin page.cshtml");
