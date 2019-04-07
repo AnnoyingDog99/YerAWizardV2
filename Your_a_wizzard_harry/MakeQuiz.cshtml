@@ -7,7 +7,7 @@
     Database db = Database.OpenConnectionString(connectionString, provider);
 
     var getUser = "SELECT Rank FROM [Profiel] WHERE Email = @0";
-    var rank = db.QuerySingle(getUser, mail);
+    var rank = db.QuerySingle(getUser, mail).rank;
     if (rank != "Student" && rank != "Teacher" && rank != "Owner")
     {
         Response.Redirect("~/login.cshtml");

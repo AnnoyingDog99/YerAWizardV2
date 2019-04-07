@@ -24,21 +24,24 @@
             <div class="alert">
                 No user found
             </div>
-        }
-        else
-        {
-            if (Request.UrlReferrer.AbsolutePath == Request.Url.AbsolutePath)
+            }
+            else
             {
-                if (Session["mail"] == null)
+                if (Request.UrlReferrer.AbsolutePath == Request.Url.AbsolutePath)
                 {
-                    Session["mail"] = Request.Form["mail"];
-                    Response.Redirect("~/HomePage.cshtml");
+                    if (Session["mail"] == null)
+                    {
+                        Session["mail"] = Request.Form["mail"];
+                        Response.Redirect("~/HomePage.cshtml");
+                    }
+                    else
+                    {
+                        Session["mail"] = Request.Form["mail"];
+                    }
                 }
-
             }
         }
     }
-}
 
 <!DOCTYPE html>
 <html>
