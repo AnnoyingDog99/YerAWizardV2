@@ -13,9 +13,19 @@
     }
     else { Response.Redirect("~/ForumPage.cshtml"); }
 
+    var mail = "";
+    mail = Session["mail"].ToString();
+
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
+
+    var getUser = "SELECT Rank FROM [Profiel] WHERE Email = @0";
+    var rank = db.QuerySingle(getUser, mail);
+    if (rank != "Teacher" && rank != "Owner")
+    {
+        Response.Redirect("~/login.cshtml");
+    }
 
     var Data = db.QuerySingle("SELECT * FROM Forum WHERE Forum_Id = @0", Id);
     Name = Data.Forum_name;

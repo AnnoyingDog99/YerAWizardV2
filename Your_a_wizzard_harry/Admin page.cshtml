@@ -1,8 +1,18 @@
 ﻿@using WebMatrix.Data;
 @{
+    var mail = "";
+    mail = Session["mail"].ToString();
+
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
+
+    var getUser = "SELECT Rank FROM [Profiel] WHERE Email = @0";
+    var rank = db.QuerySingle(getUser, mail);
+    if (rank != "Owner")
+    {
+        Response.Redirect("~/login.cshtml");
+    }
 
     var selectUsers = db.Query("SELECT Username, Email, Rank FROM [Profiel]");
     var gridUser = new WebGrid(source: selectUsers, rowsPerPage: 10);
