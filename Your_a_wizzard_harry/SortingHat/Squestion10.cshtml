@@ -2,7 +2,24 @@
     Page.Title = "Title goes here";
     //Layout = "Your Layout Page goes here";
 }
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link href="~/CSS-Ding/QuestionsStyle.css" rel="stylesheet">
+</head>
+<body style="background-color: #202225;">
+    <div class="container-fluid" style="background-color: #202225; color: white; ">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background-color: #202225">
+                <div class="modal-header" style="background-color: #343a40; border-radius:5px">
+                    <h3>Vraag 10: lalalalalala </h3>
+                </div>
+                <div class="modal-body" style="background-color: #343a40; color: white; border-radius:5px">
 
+<<<<<<< HEAD
 <div>
     <form method="post" action="~/SortingHat/SortingHat.cshtml">
         <div>Vraag 10: lalalalalala </div>
@@ -22,3 +39,33 @@
         @Html.Hidden("Q9", Request["Q9"])
     </form>
 </div>
+=======
+                    <form method="post" action="~/SortingHat/SortingHat.cshtml">
+                        <div class="quiz" id="quiz" data-toggle="buttons">
+                            <span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="Q10" value="griffindor" /> antwoord 1<br /><br />
+                            <span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="Q10" value="hufflepuff" /> antwoord 2<br /><br />
+                            <span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="Q10" value="ravenclaw" /> antwoord 3<br /><br />
+                            <span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="Q10" value="slytherin" /> antwoord 4<br /><br />
+                            <span class="btn-label"></span> <input class="btn btn-primary" type="submit" value="Finish" />
+                            @Html.Hidden("Q1", Request["Q1"])
+                            @Html.Hidden("Q2", Request["Q2"])
+                            @Html.Hidden("Q3", Request["Q3"])
+                            @Html.Hidden("Q4", Request["Q4"])
+                            @Html.Hidden("Q5", Request["Q5"])
+                            @Html.Hidden("Q6", Request["Q6"])
+                            @Html.Hidden("Q7", Request["Q7"])
+                            @Html.Hidden("Q8", Request["Q8"])
+                            @Html.Hidden("Q9", Request["Q9"])
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer text-muted" style="background-color: #343a40; color: white; border-radius:5px">
+                    <span id="answer"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html> 
+>>>>>>> test

@@ -7,7 +7,7 @@
 
     //scholen en het punten dat ze hebben aan het einde van de quize
     int gryffindorP = 0, hufflepuffP = 0, ravenclawP = 0, slytherinP = 0, questionindex = 1;
-    List<string> houses = new List<string> { "Gryffindor", "Hufflepuff", "Ravenclaw", "	Slytherin" };
+    List<string> houses = new List<string> { "Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin" };
     string winninghouse = "";
     string mail = "";
     int house_Id = 0;
@@ -19,7 +19,11 @@
         mail = Convert.ToString(Session["mail"]);
     }
 
+<<<<<<< HEAD
     //kijkt wat de antwoorden van de vragen zijn 
+=======
+    //kijkt wat de antwoorden van de vragen zijn
+>>>>>>> test
     for (int i = 0; i < 10; i++)
     {
         if (!Request["Q" + questionindex].IsEmpty())
@@ -84,25 +88,44 @@
             string gethouseid = "SELECT House_Id FROM HOUSE where house_Name = @0";
             var house_id = db.QueryValue(gethouseid, house);
             string insertuserintohouse = "UPDATE PROFIEL SET House_House_ID = @0 WhERE EMail = @1";
+<<<<<<< HEAD
             var push = db.Execute(insertuserintohouse, house_id , mail);
+=======
+            var push = db.Execute(insertuserintohouse, house_id, mail);
+
+>>>>>>> test
         }
         win = false;
 
     }
 
-    //haalt het House_Id op 
+    //haalt het House_Id op
     string SearchHouse = "SELECT House_Id FROM House WHERE House_name = @0";
     int HouseIdd = db.QueryValue(SearchHouse, winninghouse);
 
+<<<<<<< HEAD
     //voeg gebruiker toe aan house en geef user house
     string AddHouse = "UPDATE Profiel  SET House_House_ID  = @0 WHERE Username = @1";
     db.Execute(AddHouse,house_Id , WebSecurity.CurrentUserName);
 
     Session["mail"] = mail;
+=======
+    Session["mail"] = mail;
+    if (winninghouse == "Gryffindor")
+    {
+        Response.Redirect("~/Gryffindor.cshtml");
+    }
+    else if (winninghouse == "Hufflepuff")
+    {
+        Response.Redirect("~/Hufflepuff.cshtml");
+    }
+    else if (winninghouse == "Ravenclaw")
+    {
+        Response.Redirect("~/Ravenclaw.cshtml");
+    }
+    else if (winninghouse == "Slytherin")
+    {
+        Response.Redirect("~/Slytherin.cshtml");
+    }
+>>>>>>> test
 }
-
-<div>
-
-  <h1>je bent ingedeelt in @winninghouse</h1>
- 
-</div>
