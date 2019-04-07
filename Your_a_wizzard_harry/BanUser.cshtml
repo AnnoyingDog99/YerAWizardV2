@@ -1,4 +1,18 @@
 ﻿@{
+
+    var mail = "";
+    mail = Session["mail"].ToString();
+
+    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
+    string provider = "System.Data.SqlClient";
+    Database db = Database.OpenConnectionString(connectionString, provider);
+
+    var getUser = "SELECT Rank FROM [Profiel] WHERE Email = @0";
+    var rank = db.QuerySingle(getUser, mail).rank;
+    if (rank != "Owner")
+    {
+        Response.Redirect("~/login.cshtml");
+    }
     var Username = "";
     var Email = "";
     var Rank = "";
@@ -8,10 +22,6 @@
         if (!Request.QueryString["User"].IsEmpty())
         {
             Username = Request.QueryString["User"];
-
-            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
-            string provider = "System.Data.SqlClient";
-            Database db = Database.OpenConnectionString(connectionString, provider);
 
             var SelectUser = "SELECT * FROM [Profiel] WHERE Username = @0";
             var UserRow = db.QuerySingle(SelectUser, Username);
@@ -27,11 +37,6 @@
         if (!Request.QueryString["User"].IsEmpty())
         {
             Username = Request.QueryString["User"];
-
-            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
-            string provider = "System.Data.SqlClient";
-            Database db = Database.OpenConnectionString(connectionString, provider);
-
             var DeleteUser = "DELETE FROM [Profiel] WHERE Username = @0";
             db.Execute(DeleteUser, Username);
             Response.Redirect("~/Admin page.cshtml");

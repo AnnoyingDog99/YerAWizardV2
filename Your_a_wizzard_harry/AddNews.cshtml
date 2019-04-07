@@ -9,37 +9,47 @@
     {
         Response.Redirect("~/Homepage.cshtml");
     }*@
-    string Title = "";
-    string Description = "";
-    string Image = "";
+string Title = "";
+string Description = "";
+string Image = "";
 
-    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
-    string provider = "System.Data.SqlClient";
-    Database db = Database.OpenConnectionString(connectionString, provider);
+var mail = "";
+mail = Session["mail"].ToString();
+
+string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
+string provider = "System.Data.SqlClient";
+Database db = Database.OpenConnectionString(connectionString, provider);
+
+var getUser = "SELECT Rank FROM [Profiel] WHERE Email = @0";
+var rank = db.QuerySingle(getUser, mail).rank;
+if (rank != "Owner")
+{
+    Response.Redirect("~/login.cshtml");
+}
+if (Request.QueryString["NewsId"] != null)
+{
+    var Data = db.QuerySingle("SELECT * FROM News WHERE News_Id = @0", Request.QueryString["NewsId"].AsInt());
+    Title = Data.Title;
+    Description = Data.Description;
+    Image = Data.Image;
+}
+
+if (IsPost)
+{
+    Title = Request.Form["title"];
+    Description = Request.Form["description"];
+
     if (Request.QueryString["NewsId"] != null)
     {
-        var Data = db.QuerySingle("SELECT * FROM News WHERE News_Id = @0", Request.QueryString["NewsId"].AsInt());
-        Title = Data.Title;
-        Description = Data.Description;
-        Image = Data.Image;
+        db.Execute("UPDATE News SET Title = @0, Description = @1 WHERE News_Id = @2", Title, Description, Request.QueryString["NewsId"].AsInt());
+        Response.Redirect("~/NewsHome.cshtml");
     }
-
-    if (IsPost)
+    else
     {
-        Title = Request.Form["title"];
-        Description = Request.Form["description"];
-        
-        if (Request.QueryString["NewsId"] != null)
-        {
-            db.Execute("UPDATE News SET Title = @0, Description = @1 WHERE News_Id = @2", Title, Description, Request.QueryString["NewsId"].AsInt());
-            Response.Redirect("~/NewsHome.cshtml");
-        }
-        else
-        {
-            db.Execute("INSERT INTO News(Title, Description) VALUES(@0, @1)", Title, Description);
-            Response.Redirect("~/Newshome.cshtml");
-        }
+        db.Execute("INSERT INTO News(Title, Description) VALUES(@0, @1)", Title, Description);
+        Response.Redirect("~/Newshome.cshtml");
     }
+}
 }
 <head>
     <link href="~/Stylesheets/bootstrap.min.css" rel="stylesheet" id="bootstrap-css" />

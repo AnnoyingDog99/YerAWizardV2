@@ -13,9 +13,19 @@
     string nr4house = "";
     int nr4points = 0;
     var pointdifference = 0;
+    var mail = "";
+    mail = Session["mail"].ToString();
+
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
+
+    var getUser = "SELECT Rank FROM [Profiel] WHERE Email = @0";
+    var rank = db.QuerySingle(getUser, mail).rank;
+    if (rank != "Student" && rank != "Teacher" && rank != "Owner")
+    {
+        Response.Redirect("~/login.cshtml");
+    }
 
     var SelectTotalPointsGryf = "SELECT SUM(User_Points) AS Total FROM Profiel Where House_House_Id = @0";
     var TotalPointsGryf = db.QuerySingle(SelectTotalPointsGryf, Gryf);
