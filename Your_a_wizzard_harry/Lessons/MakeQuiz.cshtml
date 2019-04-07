@@ -50,37 +50,147 @@
 
     }
 }
-    <div>
-        <form method="post" action="~/Lessons/MakeQuiz.cshtml?amountofquestions=@amountofquestions">
-            <div>
-                <h1>@amountofquestions</h1>
-                <input type="hidden" name="amountofquestions" value="@amountofquestions" />
-                <input type="hidden" name="counter" value="@counter" />
-                <label>vraag naam</label>
-                <br />
-                <input type="text" name="question_name" />
-                <br />
-                <label>aantal punten</label>
-                <br />
-                <input type="text" name="amountofpoints" />
-                <br />
-                <label> antwoord 1 </label>
-                <br />
-                <input type="text" name="answer1" /> <input type="checkbox" name="Isactive1" value="1"><br>
-                <br />
-                <label> antwoord 2 </label>
-                <br />
-                <input type="text" name="answer2" /> <input type="checkbox" name="Isactive2" value="1"><br>
-                <br />
-                <label> antwoord 3 </label>
-                <br />
-                <input type="text" name="answer3" /> <input type="checkbox" name="Isactive3" value="1"><br>
-                <br />
-                <label> antwoord 4 </label>
-                <br />
-                <input type="text" name="answer4" /> <input type="checkbox" name="Isactive4" value="1"><br>
+<div>
+    <form method="post" action="~/Lessons/MakeQuiz.cshtml?amountofquestions=@amountofquestions">
+        <div>
+            <h1>@amountofquestions</h1>
+            <input type="hidden" name="amountofquestions" value="@amountofquestions" />
+            <input type="hidden" name="counter" value="@counter" />
+            <label>vraag naam</label>
+            <br />
+            <input type="text" name="question_name" />
+            <br />
+            <label>aantal punten</label>
+            <br />
+            <input type="text" name="amountofpoints" />
+            <br />
+            <label> antwoord 1 </label>
+            <br />
+            <input type="text" name="answer1" /> <input type="checkbox" name="Isactive1" value="1"><br>
+            <br />
+            <label> antwoord 2 </label>
+            <br />
+            <input type="text" name="answer2" /> <input type="checkbox" name="Isactive2" value="1"><br>
+            <br />
+            <label> antwoord 3 </label>
+            <br />
+            <input type="text" name="answer3" /> <input type="checkbox" name="Isactive3" value="1"><br>
+            <br />
+            <label> antwoord 4 </label>
+            <br />
+            <input type="text" name="answer4" /> <input type="checkbox" name="Isactive4" value="1"><br>
 
-                <button type="submit">Add</button>
-            </div>
-        </form>
+            <button type="submit">Add</button>
+        </div>
+    </form>
+</div>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Page Title</title>
+</head>
+<body style="background-color: #343a40">
+
+
+    <link href="//cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <div class="container">
+        <div class="row">
+            <div class="section"></div>
+            <main>
+                <center>
+                    <form method="post" action="~/Lessons/MakeQuiz.cshtml?amountofquestions=@amountofquestions">
+                        <div class="container">
+                            <div class="z-depth-5 y-depth-5 x-depth-5 green-text" style="min-width:100%; background-color: #343a40; display: inline-block; padding: 32px 48px 0px 48px; margin-top: 100px;">
+                                <div class="section"></div>
+                                <div class="section"></div>
+
+                                <div class="section"><i class="mdi-alert-error red-text"></i></div>
+
+                                <div>
+                                    <h1>@amountofquestions</h1>
+                                    <input type="hidden" name="amountofquestions" value="@amountofquestions" />
+                                    <input type="hidden" name="counter" value="@counter" />
+                                </div>
+                                <div class='row' style="background-color: #343a40">
+                                    <div class='input-field col s12'>
+                                        <input class='validate' type="text" name="question_name" id='Name' required />
+                                        <label for='Name'>Question name</label>
+                                    </div>
+                                </div>
+                                <div class='row'>
+                                    <div class='input-field col s12'>
+                                        <input class='validate' type='text' name="amountofpoints" id='points' required />
+                                        <label for='points'>Amount of points</label>
+                                    </div>
+                                </div>
+                                <div class='row'>
+                                    <div class='input-field col m13'>
+                                        <input class='validate' type='text' name="answer1" id='Isactive1' required />
+                                        <label for='Isactive1'>Answer 1</label>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="input-field col m13">
+                                        <input class="validate" type="radio" name="Isactive" value="1" id="Active1">
+                                        <label for="Active1"></label>
+                                    </div>
+                                </div>
+                                <div class='row'>
+                                    <div class='input-field col m13'>
+                                        <input class='validate' type='text' name="answer2" id='Isactive2' required />
+                                        <label for='Isactive2'>Answer 2</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="input-field col m13">
+                                        <input class="validate" type="radio" name="Isactive" value="1" id="Active2">
+                                        <label for="Active2"></label>
+                                    </div>
+                                </div>
+                                <div class='row'>
+                                    <div class='input-field col m14'>
+                                        <input class='validate' type='text' name="answer3" id='Isactive3' required />
+                                        <label for='Isactive3'>Answer 3</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="input-field col m14">
+                                        <input class="validate" type="radio" name="Isactive" value="1" id="Active3">
+                                        <label for="Active3"></label>
+                                    </div>
+                                </div>
+                                <div class='row'>
+                                    <div class='input-field col m15'>
+                                        <input class='validate' type='text' name="answer4" id='Isactive4' required />
+                                        <label for='Isactive4'>Answer 4</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="input-field col m15">
+                                        <input class="validate" type="radio" name="Isactive" value="0" id="Active4">
+                                        <label for="Active4"></label>
+                                    </div>
+                                </div>
+                                <br />
+                                <center>
+                                    <br />
+                                    <div class='row'>
+                                        <button style="margin-left:27%;" type='submit' name='btn_login' class='col  s6 btn btn-small white black-text  waves-effect z-depth-1 y-depth-1'>Add</button>
+                                    </div>
+                                </center><br />
+                            </div>
+                        </div>
+                    </form>
+                </center>
+            </main>
+            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.1/jquery.min.js"></script>
+            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+        </div>
     </div>
+
+</body>
+</html>
