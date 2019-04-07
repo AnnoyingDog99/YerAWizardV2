@@ -6,8 +6,6 @@
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
 
-
-
     int Id = 1;
     string Title = "";
     string Description = "";
@@ -156,15 +154,18 @@
                         <div style="padding-bottom: 200px;"></div>
                         <div class="forum-item active">
                             <div class="row">
+                                <div class="forum-icon">
+                                    <i class="fa fa-book"></i>
+                                </div>
                                 <div class="col-md-11">
-                                    <a href="forum_post.html" class="forum-item-title">@Title</a>
+                                    <div class="forum-item-title">@Title</div>
                                     <div class="forum-sub-title">@Description</div>
                                 </div>
                             </div>
                             <center>
                                 <a href="~/NewsHome.cshtml" class="trigger-btn">cancel</a>
                                 &nbsp;
-                                <a href="#myModal" id="delBtn" class="trigger-btn" data-toggle="modal">Delete Forum</a>
+                                <a href="#myModal" id="delBtn" class="trigger-btn" data-toggle="modal">Delete News</a>
                             </center>
                             <div id="myModal" class="modal fade" style="display: none;">
                                 <div class="modal-dialog modal-confirm">
@@ -174,7 +175,7 @@
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                         </div>
                                         <div class="modal-body">
-                                            <p>Are you sure you want to delete the forum:<br /> <span style="font-weight: bold;">@Title</span>?<br /> This will remove all it's posts, this action cannot be undone</p>
+                                            <p>Are you sure you want to delete the forum:<br /> <span style="font-weight: bold;">@Title</span>?<br /> This will remove the article, this action cannot be undone</p>
                                         </div>
                                         <form class="modal-footer" method="post">
                                             <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>

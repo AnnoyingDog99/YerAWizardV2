@@ -1,6 +1,4 @@
-﻿@import url("//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css");
-
-
+﻿
 body {
     font-family: 'Open Sans',Arial,sans-serif;
     font-size: 15px;
@@ -8,6 +6,15 @@ body {
 
 h1, h2, h3, h4, h5 {
     font-family: 'Montserrat', sans-serif;
+}
+
+aside {
+display:inline-block;
+}
+
+.news-block{
+    background-color:white;
+    text-align:center;
 }
 
 a, a:hover, .btn {

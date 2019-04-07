@@ -46,14 +46,14 @@
     <link href="~/NewsStyle.css" rel="stylesheet" />
 </head>
 
-<body>
+<body style="background-color: #202225;">
     <div class="container">
         <center>
-            <div style="padding-bottom: 50px; padding-bottom: 50px;"></div>
+            <div style="padding-bottom: 50px;"></div>
             <div class="col-md-4">
                 <form class="form-horizontal" action="" method="post" id="">
                     <div class="form-group">
-                        <label style="color: black;" for="title">News Title</label>
+                        <label style="color: white;" for="title">News Title</label>
                         @if (Title != "")
                         {
                             <input type="text" class="form-control" id="question" name="title" cols="40" rows="5" style="resize:vertical;" value="@Title" required>
@@ -68,7 +68,7 @@
                             <!-- Text input-->
                             <hr />
                             <div class="form-group">
-                                <label style="color: black;">News Content</label>
+                                <label style="color: white;">News Content</label>
                                 @if (Description != "")
                                 {
                                     <textarea type="text" class="form-control" name="description" cols="40" rows="10" style="resize:vertical;" required>@Description</textarea>
@@ -80,9 +80,9 @@
                             </div>
                             <hr />
                         </div>
-                        
+
                     </div>
-                    <!--Submit-->               
+                    <!--Submit-->
                     <div class="form-group">
                         @if (Request.QueryString["NewsId"] != null)
                         {
@@ -96,6 +96,7 @@
                 </form>
             </div>
         </center>
+        <div style="padding-bottom: 50px;"></div>
     </div>
 
 </body>
