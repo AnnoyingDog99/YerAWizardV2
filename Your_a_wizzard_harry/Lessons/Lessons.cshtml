@@ -16,15 +16,15 @@
     {
         int Lesson_Id = Request.QueryString["Lesson_Id"].AsInt();
         GetTeacher = "SELECT Teacher FROM Lesson WHERE Lesson_Id = @0";
-        Teacher = db.QueryValue(GetTeacher,Lesson_Id);
+        Teacher = db.QueryValue(GetTeacher, Lesson_Id);
 
         //haalt de naam van de les op
         GetLessonName = "SELECT Lesson_name FROM Lesson WHERE Lesson_Id = @0";
-        lesson_Titel = db.QueryValue(GetLessonName,Lesson_Id);
+        lesson_Titel = db.QueryValue(GetLessonName, Lesson_Id);
 
         //haalt het les stof op
         GetLessonInfo = "SELECT Lesson_Material FROM Lesson WHERE Lesson_Id =@0";
-        lesson_Info = db.QueryValue(GetLessonInfo,Lesson_Id);
+        lesson_Info = db.QueryValue(GetLessonInfo, Lesson_Id);
     }
     else
     {
@@ -46,8 +46,8 @@
         //
     }
     //haalt alle lessen op
-    string GetOtherTitels = "SELECT Lesson_name, Teacher , Lesson_Id ,Selected_Lesson  FROM Lesson WHERE Lesson_Id <> @0";
-    var rows = db.Query(GetOtherTitels, 8 );
+    string GetOtherTitels = "SELECT Lesson_name, Teacher , Lesson_Id ,Selected_Lesson  FROM Lesson";
+    var rows = db.Query(GetOtherTitels);
 }
 <head>
     <link href="//cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css" rel="stylesheet" id="bootstrap-css">

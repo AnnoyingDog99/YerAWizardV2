@@ -5,12 +5,19 @@
 
     Database db = Database.OpenConnectionString(connectionString, provider);
 
+    Validation.RequireField("exam", "vul een examen naam in");
+    Validation.Add("exam", Validator.StringLength(50, 3, "de examen naam moet tussen de 3 en 50 characters zijn"));
+    Validation.RequireField("amountofquestions", "vul het aantal vragen in van je examen in");
+    Validation.Add("amountofquestions", Validator.Integer("het moet een getal zijn"));
+    Validation.Add("amountofquestions", Validator.Range(1, 15, "het aantal vragen moet tussen de 1 en de 15 zijn "));
+
+
     string examname = Request.Form["exam"];
 
     int amountofquestions = Request.Form["amountofquestions"].AsInt();
 
 
-    if (IsPost)
+    if (IsPost && Validation.IsValid())
     {
 
         string getlesson_id = "SELECT MAX(lesson_Id) FROM Lesson";
@@ -52,14 +59,16 @@
 
                                 <div class='row' style="background-color: #343a40">
                                     <div class='input-field col s12'>
-                                        <input class='validate' type="text" name='exam' id='ExamName' required />
+                                        <input class='validate' type="text" name='exam' id='ExamName' />
                                         <label for='ExamName'>Name of exam?</label>
+                                        @Html.ValidationMessage("exam")
                                     </div>
                                 </div>
                                 <div class='row'>
                                     <div class='input-field col m12'>
-                                        <input value="@Request.Form["amountofquestions"]" class='validate' type="text" name='amountofquestions' id='Lesson Title' required />
+                                        <input value="@Request.Form["amountofquestions"]" class='validate' type="text" name='amountofquestions' id='Lesson Title' />
                                         <label for='Lesson Title'>Amount of Questions asked?</label>
+                                        @Html.ValidationMessage("amountofquestions")
                                     </div>
                                 </div>
                                 <br />

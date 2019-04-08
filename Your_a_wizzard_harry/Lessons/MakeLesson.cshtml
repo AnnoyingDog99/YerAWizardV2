@@ -3,6 +3,13 @@
 
     string provider = "System.Data.SqlClient";
 
+    Validation.RequireField("teacher", "vul alsjeblieft een teacher in");
+    Validation.Add("teacher", Validator.StringLength(25, 3, "teacher moet tussen de 3 en 25 charracters zijn"));
+    Validation.RequireField("titel", "vul alsjeblieft een titel in");
+    Validation.Add("titel", Validator.StringLength(25, 3, "titel moet tussen de 3 en 25 charracters zijn"));
+    Validation.RequireField("content", "vul alsjeblieft les content in");
+    Validation.Add("content", Validator.StringLength(100000, 10, "de content moet langer zijn dan 10 caracters "));
+
     Database db = Database.OpenConnectionString(connectionString, provider);
 
     if (!Request.QueryString["deleteId"].IsEmpty() && Request.QueryString["deleteId"].IsInt())
@@ -22,7 +29,7 @@
         var updatelesson2 = db.Execute(updatelesson, 1, lesson_Id);
     }
 
-    if (IsPost)
+    if (IsPost && Validation.IsValid())
     {
         string teacher = Request.Form["teacher"];
         string titel = Request.Form["titel"];
@@ -49,6 +56,8 @@
         string insertintoexam = "INSERT INTO exam (lesson_Id) VALUES (@0)";
         insertinto = db.Execute(insertintoexam, latestlesson_id);
         Response.Redirect("/Lessons/enterinfo.cshtml");
+
+
     }
 
     string GetOtherTitels = "SELECT Lesson_name, Teacher , Lesson_Id ,Selected_Lesson  FROM Lesson Where Lesson_Id <> 8";
@@ -86,30 +95,35 @@
 
                                 <div class='row' style="background-color: #343a40">
                                     <div class='input-field col s12'>
-                                        <input class='validate' type="text" name='teacher' id='Teacher' required />
+                                        <input class='validate' type="text" name='teacher' id='Teacher' />
                                         <label for='Teacher'>Teacher</label>
+                                        @Html.ValidationMessage("teacher")
                                     </div>
                                 </div>
                                 <div class='row'>
                                     <div class='input-field col m12'>
-                                        <input class='validate' type='text' name='titel' id='Lesson Title' required />
+                                        <input class='validate' type='text' name='titel' id='Lesson Title' />
                                         <label for='Lesson Title'>Lesson Title</label>
+                                        @Html.ValidationMessage("titel")
                                     </div>
                                 </div>
                                 <div class='row'>
                                     <div class='input-field col m12'>
-                                        <input class='validate' type='text' name='content' id='Content' required />
+                                        <input class='validate' type='text' name='content' id='Content' />
                                         <label for='Content'>Content</label>
+                                        @Html.ValidationMessage("content")
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="input-field col m12">
                                         <input class="validate" type="checkbox" name="IsActive" value="1" id="Active">
                                         <label for="Active">maak dit de active les</label>
+                                        @Html.ValidationMessage("IsActive")
                                     </div>
                                 </div>
                                 <br />
-                                <center><br />
+                                <center>
+                                    <br />
                                     <div class='row'>
                                         <button style="margin-left:27%;" type='submit' name='btn_login' class='col  s6 btn btn-small white black-text  waves-effect z-depth-1 y-depth-1'>Add</button>
                                     </div>
@@ -121,11 +135,13 @@
 
                                             if (row.Selected_Lesson == true)
                                             {
-                                                <li><a href="~/Lessons/Lessonprefew.cshtml?Lesson_Id=@row.Lesson_Id">@row.Lesson_name</a> --- @row.Teacher Is active </li><br />
+                                                <li><a href="~/Lessons/Lessonprefew.cshtml?Lesson_Id=@row.Lesson_Id">@row.Lesson_name</a> --- @row.Teacher Is active </li>
+                                                <br />
                                             }
                                             else
                                             {
-                                                <li><a href="~/Lessons/Lessonprefew.cshtml?Lesson_Id=@row.Lesson_Id">@row.Lesson_name</a> --- @row.Teacher <a href="~/Lessons/MakeLesson.cshtml?Lesson_Id=@row.Lesson_Id">maak deze les actief</a> --- <a href="~/Lessons/MakeLesson.cshtml?deleteId=@row.Lesson_Id"> verwijder deze les</a> </li><br />
+                                                <li><a href="~/Lessons/Lessonprefew.cshtml?Lesson_Id=@row.Lesson_Id">@row.Lesson_name</a> --- @row.Teacher <a href="~/Lessons/MakeLesson.cshtml?Lesson_Id=@row.Lesson_Id">maak deze les actief</a> --- <a href="~/Lessons/MakeLesson.cshtml?deleteId=@row.Lesson_Id"> verwijder deze les</a> </li>
+                                                <br />
                                             }
 
                                         }

@@ -1,6 +1,8 @@
 ﻿@{
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
 
+    Validation.RequireField("exam", "vul een examen naam in");
+
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
 
@@ -8,10 +10,18 @@
     int counter = Request.Form["counter"].AsInt();
     string getlesson_id = "SELECT MAX(lesson_Id) FROM Lesson";
     int lesson_id = db.QueryValue(getlesson_id);
+    int countermeer = counter + 1;
 
-    if (IsPost)
+    if (IsPost && Validation.IsValid())
     {
         counter++;
+
+        int iscorrect1 = 0;
+        int iscorrect2 = 0;
+        int iscorrect3 = 0;
+        int iscorrect4 = 0;
+
+
 
         int questionpoints = Request.Form["amountofpoints"].AsInt();
         string questionname = Request.Form["question_name"];
@@ -19,10 +29,10 @@
         string answer2 = Request.Form["answer2"];
         string answer3 = Request.Form["answer3"];
         string answer4 = Request.Form["answer4"];
-        int iscorrect1 = Request.Form["Isactive1"].AsInt();
-        int iscorrect2 = Request.Form["Isactive2"].AsInt();
-        int iscorrect3 = Request.Form["Isactive3"].AsInt();
-        int iscorrect4 = Request.Form["Isactive4"].AsInt();
+        iscorrect1 = Request.Form["Isactive1"].AsInt();
+        iscorrect2 = Request.Form["Isactive2"].AsInt();
+        iscorrect3 = Request.Form["Isactive3"].AsInt();
+        iscorrect4 = Request.Form["Isactive4"].AsInt();
         //get exam_id
         string getexam_id = "SELECT exam_Id FROM Exam where Lesson_Id = @0";
         int exam_id = db.QueryValue(getexam_id, lesson_id);
@@ -50,40 +60,6 @@
 
     }
 }
-<div>
-    <form method="post" action="~/Lessons/MakeQuiz.cshtml?amountofquestions=@amountofquestions">
-        <div>
-            <h1>@amountofquestions</h1>
-            <input type="hidden" name="amountofquestions" value="@amountofquestions" />
-            <input type="hidden" name="counter" value="@counter" />
-            <label>vraag naam</label>
-            <br />
-            <input type="text" name="question_name" />
-            <br />
-            <label>aantal punten</label>
-            <br />
-            <input type="text" name="amountofpoints" />
-            <br />
-            <label> antwoord 1 </label>
-            <br />
-            <input type="text" name="answer1" /> <input type="checkbox" name="Isactive1" value="1"><br>
-            <br />
-            <label> antwoord 2 </label>
-            <br />
-            <input type="text" name="answer2" /> <input type="checkbox" name="Isactive2" value="1"><br>
-            <br />
-            <label> antwoord 3 </label>
-            <br />
-            <input type="text" name="answer3" /> <input type="checkbox" name="Isactive3" value="1"><br>
-            <br />
-            <label> antwoord 4 </label>
-            <br />
-            <input type="text" name="answer4" /> <input type="checkbox" name="Isactive4" value="1"><br>
-
-            <button type="submit">Add</button>
-        </div>
-    </form>
-</div>
 
 <!DOCTYPE html>
 <html>
@@ -110,44 +86,40 @@
                                 <div class="section"><i class="mdi-alert-error red-text"></i></div>
 
                                 <div>
-                                    <h1>@amountofquestions</h1>
+                                    <h1>vraag @countermeer / @amountofquestions</h1>
                                     <input type="hidden" name="amountofquestions" value="@amountofquestions" />
                                     <input type="hidden" name="counter" value="@counter" />
                                 </div>
                                 <div class='row' style="background-color: #343a40">
                                     <div class='input-field col s12'>
-                                        <input class='validate' type="text" name="question_name" id='Name' required />
+                                        <input class='validate' type="text" name="question_name" id='Name' />
                                         <label for='Name'>Question name</label>
                                     </div>
                                 </div>
                                 <div class='row'>
                                     <div class='input-field col s12'>
-                                        <input class='validate' type='text' name="amountofpoints" id='points' required />
+                                        <input class='validate' type='text' name="amountofpoints" id='points' />
                                         <label for='points'>Amount of points</label>
                                     </div>
                                 </div>
                                 <div class='row'>
                                     <div class='input-field col m13'>
-                                        <input class='validate' type='text' name="answer1" id='Isactive1' required />
+                                        <input class='validate' type='text' name="answer1" id='Isactive1' />
                                         <label for='Isactive1'>Answer 1</label>
 
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="input-field col m13">
-                                        <input class="validate" type="radio" name="Isactive" value="1" id="Active1">
+                                        <input class="validate" type="radio" name="Active1" value="1" id="Active1">
                                         <label for="Active1"></label>
                                     </div>
                                 </div>
                                 <div class='row'>
                                     <div class='input-field col m13'>
-                                        <input class='validate' type='text' name="answer2" id='Isactive2' required />
+                                        <input class='validate' type='text' name="answer2" id='Isactive2' />
                                         <label for='Isactive2'>Answer 2</label>
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="input-field col m13">
-                                        <input class="validate" type="radio" name="Isactive" value="1" id="Active2">
+                                        <input class="validate" type="radio" name="Active2" value="1" id="Active2">
                                         <label for="Active2"></label>
                                     </div>
                                 </div>
@@ -156,25 +128,24 @@
                                         <input class='validate' type='text' name="answer3" id='Isactive3' required />
                                         <label for='Isactive3'>Answer 3</label>
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="input-field col m14">
-                                        <input class="validate" type="radio" name="Isactive" value="1" id="Active3">
+                                        <input class="validate" type="radio" name="Active3" value="1" id="Active3">
                                         <label for="Active3"></label>
                                     </div>
                                 </div>
+                                <br />
                                 <div class='row'>
                                     <div class='input-field col m15'>
                                         <input class='validate' type='text' name="answer4" id='Isactive4' required />
                                         <label for='Isactive4'>Answer 4</label>
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="input-field col m15">
-                                        <input class="validate" type="radio" name="Isactive" value="0" id="Active4">
+                                        <input class="validate" type="radio" name="Active4" value="1" id="Active4">
                                         <label for="Active4"></label>
+                                        @Html.ValidationSummary()
                                     </div>
                                 </div>
+
                                 <br />
                                 <center>
                                     <br />
@@ -191,6 +162,5 @@
             <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
         </div>
     </div>
-
 </body>
 </html>
