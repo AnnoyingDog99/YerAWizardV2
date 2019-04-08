@@ -129,7 +129,7 @@
                 <section>
                     <article>
                         <div class="table-responsive">
-                            @gridUser.GetHtml(tableStyle: "grid", headerStyle: "head", alternatingRowStyle: "alt", columns: gridUser.Columns(gridUser.Column("Username"), gridUser.Column("Email"), gridUser.Column("Rank"), gridUser.Column(format: @<a href="~/BanUser.cshtml?User=@item.Username">Ban</a>)))
+                            @gridUser.GetHtml(tableStyle: "grid", headerStyle: "head", alternatingRowStyle: "alt", columns: gridUser.Columns(gridUser.Column("Username"), gridUser.Column("Email"), gridUser.Column("Rank"), gridUser.Column(format: @<a href="~/BanUser.cshtml?User=@item.Username">Ban</a>), gridUser.Column(format: @<a href="~/ChangeRole.cshtml?User=@item.Username">Change Role</a>)))
 
                         </div>
                     </article>

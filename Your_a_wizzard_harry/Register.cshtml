@@ -7,6 +7,9 @@
     Validation.RequireField("Email", "You must enter an Email");
     Validation.Add("Email", Validator.StringLength(50, 3, "Your Email can not be longer than 50 characters in length or shorter than 3 characters"));
     Validation.RequireField("ConfirmEmail", "You must confrim your Email");
+    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
+    string provider = "System.Data.SqlClient";
+    Database db = Database.OpenConnectionString(connectionString, provider);
 
 
     var Username = "";
@@ -25,33 +28,49 @@
         Email = Request.Form["Email"];
         ConfirmEmail = Request.Form["ConfirmEmail"];
 
-        if (Password == ConfirmPassword && Email == ConfirmEmail)
+        var checkuserdata = db.QuerySingle("SELECT COUNT(Username) AS telUser, COUNT(Email) AS telEmail FROM [Profiel] WHERE Username = @0 OR Email = @1", Username, Email);
+        int countuser = checkuserdata.telUser;
+        int countmail = checkuserdata.telEmail;
+        if (countuser == 1)
         {
-            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
-            string provider = "System.Data.SqlClient";
-            Database db = Database.OpenConnectionString(connectionString, provider);
-
-            var InsertUser = "INSERT INTO [Profiel] (Username, Password, Email, Rank) Values (@0, @1, @2, @3)";
-            db.Execute(InsertUser, Username, Password, Email, Rank);
-            Response.Redirect("~/login.cshtml");
-        }
-        else if (Password == ConfirmPassword && Email != ConfirmEmail)
-        {
-            //Better error handeling needed
             <div class="alert">
-                Confirm Email doesn't match Email
+                Username already taken
             </div>
-
         }
-        else if (Password != ConfirmPassword && Email == ConfirmEmail)
+        else if (countmail == 1)
         {
-            //Better error handeling needed
+            <br />
             <div class="alert">
-                Confirm Password doesn't match Password
+                Mail already in use
             </div>
         }
         else
         {
+            if (Password == ConfirmPassword && Email == ConfirmEmail)
+            {
+
+
+                var InsertUser = "INSERT INTO [Profiel] (Username, Password, Email, Rank) Values (@0, @1, @2, @3)";
+                db.Execute(InsertUser, Username, Password, Email, Rank);
+                Response.Redirect("~/login.cshtml");
+            }
+            else if (Password == ConfirmPassword && Email != ConfirmEmail)
+            {
+                //Better error handeling needed
+            <div class="alert">
+                Confirm Email doesn't match Email
+            </div>
+
+            }
+            else if (Password != ConfirmPassword && Email == ConfirmEmail)
+            {
+                //Better error handeling needed
+            <div class="alert">
+                Confirm Password doesn't match Password
+            </div>
+            }
+            else
+            {
             <div class="alert">
                 Confirm Email doesn't match Email
             </div><br />
@@ -59,12 +78,13 @@
                 Confirm Password doesn't match Password
             </div>
 
+                }
+            }
         }
+
+
+
     }
-
-
-
-}
 }
 
 <!DOCTYPE html>
