@@ -24,29 +24,49 @@
             <div class="alert">
                 No user found
             </div>
-            }
-            else
+        }
+        else
+        {
+            if (Request.UrlReferrer.AbsolutePath == Request.Url.AbsolutePath)
             {
-                if (Request.UrlReferrer.AbsolutePath == Request.Url.AbsolutePath)
+                if (Session["mail"] == null)
                 {
-                    if (Session["mail"] == null)
+                    Session["mail"] = Request.Form["mail"];
+                    var selectrank = "SELECT Rank FROM [Profiel] WHERE Email = @0";
+                    var ownerrank = db.QuerySingle(selectrank, mail).rank;
+                    if (ownerrank == "Owner")
                     {
-                        Session["mail"] = Request.Form["mail"];
-                        Response.Redirect("~/HomePage.cshtml");
+                        Response.Redirect("~/Admin page.cshtml");
                     }
                     else
                     {
-                        Session["mail"] = Request.Form["mail"];
+                        Response.Redirect("~/HomePage.cshtml");
+                    }
+
+
+                }
+                else
+                {
+                    var selectrank = "SELECT Rank FROM [Profiel] WHERE Email = @0";
+                    var ownerrank = db.QuerySingle(selectrank, mail).rank;
+                    if (ownerrank == "Owner")
+                    {
+                        Response.Redirect("~/Admin page.cshtml");
+                    }
+                    else
+                    {
+                        Response.Redirect("~/HomePage.cshtml");
                     }
                 }
             }
         }
     }
+}
 
 <!DOCTYPE html>
 <html>
 <head>
-    <link href="~/Stylesheets/StyleSheetLogin.css" rel="stylesheet">
+    <link href="~/Stylesheets/StyleSheetLogin.css" rel="stylesheet" type="text/css">
     <title>Page Title</title>
     <style>
         .field-validation-error {
@@ -100,7 +120,7 @@
     <div class="container">
         <div class="card card-login mx-auto text-center bg-dark">
             <div class="card-header mx-auto bg-dark">
-                <span> <img src="~/Images/hp logo.png" class="w-75" alt="Logo"> </span><br />
+                <span> <img  src="~/Images/hp logo.png" class="w-75" alt="Logo"> </span><br />
                 @Html.ValidationSummary()
 
             </div>
@@ -109,14 +129,14 @@
                     @Html.ValidationMessage("mail")
                     <div class="input-group form-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text"><img src="~/Images/wizard hat.png" /></span>
+                            <span class="input-group-text"><img style="max-width:26px" src="~/Images/wizard hat.png" /></span>
                         </div>
                         <input value="@Request.Form["mail"]" type="text" name="mail" class="form-control" placeholder="Email">
                     </div>
                     @Html.ValidationMessage("password")
                     <div class="input-group form-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text"><img src="~/Images/elder wand white.png" /></span>
+                            <span class="input-group-text"><img style="max-width:26px" src="~/Images/elder wand white.png" /></span>
                         </div>
                         <input value="@Request.Form["password"]" type="password" name="password" class="form-control" placeholder="Password">
                     </div>

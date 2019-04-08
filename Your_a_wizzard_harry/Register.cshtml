@@ -1,57 +1,77 @@
 ﻿@{
-    Validation.RequireField("Username", "You must enter an Username");
-    Validation.Add("Username", Validator.StringLength(50, 3, "Your Username can not be longer than 50 characters in length or shorter than 3 characters"));
-    Validation.RequireField("Password", "You must enter a Password");
-    Validation.Add("Password", Validator.StringLength(50, 3, "Your Password can not be longer than 50 characters in length or shorter than 3 characters"));
-    Validation.RequireField("ConfirmPassword", "You must confirm your Password");
-    Validation.RequireField("Email", "You must enter an Email");
-    Validation.Add("Email", Validator.StringLength(50, 3, "Your Email can not be longer than 50 characters in length or shorter than 3 characters"));
-    Validation.RequireField("ConfirmEmail", "You must confrim your Email");
+                Validation.RequireField("Username", "You must enter an Username");
+                Validation.Add("Username", Validator.StringLength(50, 3, "Your Username can not be longer than 50 characters in length or shorter than 3 characters"));
+                Validation.RequireField("Password", "You must enter a Password");
+                Validation.Add("Password", Validator.StringLength(50, 3, "Your Password can not be longer than 50 characters in length or shorter than 3 characters"));
+                Validation.RequireField("ConfirmPassword", "You must confirm your Password");
+                Validation.RequireField("Email", "You must enter an Email");
+                Validation.Add("Email", Validator.StringLength(50, 3, "Your Email can not be longer than 50 characters in length or shorter than 3 characters"));
+                Validation.RequireField("ConfirmEmail", "You must confrim your Email");
+                string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
+                string provider = "System.Data.SqlClient";
+                Database db = Database.OpenConnectionString(connectionString, provider);
 
 
-    var Username = "";
-    var Password = "";
-    var ConfirmPassword = "";
-    var Email = "";
-    var ConfirmEmail = "";
-    var Rank = "Student";
+                var Username = "";
+                var Password = "";
+                var ConfirmPassword = "";
+                var Email = "";
+                var ConfirmEmail = "";
+                var Rank = "Student";
+                int userpoints = 0;
 
-    //Add some kind of error messege if the forms are not filled in
-    if (IsPost && Validation.IsValid())
-    {
-        Username = Request.Form["Username"];
-        Password = Request.Form["Password"];
-        ConfirmPassword = Request.Form["ConfirmPassword"];
-        Email = Request.Form["Email"];
-        ConfirmEmail = Request.Form["ConfirmEmail"];
+                //Add some kind of error messege if the forms are not filled in
+                if (IsPost && Validation.IsValid())
+                {
+                    Username = Request.Form["Username"];
+                    Password = Request.Form["Password"];
+                    ConfirmPassword = Request.Form["ConfirmPassword"];
+                    Email = Request.Form["Email"];
+                    ConfirmEmail = Request.Form["ConfirmEmail"];
 
-        if (Password == ConfirmPassword && Email == ConfirmEmail)
-        {
-            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
-            string provider = "System.Data.SqlClient";
-            Database db = Database.OpenConnectionString(connectionString, provider);
-
-            var InsertUser = "INSERT INTO [Profiel] (Username, Password, Email, Rank) Values (@0, @1, @2, @3)";
-            db.Execute(InsertUser, Username, Password, Email, Rank);
-            Response.Redirect("~/login.cshtml");
+                    var checkuserdata = db.QuerySingle("SELECT COUNT(Username) AS telUser, COUNT(Email) AS telEmail FROM [Profiel] WHERE Username = @0 OR Email = @1", Username, Email);
+                    int countuser = checkuserdata.telUser;
+                    int countmail = checkuserdata.telEmail;
+                    if (countuser == 1)
+                    {
+            <div class="alert">
+                Username already taken
+            </div>
         }
-        else if (Password == ConfirmPassword && Email != ConfirmEmail)
+        else if (countmail == 1)
         {
-            //Better error handeling needed
+            <br />
+            <div class="alert">
+                Mail already in use
+            </div>
+    }
+        else
+        {
+            if (Password == ConfirmPassword && Email == ConfirmEmail)
+            {
+
+
+                var InsertUser = "INSERT INTO [Profiel] (Username, Password, Email, Rank, User_Points) Values (@0, @1, @2, @3, @4)";
+    db.Execute(InsertUser, Username, Password, Email, Rank, userpoints);
+                Response.Redirect("~/login.cshtml");
+            }
+            else if (Password == ConfirmPassword && Email != ConfirmEmail)
+            {
+                //Better error handeling needed
             <div class="alert">
                 Confirm Email doesn't match Email
             </div>
 
-        }
-        else if (Password != ConfirmPassword && Email == ConfirmEmail)
-        {
-            //Better error handeling needed
+            }
+            else if (Password != ConfirmPassword && Email == ConfirmEmail)
+            {
+                //Better error handeling needed
             <div class="alert">
                 Confirm Password doesn't match Password
             </div>
-        }
-        else
-        {
+            }
+            else
+            {
             <div class="alert">
                 Confirm Email doesn't match Email
             </div><br />
@@ -59,12 +79,13 @@
                 Confirm Password doesn't match Password
             </div>
 
+                }
+            }
         }
+
+
+
     }
-
-
-
-}
 }
 
 <!DOCTYPE html>
