@@ -1,4 +1,4 @@
-﻿@*@{
+﻿@{
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
 
     string provider = "System.Data.SqlClient";
@@ -16,9 +16,9 @@
 
     if (Session["mail"] != null)
     {
-        mail = Convert.ToString(Session["mail"]);
+        mail = Session["mail"].ToString();
     }
-
+    else { Response.Redirect("~/login.cshtml"); }
 
     //kijkt wat de antwoorden van de vragen zijn  
     for (int i = 0; i < 10; i++)
@@ -77,7 +77,6 @@
                     }
                 }
             }
-
         }
         if (win == true)
         {
@@ -88,7 +87,6 @@
             var push = db.Execute(insertuserintohouse, house_id, mail);
         }
         win = false;
-
     }
 
     //haalt het House_Id op
@@ -100,9 +98,7 @@
     string AddHouse = "UPDATE Profiel  SET House_House_ID  = @0 WHERE Username = @1";
     db.Execute(AddHouse, house_Id, WebSecurity.CurrentUserName);
 
-    Session["mail"] = mail;
 
-    Session["mail"] = mail;
     if (winninghouse == "Gryffindor")
     {
         Response.Redirect("~/Gryffindor.cshtml");
@@ -119,4 +115,4 @@
     {
         Response.Redirect("~/Slytherin.cshtml");
     }
-}*@
+}
