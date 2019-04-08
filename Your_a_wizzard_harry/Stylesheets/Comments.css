@@ -1,0 +1,62 @@
+﻿@keyframes spin {
+    from {
+        transform: rotate(0deg);
+        font-size: 10px;
+    }
+    to {
+        transform: rotate(360deg);
+        font-size: 14px;
+    }
+}
+
+.comment-box {
+    width: 100%;
+    padding: 4px;
+    padding-left: 10px;
+    border-radius: 10px;
+    border: none;
+    background-color: white;
+}
+
+.comment-submit {
+    float: right;
+    background: none;
+    border: none;
+    color: #009aff;
+    cursor: pointer;
+}
+.comment-submit:hover {
+    color: #00a9ff;
+}
+
+.username {
+    font-size: 12px;
+}
+
+#date-time {
+    float: right;
+}
+
+#loading {
+    font-size: 0px;
+    color: #dddddd;
+}
+
+.vote {
+    background: none;
+    border: none;
+}
+.vote:focus #loading{
+    animation-name: spin;
+    animation-duration: 3000ms;
+    animation-iteration-count: infinite;
+}
+#upvoted {
+    color: #009aff
+}
+#downvoted {
+    color: #d00000;
+}
+#notvoted {
+    color: #dddddd;
+}

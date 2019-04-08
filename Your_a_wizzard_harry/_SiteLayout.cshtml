@@ -10,11 +10,6 @@
 
         Username = db.QuerySingle("SELECT Username FROM Profiel WHERE Email = @0", Session["mail"]).Username;
     }
-    /*else if (PageData["current"] != "Home")
-    {
-        Session.Abandon();
-        Response.Redirect("~/login.cshtml");
-    }*/
 }
 
 <!DOCTYPE html>
@@ -24,8 +19,8 @@
     <title>@Page.Title - Yer a wizzard harry</title>
     <!--<link href="~/Content/themes/base/jquery.ui.all.css" rel="stylesheet" type="text/css" />-->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-    <link href="~/Stylesheets/Layout.css" rel="stylesheet" type="text/css" />
     <link href="~/Stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Stylesheets/Layout.css" rel="stylesheet" type="text/css" />
     <link href="~/Stylesheets/style ding.css" rel="stylesheet" type="text/css" />
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
@@ -34,7 +29,7 @@
 <body>
     <!-- Navigation bar -->
     <nav class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark">
-        <a id="Logo" class="navbar-brand" href="#">Logo?</a>
+        <a id="Logo" class="navbar-brand" href="#">Platform 9 3/4</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -84,7 +79,7 @@
                 @if (PageData["current"] == "Forums")
                 {
                     <li class="nav-item active">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="~/ForumPage.cshtml">
                             <i class="fas fa-broom">
                             </i>
                             Forums
@@ -94,7 +89,7 @@
                 else
                 {
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="~/ForumPage.cshtml">
                             <i class="fas fa-broom">
                             </i>
                             Forums

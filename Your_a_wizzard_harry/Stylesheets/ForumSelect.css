@@ -93,7 +93,7 @@
 }
 
 .forum-item .forum-sub-title {
-    color: #999;
+    color: #dddddd;
     margin-left: 50px;
 }
 
@@ -245,7 +245,12 @@ a.forum-item-title {
     color: #007aff;
     border: solid 0.5px #007aff;
     font-size: 16px;
+    padding: 4px;
 }
+    .add-btn:hover {
+        color: #0070ea;
+        text-decoration: none;
+    }
 
 .select {
     
@@ -377,4 +382,13 @@ body {
 
 .select-icon {
     font-family: 'FontAwesome', 'Second Font name'
+}
+
+.link-replace {
+    color: #007aff;
+    font-weight: bold;
+}
+.link-replace-white {
+    color: white;
+    font-weight: bold;
 }

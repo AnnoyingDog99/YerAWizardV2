@@ -11,8 +11,6 @@
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
 
-    string getUser = "SELECT Rank FROM [Profiel] WHERE Email = @0";
-    var rank = db.QuerySingle(getUser, mail).Rank;
     if (Session["mail"] != null)
     {
         mail = Session["mail"].ToString();
@@ -20,6 +18,8 @@
         Username = Data.Username;
     }
     else { Response.Redirect("~/login.cshtml"); }
+    string getUser = "SELECT Rank FROM [Profiel] WHERE Email = @0";
+    var rank = db.QuerySingle(getUser, mail).Rank;
 
 
     if (Request.QueryString["ForumId"] != null)
