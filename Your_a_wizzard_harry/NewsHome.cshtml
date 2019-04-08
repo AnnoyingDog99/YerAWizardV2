@@ -3,8 +3,11 @@
     Page.Title = "News ";
 
     var mail = "";
-    //mail = Session["mail"].ToString();
-    mail = "ikke@ikke.ikke";
+    if (Session["mail"] != null)
+    {
+        mail = Session["mail"].ToString();
+    }
+    else { Response.Redirect("~/login.cshtml"); }
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
@@ -17,11 +20,12 @@
     }
     int i = 1;
     var News = db.Query("SELECT * FROM News");
-    
+
 }
 <head>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <link rel="stylesheet" href="~/NewsStyle.css">
+    <link href="~/Stylesheets/Layout.css" rel="stylesheet" type="text/css"/>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
