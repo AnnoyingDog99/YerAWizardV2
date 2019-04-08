@@ -1,7 +1,11 @@
 ﻿@{
     var mail = "";
-    mail = "ikke@ikke.ikke";
-    mail = Session["mail"].ToString();
+    mail = "";
+    if (Session["mail"] != null)
+    {
+        mail = Session["mail"].ToString();
+    }
+    else { Response.Redirect("~/login.cshtml"); }
 
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
     string provider = "System.Data.SqlClient";
