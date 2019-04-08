@@ -1,60 +1,68 @@
 ﻿@{ 
+    Validation.RequireField("title", "Please type in a Title");
+    Validation.RequireField("description", "Please type in a Desciption");
+
     string Title = "";
     string Description = "";
     string Category = "";
     string IsPrivate = "";
     string Icon = "";
-
-    var mail = "";
-    mail = Session["mail"].ToString();
+    string Rank = "";
 
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
 
-    var getUser = "SELECT Rank FROM [Profiel] WHERE Email = @0";
-    var rank = db.QuerySingle(getUser, mail).rank;
-    if (rank != "Teacher" && rank != "Owner")
+    if (Session["mail"] != null)
+    {
+        var userData = db.QuerySingle("SELECT * FROM Profiel WHERE Email = @0", Session["mail"]);
+        Rank = userData.Rank;
+    }
+    else
     {
         Response.Redirect("~/login.cshtml");
     }
 
-    if (Request.QueryString["ForumId"] != null)
+    if (Rank == "Teacher" || Rank == "Owner")
     {
-        var Data = db.QuerySingle("SELECT * FROM Forum WHERE Forum_Id = @0", Request.QueryString["ForumId"].AsInt());
-        Title = Data.Forum_name;
-        Description = Data.Description;
-        Category = Data.Category;
-        IsPrivate = Data.IsPrivate;
-        Icon = Data.Icon;
-    }
-
-    if (IsPost)
-    {
-        Title = Request.Form["title"];
-        Description = Request.Form["description"];
-        Category = Request.Form["category"];
-        if (Request.Form["isprivate"] == null)
-        {
-            IsPrivate = "N";
-        }
-        else
-        {
-            IsPrivate = "Y";
-        }
-        Icon = Request.Form["icon"];
-
         if (Request.QueryString["ForumId"] != null)
         {
-            db.Execute("UPDATE Forum SET Forum_name = @0, Description = @1, Category = @2, IsPrivate = @3, Icon = @4 WHERE Forum_Id = @5", Title, Description, Category, IsPrivate, Icon, Request.QueryString["ForumId"].AsInt());
-            Response.Redirect("~/ForumPage.cshtml");
+            var Data = db.QuerySingle("SELECT * FROM Forum WHERE Forum_Id = @0", Request.QueryString["ForumId"].AsInt());
+            Title = Data.Forum_name;
+            Description = Data.Description;
+            Category = Data.Category;
+            IsPrivate = Data.IsPrivate;
+            Icon = Data.Icon;
         }
-        else
+
+        if (IsPost && Validation.IsValid())
         {
-            db.Execute("INSERT INTO Forum(Forum_name, Description, Category, IsPrivate, Icon) VALUES(@0, @1, @2, @3, @4)", Title, Description, Category, IsPrivate, Icon);
-            Response.Redirect("~/ForumPage.cshtml");
+            Title = Request.Form["title"];
+            Description = Request.Form["description"];
+            Category = Request.Form["category"];
+            if (Request.Form["isprivate"] == null)
+            {
+                IsPrivate = "N";
+            }
+            else
+            {
+                IsPrivate = "Y";
+            }
+            Icon = Request.Form["icon"];
+
+            if (Request.QueryString["ForumId"] != null)
+            {
+                db.Execute("UPDATE Forum SET Forum_name = @0, Description = @1, Category = @2, IsPrivate = @3, Icon = @4 WHERE Forum_Id = @5", Title, Description, Category, IsPrivate, Icon, Request.QueryString["ForumId"].AsInt());
+                Response.Redirect("~/ForumPage.cshtml");
+            }
+            else
+            {
+                db.Execute("INSERT INTO Forum(Forum_name, Description, Category, IsPrivate, Icon) VALUES(@0, @1, @2, @3, @4)", Title, Description, Category, IsPrivate, Icon);
+                Response.Redirect("~/ForumPage.cshtml");
+            }
         }
     }
+    else { Response.Redirect("~/ForumPage.cshtml"); }
 }
 <!DOCTYPE html>
 <html>
@@ -70,17 +78,18 @@
     <div class="container">
         <center>
             <div style="padding-bottom: 50px;"></div>
-            <div class="col-md-4">
+            <div class="col-md-4" style="background-color: #343a40">
+                <div style="padding-top: 10px;"></div>
                 <form class="form-horizontal" action="" method="post" id="myform">
                     <div class="form-group">
                         <label style="color: white;" for="title">Forum Title</label>
                         @if (Title != "")
                         {
-                            <input type="text" class="form-control" id="question" name="title" placeholder="Type Forum Title Here" cols="40" rows="5" style="resize:vertical;" value="@Title" required>
+                            <input style="border-radius: 10px;" type="text" class="form-control" id="question" name="title" placeholder="Type Forum Title Here" cols="40" rows="5" style="resize:vertical;" value="@Title" required>
                         }
                         else
                         {
-                            <input type="text" class="form-control" id="question" name="title" placeholder="Type Forum Title Here" cols="40" rows="5" style="resize:vertical;" required>
+                            <input style="border-radius: 10px;" type="text" class="form-control" id="question" name="title" placeholder="Type Forum Title Here" cols="40" rows="5" style="resize:vertical;" required>
                         }
                     </div>
                     <div id="fielda">
@@ -91,11 +100,11 @@
                                 <label style="color: white;" for="csetitle">Forum Description</label>
                                 @if (Description != "")
                                 {
-                                    <textarea type="text" class="form-control" id="question" name="description" placeholder="Type Forum Description Here" cols="40" rows="5" style="resize:vertical;" required>@Description</textarea>
+                                    <textarea style="border-radius: 10px;" type="text" class="form-control" id="question" name="description" placeholder="Type Forum Description Here" cols="40" rows="5" style="resize:vertical;" required>@Description</textarea>
                                 }
                                 else
                                 {
-                                    <textarea type="text" class="form-control" id="question" name="description" placeholder="Type Forum Description Here" cols="40" rows="5" style="resize:vertical;" required></textarea>
+                                    <textarea style="border-radius: 10px;" type="text" class="form-control" id="question" name="description" placeholder="Type Forum Description Here" cols="40" rows="5" style="resize:vertical;" required></textarea>
                                 }
                             </div>
                             <hr />
@@ -107,14 +116,14 @@
                                             <div>
                                                 @if (Category == "Community")
                                                 {
-                                                    <select class="select" name="category">
+                                                    <select style="border-radius: 4px; border: none;" class="select" name="category">
                                                         <option value="Community">Community</option>
                                                         <option value="General">General</option>
                                                     </select>
                                                 }
                                                 else
                                                 {
-                                                    <select class="select" name="category">
+                                                    <select style="border-radius: 4px; border: none;" class="select" name="category">
                                                         <option value="General">General</option>
                                                         <option value="Community">Community</option>
                                                     </select>
@@ -143,7 +152,7 @@
                         @if (Request.QueryString["ForumId"] != null)
                         {
                             <label>Icon</label>
-                            <select class="select-icon" name="icon">
+                            <select style="border-radius: 4px; border: none;" class="select-icon" name="icon">
                                 <option value="@Icon">Current</option>
                                 <option value="clipboard">Default</option>
                                 <option value="book">&#xf02d Book</option>
@@ -155,7 +164,7 @@
                         }
                         else
                         {
-                            <label>Icon</label>
+                            <label style="color: #dddddd">Icon</label>
                             <select class="select-icon" name="icon">
                                 <option value="clipboard">Default</option>
                                 <option value="book">&#xf02d Book</option>
@@ -167,6 +176,8 @@
                         }
                     </div>
                     <div class="form-group">
+                        <a href="~/ForumPage.cshtml" class="cancelBtn">cancel</a>
+                        &nbsp;
                         @if (Request.QueryString["ForumId"] != null)
                         {
                             <input type="submit" id="add-more" name="add" class="btn btn-primary" value="Edit Forum" />
@@ -176,8 +187,8 @@
                             <input type="submit" id="add-more" name="add" class="btn btn-primary" value="Add Forum" />
                         }
                     </div>
-
                 </form>
+                <div style="padding-bottom: 20px;"></div>
             </div>
         </center>
     </div>
