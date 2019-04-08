@@ -6,6 +6,9 @@
     int Id = 1;
     string Name = "";
     string Description = "";
+    string Category = "";
+    string mail = "";
+    string Icon = "";
 
     if (Request.QueryString["ForumId"] != null)
     {
@@ -13,26 +16,44 @@
     }
     else { Response.Redirect("~/ForumPage.cshtml"); }
 
-    var mail = "";
-    mail = Session["mail"].ToString();
+    if (Session["mail"] != null)
+    {
+        mail = Session["mail"].ToString();
+    }
+    else
+    {
+        Session.Abandon();
+        Response.Redirect("~/login.cshtml");
+    }
+
 
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
 
     var getUser = "SELECT Rank FROM [Profiel] WHERE Email = @0";
-    var rank = db.QuerySingle(getUser, mail);
-    if (rank != "Teacher" && rank != "Owner")
+    mail = "danteklijn01@gmail.com";
+    var Rank = db.QuerySingle(getUser, mail).Rank;
+    if (Rank == "Teacher" || Rank == "Owner")
     {
-        Response.Redirect("~/login.cshtml");
+        var Data = db.QuerySingle("SELECT * FROM Forum WHERE Forum_Id = @0", Id);
+        Name = Data.Forum_name;
+        Description = Data.Description;
+        Category = Data.Category;
+        Icon = Data.Icon;
     }
+    else { Response.Redirect("~/login.cshtml"); }
 
-    var Data = db.QuerySingle("SELECT * FROM Forum WHERE Forum_Id = @0", Id);
-    Name = Data.Forum_name;
-    Description = Data.Description;
-
+    int AmmountOfPosts = db.QuerySingle("SELECT COUNT(Post_Id) AS Amount FROM Post WHERE Forum_Forum_Id = @0", Id).Amount;
     if (IsPost)
     {
+        var Post_Ids = db.Query("SELECT DISTINCT Post_Id FROM Post WHERE Forum_Forum_Id = @0", Id);
+        foreach (var Post_Id in Post_Ids)
+        {
+            db.Execute("DELETE FROM Comments WHERE Post_Post_Id = @0", Post_Id.Post_Id);
+            db.Execute("DELETE FROM Forum_IsVoted WHERE Post_Post_Id = @0", Post_Id.Post_Id);
+        }
+        db.Execute("DELETE FROM Post WHERE Forum_Forum_Id = @0", Id);
         db.Execute("DELETE FROM Forum WHERE Forum_Id = @0", Id);
         Response.Redirect("~/ForumPage.cshtml");
     }
@@ -158,28 +179,44 @@
         }
     </style>
 </head>
-<body style="background-color: #202225;">
+<body style="background-color: #202325;">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
                 <div class="wrapper wrapper-content animated fadeInRight">
-                    <div class="ibox-content forum-container">
+                    <div class="ibox-content forum-container" style="background-color: #343a40">
                         <div style="padding-bottom: 200px;"></div>
                         <div class="forum-item active">
                             <div class="row">
                                 <div class="col-md-11">
-                                    <div class="forum-icon">
-                                        <i class="fa fa-book"></i>
-                                    </div>
-                                    <a href="forum_post.html" class="forum-item-title">@Name</a>
-                                    <div class="forum-sub-title">@Description</div>
+                                    @if (Category == "General")
+                                    {
+                                        <div class="forum-icon">
+                                            <i class="fa fa-@Icon"></i>
+                                        </div>
+                                        <label class="link-replace">@Name</label>
+                                        <div class="forum-sub-title">@Description</div>
+                                    }
+                                    else
+                                    {
+                                        <div class="forum-icon">
+                                            <i style="color: white;" class="fa fa-@Icon"></i>
+                                        </div>
+                                        <label style="color: white;" class="link-replace">@Name</label>
+                                        <div class="forum-sub-title">@Description</div>
+                                    }
                                 </div>
                                 <div class="col-md-1 forum-info">
-                                    <span class="views-number">
-                                        #
+                                    <span class="views-number" style="color: white;">
+                                        @AmmountOfPosts
                                     </span>
                                     <div>
-                                        <small>Posts</small>
+                                        @if (AmmountOfPosts == 1)
+                                        {
+                                            <small>Post</small>
+                                        }
+                                        else
+                                        { <small>Posts</small>}
                                     </div>
                                 </div>
                             </div>

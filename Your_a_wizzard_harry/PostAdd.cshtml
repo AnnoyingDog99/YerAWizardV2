@@ -1,0 +1,86 @@
+﻿@{
+    Validation.RequireField("title", "Please type in a Titel");
+    Validation.RequireField("content", "Please type in some Content");
+    string Title = "";
+    string Content = "";
+    string mail = "";
+    string Username = "";
+    int Forum_Id = 0;
+
+    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
+    string provider = "System.Data.SqlClient";
+    Database db = Database.OpenConnectionString(connectionString, provider);
+
+    string getUser = "SELECT Rank FROM [Profiel] WHERE Email = @0";
+    var rank = db.QuerySingle(getUser, mail).Rank;
+    if (Session["mail"] != null)
+    {
+        mail = Session["mail"].ToString();
+        var Data = db.QuerySingle("SELECT * FROM Profiel WHERE Email = @0", mail);
+        Username = Data.Username;
+    }
+    else { Response.Redirect("~/login.cshtml"); }
+
+
+    if (Request.QueryString["ForumId"] != null)
+    {
+        Forum_Id = Request.QueryString["ForumId"].AsInt();
+    }
+    else { Response.Redirect("~/ForumPage.cshtml"); }
+
+    if (IsPost && Validation.IsValid())
+    {
+        Title = Request.Form["title"];
+        Content = Request.Form["content"];
+
+        db.Execute("INSERT INTO Post (Post_Title, Post_Content, Upvote, Downvote, Forum_Forum_Id, Profiel_Username) VALUES (@0, @1, @2, @3, @4, @5)", Title, Content, 0, 0, Forum_Id, Username);
+        Response.Redirect("~/PostPage.cshtml?ForumId=" + Forum_Id);
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title></title>
+    <link href="~/Stylesheets/bootstrap.min.css" rel="stylesheet" id="bootstrap-css" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Stylesheets/Forum.css" rel="stylesheet" type="text/css" />
+    <meta charset="utf-8" />
+</head>
+<body style="background-color: #202225;">
+    <div class="container">
+        <center>
+            <div style="padding-bottom: 50px;"></div>
+            <div class="col-md-4" style="background-color: #343a40">
+                <div style="padding-top: 10px;"></div>
+                <form class="form-horizontal" action="" method="post" id="myform">
+                    <div class="form-group">
+                        <label style="color: white;" for="title">Post Title</label>
+                        <input style="border-radius: 10px;" type="text" class="form-control" id="question" name="title" placeholder="Type Post Title Here" cols="40" rows="5" required>
+                    </div>
+                    <div id="fielda">
+                        <div id="fielda0">
+                            <!-- Text input-->
+                            <hr />
+                            <div class="form-group">
+                                <label style="color: white;" for="csetitle">Post Content</label>
+                                <textarea style="border-radius: 10px;" type="text" class="form-control" id="question" name="content" placeholder="Type Post Content Here" cols="40" rows="5" required></textarea>
+                            </div>
+                            <hr />
+                        </div>
+                        <!--end field0-->
+                    </div>
+                    <!--end field-->
+                    <div class="form-group">
+                        <a href="~/ForumPage.cshtml" class="cancelBtn">cancel</a>
+                        &nbsp;
+                        <input type="submit" id="add-more" name="add" class="btn btn-primary" value="Add Post" />
+                    </div>
+                </form>
+                <div style="padding-bottom: 20px;"></div>
+            </div>
+        </center>
+    </div>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+</body>
+</html>
