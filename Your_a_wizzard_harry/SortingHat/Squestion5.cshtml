@@ -15,17 +15,17 @@
         <div class="modal-dialog">
             <div class="modal-content" style="background-color: #202225">
                 <div class="modal-header" style="background-color: #343a40; border-radius:5px">
-                    <h3>Vraag 5: lalalalalala </h3>
+                    <h3>Question 5: What are you most looking forward to learning at Hogwarts? </h3>
                 </div>
                 <div class="modal-body" style="background-color: #343a40; color: white; border-radius:5px">
 
                     <form method="post" action="~/SortingHat/Squestion6.cshtml">
                         <div class="quiz" id="quiz" data-toggle="buttons">
-                            <span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="Q5" value="griffindor" /> antwoord 1<br /><br />
-                            <span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="Q5" value="hufflepuff" /> antwoord 2<br /><br />
-                            <span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="Q5" value="ravenclaw" /> antwoord 3<br /><br />
-                            <span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="Q5" value="slytherin" /> antwoord 4<br /><br />
-                            <span class="btn-label"></span> <input class="btn btn-primary" type="submit" value="Question 6" />
+                            <span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="Q5" value="slytherin" />Hexes and jinxes<br /><br />
+                            <span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="Q5" value="ravenclaw" />Secrets about the castle<br /><br />
+                            <span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="Q5" value="hufflepuff" />All about magical creatures, and how to befriend/care for them<br /><br />
+                            <span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="Q5" value="griffindor" />Every area of magic I can<br /><br />
+                            <span class="btn-label"></span> <input class="btn btn-primary" type="submit" value="Next" />
                             @Html.Hidden("Q1", Request["Q1"])
                             @Html.Hidden("Q2", Request["Q2"])
                             @Html.Hidden("Q3", Request["Q3"])

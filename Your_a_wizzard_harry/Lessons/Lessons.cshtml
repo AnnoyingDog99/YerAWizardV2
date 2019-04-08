@@ -49,29 +49,43 @@
     string GetOtherTitels = "SELECT Lesson_name, Teacher , Lesson_Id ,Selected_Lesson  FROM Lesson WHERE Lesson_Id <> @0";
     var rows = db.Query(GetOtherTitels, 8 );
 }
+<head>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+</head>
 
-<div>
-    <h1>@lesson_Titel | gegeven door @Teacher</h1>
+<!DOCTYPE html>
+<html>
+<body style="background-color: #343a40">
+    <div class="container">
+        <div class="z-depth-5 y-depth-5 x-depth-5 white-text" style="min-width:100%; color:white; background-color: #343a40; margin:auto; display: inline-block; padding: 32px 48px 0px 48px; margin-top: 100px;">
+            <div>
+                <h4>@lesson_Titel | gegeven door @Teacher</h4>
 
-    <h2>@lesson_Info</h2>
-    <br />
-    <form method="post" action="~/Lessons/exampage?lesson_id=@lesson_id">
-        <button>quiz</button>
-    </form>
-   
-</div>
-<ul>
-    @foreach (var row in rows)
-    {
+                <h6>@lesson_Info</h6>
+                <br />
+                <form method="post" action="~/Lessons/exampage?lesson_id=@lesson_id">
+                    <button style="margin-left:0%;" type='submit' name='btn_login' class='col  s6 btn btn-small white black-text  waves-effect z-depth-1 y-depth-1'>Quiz</button>
+                </form>
 
-        if(row.Selected_Lesson == true)
-        {
-            <li><a href="~/Lessons/Lessons.cshtml?Lesson_Id=@row.Lesson_Id">@row.Lesson_name</a> --- @row.Teacher Is active</li>
-        }
-        else
-        {
-            <li><a href="~/Lessons/Lessons.cshtml?Lesson_Id=@row.Lesson_Id">@row.Lesson_name</a> --- @row.Teacher </li>
-        }
-        
-    }
-</ul>
+            </div>
+            <ul>
+                @foreach (var row in rows)
+                {
+
+                    if (row.Selected_Lesson == true)
+                    {
+                        <li><a href="~/Lessons/Lessons.cshtml?Lesson_Id=@row.Lesson_Id">@row.Lesson_name</a> --- @row.Teacher is active</li>
+                    }
+                    else
+                    {
+                        <li><a href="~/Lessons/Lessons.cshtml?Lesson_Id=@row.Lesson_Id">@row.Lesson_name</a> --- @row.Teacher </li>
+                    }
+
+                }
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
