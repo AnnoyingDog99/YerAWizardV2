@@ -60,3 +60,8 @@
 #notvoted {
     color: #dddddd;
 }
+
+.rank {
+    font-size: 11px;
+    color: #acacac;
+}

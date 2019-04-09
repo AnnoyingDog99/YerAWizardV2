@@ -25,7 +25,6 @@
     var UserData = db.QuerySingle("SELECT * FROM Profiel WHERE Email = @0", Session["mail"]);
     if (UserData == null)
     {
-        Session.Abandon();
         Response.Redirect("~/login.cshtml");
     }
     Username = UserData.Username;
@@ -34,7 +33,7 @@
     ForumName = ForumData.Forum_name;
     ForumDesc = ForumData.Description;
     string IsPrivate = ForumData.IsPrivate;
-    if (IsPrivate != "N" && Rank != "Owner" || IsPrivate != "N" && Rank != "Teacher")
+    if (IsPrivate == "Y" && Rank != "Owner" && Rank != "Teacher")
     {
         Response.Redirect("~/ForumPage.cshtml");
     }
@@ -46,6 +45,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="~/Stylesheets/ForumSelect.css" rel="stylesheet" type="text/css" />
     <link href="~/Stylesheets/Forum.css" rel="stylesheet" type="text/css" />
+    <link href="~/Stylesheets/Layout.css" rel="stylesheet" type="text/css" />
 </head>
 <body style="background-color: #202225;">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
@@ -54,6 +54,7 @@
             <div class="col-lg-12">
                 <div class="wrapper wrapper-content animated fadeInRight">
                     <div class="ibox-content forum-container" style="background-color: #343a40">
+                        <a href="~/ForumPage.cshtml">back</a>
                         <div class="forum-title">
                             <h3 style="color: white">@ForumName</h3>
                             <p style="color: #dddddd; ">@ForumDesc</p>
@@ -68,43 +69,43 @@
                             Username_Poster = post.Profiel_Username;
                             Post_Id = post.Post_Id;
 
-                            <div class="forum-item active" style="color:white">
-                                <div class="row">
-                                    <div class="col-md-9">
-                                        <div class="forum-icon">
-                                            <i class="fa fa-bolt" style="color:#007aff"></i>
+                        <div class="forum-item active" style="color:white">
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <div class="forum-icon">
+                                        <i class="fa fa-bolt" style="color:#007aff"></i>
+                                    </div>
+                                    <a href="CommentsPage.cshtml?ForumId=@Forum_Forum_Id&PostId=@Post_Id" class="forum-item-title" style="color:#007aff">@PostTitle </a>
+                                    <div class="forum-sub-title" style="color:white">@Username_Poster</div>
+                                </div>
+                                <div class="col-md-1 forum-info">
+                                    <form method="post">
+                                        <span class="views-number" style="color:white">
+                                            @Upvote
+                                        </span>
+                                        <div>
+                                            <small style="color:white">Upvotes</small>
                                         </div>
-                                        <a href="CommentsPage.cshtml?ForumId=@Forum_Forum_Id&PostId=@Post_Id" class="forum-item-title" style="color:#007aff">@PostTitle </a>
-                                        <div class="forum-sub-title" style="color:white">@Username_Poster</div>
-                                    </div>
-                                    <div class="col-md-1 forum-info">
-                                        <form method="post">
-                                            <span class="views-number" style="color:white">
-                                                @Upvote
-                                            </span>
-                                            <div>
-                                                <small style="color:white">Upvotes</small>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div class="col-md-1 forum-info">
-                                        <form method="post">
-                                            <span class="views-number" style="color:white">
-                                                @Downvote
-                                            </span>
-                                            <div>
-                                                <small style="color:white">Downvotes</small>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    @if (Username == Username_Poster)
-                                    {
-                                        <div id="EdDel">
-                                            <a style="color: #a00000" href="~/PostDelete.cshtml?ForumId=@Forum_Forum_Id&PostId=@Post_Id">Delete</a>
+                                    </form>
+                                </div>
+                                <div class="col-md-1 forum-info">
+                                    <form method="post">
+                                        <span class="views-number" style="color:white">
+                                            @Downvote
+                                        </span>
+                                        <div>
+                                            <small style="color:white">Downvotes</small>
                                         </div>
-                                    }
+                                    </form>
                                 </div>
                             </div>
+                            @if (Username == Username_Poster)
+                            {
+                                <div id="EdDel">
+                                    <a style="color: #a00000" href="~/PostDelete.cshtml?ForumId=@Forum_Forum_Id&PostId=@Post_Id">Delete</a>
+                                </div>
+                            }
+                        </div>
                         }
                     </div>
                 </div>

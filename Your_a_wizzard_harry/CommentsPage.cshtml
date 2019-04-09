@@ -3,6 +3,7 @@
     Page.Title = "PostPage";
     PageData["current"] = "Forums";
 
+    string mail = "";
     string errorMsg = "";
     string ForumName = "";
     string ForumDesc = "";
@@ -14,9 +15,16 @@
     int Upvote = 0;
     int Downvote = 0;
     string UporDown = "";
-    int Forum_Forum_Id = 0;
-    int Post_Id = 0;
+    int Forum_Forum_Id = 4;
+    int Post_Id = 2;
     string IsPrivate = "";
+
+    if (Session["mail"] != null)
+    {
+        mail = Session["mail"].ToString();
+    }
+    else { Response.Redirect("~/login.cshtml"); }
+
     if (Request.QueryString["ForumId"] != null || Request.QueryString["PostId"] != null)
     {
         Forum_Forum_Id = Request.QueryString["ForumId"].AsInt();
@@ -27,7 +35,7 @@
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
 
-    var UserData = db.QuerySingle("SELECT * FROM Profiel WHERE Email = @0", Session["mail"]);
+    var UserData = db.QuerySingle("SELECT * FROM Profiel WHERE Email = @0", mail);
     if (UserData == null)
     {
         Session.Abandon();
@@ -35,13 +43,6 @@
     }
     Username_Commenter = UserData.Username;
     Rank = UserData.Rank;
-    if (IsPrivate == "Y")
-    {
-        if (Rank != "Owner" || Rank != "Teacher")
-        {
-            Response.Redirect("~/ForumPage.cshtml");
-        }
-    }
     var SelectForum = db.QuerySingle("SELECT * FROM [Forum] WHERE Forum_Id = @0", Forum_Forum_Id);
     var SelectPost = db.QuerySingle("SELECT * FROM [Post] WHERE Post_Id = @0", Post_Id);
     var SelectComments = db.Query("SELECT * FROM [Comments] WHERE Post_Post_Id = @0 ORDER BY Comment_Id DESC", Post_Id);
@@ -56,7 +57,7 @@
         ForumName = SelectForum.Forum_name;
         ForumDesc = SelectForum.Description;
         IsPrivate = SelectForum.IsPrivate;
-        if (IsPrivate == "Y" && Rank != "Owner" || IsPrivate == "Y" && Rank != "Teacher")
+        if (IsPrivate == "Y" && Rank != "Owner" && Rank != "Teacher")
         {
             Response.Redirect("~/ForumPage.cshtml");
         }
@@ -65,8 +66,10 @@
         Upvote = SelectPost.Upvote;
         Downvote = SelectPost.Downvote;
         Username_Poster = SelectPost.Profiel_Username;
+
     }
     else { Response.Redirect("~/Forumpage.cshtml"); }
+    string PosterRank = db.QuerySingle("SELECT Rank FROM Profiel WHERE Username = @0", Username_Poster).Rank;
 
     if (IsPost)
     {
@@ -190,9 +193,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link href="~/Stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="~/Stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="~/Stylesheets/Forum.css" rel="stylesheet" type="text/css" />
     <link href="~/Stylesheets/Comments.css" rel="stylesheet" type="text/css" />
+    <link href="~/Stylesheets/Layout.css" rel="stylesheet" type="text/css" />
     <meta charset="utf-8" />
     <title></title>
 </head>
@@ -202,6 +206,7 @@
             <div class="col-lg-12">
                 <div class="wrapper wrapper-content animated fadeInRight">
                     <div class="ibox-content forum-container" style="background-color: #343a40">
+                        <a href="~/PostPage.cshtml?ForumId=@Forum_Forum_Id">back</a>
                         <div class="forum-title">
                             <h3 style="color: white">@ForumName</h3>
                         </div>
@@ -214,7 +219,19 @@
                                     <label class="forum-item-title" style="color:#007aff">@PostTitle </label>
                                     <div class="forum-sub-title" style="color:white">@PostContent</div>
                                     <br />
-                                    <div class="forum-sub-title" style="color:#dddddd; font-size: 12px;">by: &nbsp; @Username_Poster</div>
+                                    @switch (PosterRank)
+                                    {
+                                        case "Student":
+                                            <div class="forum-sub-title" style="color:#dddddd; font-size: 12px;">by: &nbsp; @Username_Poster &nbsp; <span class="rank">(@PosterRank)</span></div>
+                                            break;
+                                        case "Teacher":
+                                            <div class="forum-sub-title" style="color:#dddddd; font-size: 12px;">by: &nbsp; @Username_Poster &nbsp; <span class="rank" style="color: #cc3c71">(@PosterRank)</span></div>
+                                            break;
+                                        case "Owner":
+                                            <div class="forum-sub-title" style="color:#dddddd; font-size: 12px;">by: &nbsp; @Username_Poster &nbsp; <span class="rank" style="color: #ff7220">(@PosterRank)</span></div>
+                                            break;
+                                    }
+
                                 </div>
                                 <div class="col-md-1 forum-info">
                                     <form method="post">
@@ -256,35 +273,47 @@
                         </div>
                         <div>
                             <form method="post">
-                                <input name="comment" placeholder="Type something..." class="comment-box" type="text" />
+                                <input name="comment" placeholder="Comment something..." class="comment-box" type="text" />
                                 <input name="post-comment" value="Post" class="comment-submit" type="submit" />
                             </form>
                         </div>
-                        <br />
+                        <br /><br />
                         <!-- Foreach -->
                         @foreach (var comment in SelectComments)
                         {
-                        <div class="forum-item active" style="color:white">
-                            <div class="row">
-                                <div class="col-md-9">
-                                    <div class="forum-icon">
-                                        <i class="fa fa-user" style="color: #dddddd"></i>
+                            string CommenterRank = db.QuerySingle("SELECT Rank FROM Profiel WHERE Username = @0", comment.Username_Username).Rank;
+                            <div class="forum-item active" style="color:white">
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <div class="forum-icon">
+                                            <i class="fa fa-user" style="color: #dddddd"></i>
+                                        </div>
+                                        @switch (CommenterRank)
+                                        {
+                                            case "Student":
+                                                <label class="forum-item-title" style="color:#007aff">@comment.Username_Username <p class="rank">(@CommenterRank)</p></label>
+                                                break;
+                                            case "Teacher":
+                                                <label class="forum-item-title" style="color:#007aff">@comment.Username_Username <p class="rank" style="color: #cc3c71">(@CommenterRank)</p></label>
+                                                break;
+                                            case "Owner":
+                                                <label class="forum-item-title" style="color:#007aff">@comment.Username_Username <p class="rank" style="color: #ff7220">(@CommenterRank)</p></label>
+                                                break;
+                                        }
+                                        <div class="forum-sub-title" style="color:white">@comment.Comment</div>
                                     </div>
-                                    <label class="forum-item-title" style="color:#007aff">@comment.Username_Username</label>
-                                    <div class="forum-sub-title" style="color:white">@comment.Comment</div>
                                 </div>
+                                <div id="date-time" class="row">
+                                    <div class="col-3">
+                                        <label>@comment.Time</label>
+                                    </div>
+                                    &nbsp;
+                                    <div class="col-3">
+                                        <label>@comment.Date</label>
+                                    </div>
+                                </div>
+                                <div style="padding-bottom: 6px;"></div>
                             </div>
-                            <div id="date-time" class="row">
-                                <div class="col-3">
-                                    <label>@comment.Time</label>
-                                </div>
-                                &nbsp;
-                                <div class="col-3">
-                                    <label>@comment.Date</label>
-                                </div>
-                            </div>
-                            <div style="padding-bottom: 6px;"></div>
-                        </div>
                         }
                     </div>
                 </div>
