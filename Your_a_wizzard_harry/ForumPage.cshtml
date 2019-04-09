@@ -31,8 +31,8 @@
 <head>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
     <link href="~/Stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="~/Stylesheets/Layout.css" rel="stylesheet" type="text/css" />
     <link href="~/Stylesheets/ForumSelect.css" rel="stylesheet" type="text/css" />
+    <link href="~/Stylesheets/Layout.css" rel="stylesheet" type="text/css" />
 </head>
 <body style="background-color: #202225;">
     <div style="padding-top: 30px;"></div>
@@ -47,7 +47,7 @@
 
                             </div>
                             <h2 style="color: white;">Welcome to our forum</h2>
-                            <span style="color: white;">Feel free to choose topic you're interested in.</span>
+                            <span style="color: white;">Choose a topic you're interested in.</span>
                         </div>
                     </div>
 
@@ -69,7 +69,7 @@
                                         {
                                             <div>
                                                 @if (forum.IsPrivate == "Y" && Rank == "Owner" || forum.IsPrivate == "Y" && Rank == "Teacher")
-                                                {<a href="PostPage.cshtml?ForumId=@forum.Forum_Id" class="forum-item-title"><i style="color: #acacac" class="fa fa-lock"></i>&nbsp;@forum.Forum_name</a> }
+                                                {<a href="PostPage.cshtml?ForumId=@forum.Forum_Id" class="forum-item-title"><i style="color: #acacac" class="fas fa-lock-open"></i>&nbsp;@forum.Forum_name</a> }
                                             else
                                             { <a href="PostPage.cshtml?ForumId=@forum.Forum_Id" class="forum-item-title">@forum.Forum_name</a>}
                                             </div>
@@ -124,7 +124,7 @@
                                         {
                                             <div>
                                                 @if (forum.IsPrivate == "Y" && Rank == "Owner" || forum.IsPrivate == "Y" && Rank == "Teacher")
-                                                {<a style="color: white;" href="PostPage.cshtml?ForumId=@forum.Forum_Id" class="forum-item-title"><i style="color: #acacac" class="fa fa-lock"></i>&nbsp;@forum.Forum_name</a> }
+                                                {<a style="color: white;" href="PostPage.cshtml?ForumId=@forum.Forum_Id" class="forum-item-title"><i style="color: #acacac" class="fas fa-lock-open"></i>&nbsp;@forum.Forum_name</a> }
                                             else
                                             { <a style="color: white;" href="PostPage.cshtml?ForumId=@forum.Forum_Id" class="forum-item-title">@forum.Forum_name</a>}
                                             </div>

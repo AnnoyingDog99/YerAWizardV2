@@ -32,7 +32,6 @@
     Database db = Database.OpenConnectionString(connectionString, provider);
 
     var getUser = "SELECT Rank FROM [Profiel] WHERE Email = @0";
-    mail = "danteklijn01@gmail.com";
     var Rank = db.QuerySingle(getUser, mail).Rank;
     if (Rank == "Teacher" || Rank == "Owner")
     {
