@@ -1,6 +1,7 @@
 ﻿@{
     string Username = "";
     string mail = "";
+    string Rank = "";
     if (Session["mail"] != null)
     {
         mail = Session["mail"].ToString();
@@ -8,7 +9,22 @@
         string provider = "System.Data.SqlClient";
         Database db = Database.OpenConnectionString(connectionString, provider);
 
-        Username = db.QuerySingle("SELECT Username FROM Profiel WHERE Email = @0", Session["mail"]).Username;
+        Username = db.QuerySingle("SELECT Username FROM Profiel WHERE Email = @0", mail).Username;
+        Rank = db.QuerySingle("SELECT Rank FROM Profiel WHERE Email = @0", mail).Rank;
+    }
+
+    if (Rank != "Student" && Rank != "Teacher" && Rank != "Owner")
+    {
+        if (PageData["current"] != "Home" && PageData["current"] != "About" && PageData["current"] != "contact")
+        {
+            Response.Redirect("~/login.cshtml");
+        }
+    }
+
+    if (IsPost && Request.Form["logout"] == "Logout")
+    {
+        Session.Abandon();
+        Response.Redirect("~/login.cshtml");
     }
 }
 
@@ -22,8 +38,6 @@
     <link href="~/Stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="~/Stylesheets/Layout.css" rel="stylesheet" type="text/css" />
     <link href="~/Stylesheets/style ding.css" rel="stylesheet" type="text/css" />
-    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
-    <script src="~/Scripts/bootstrap.min.js"></script>
     <meta name="viewport" content="width=device-width" />
 </head>
 <body>
@@ -116,6 +130,47 @@
                     </li>
                 }
                 <div class="nav-space"></div>
+                @if (PageData["current"] == "Lessons")
+                {
+                    <li class="nav-item active">
+                        <a class="nav-link" href="~/Lessons/Lessons.cshtml">
+                            <i class="fas fa-scroll"></i>
+                            Lessons
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" href="~/Lessons/Lessons.cshtml">
+                            <i class="fas fa-scroll"></i>
+                            Lessons
+                        </a>
+                    </li>
+                }
+                <div class="nav-space"></div>
+                @if (Rank == "Owner" || Rank == "Teacher")
+                {
+                    if (PageData["current"] == "Lesson Create")
+                    {
+                        <li class="nav-item active">
+                            <a class="nav-link" href="~/Lessons/Lessons.cshtml">
+                                <i class="fas fa-feather-alt"></i>
+                                Make Lesson
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Lessons/Lessons.cshtml">
+                                <i class="fas fa-feather-alt"></i>
+                                Make Lesson
+                            </a>
+                        </li>
+                    }
+                }
+                <div class="nav-space"></div>
                 @if (PageData["current"] == "About" || PageData["current"] == "Contact")
                 {
                     <li class="nav-item dropdown active">
@@ -158,13 +213,15 @@
             &nbsp; &nbsp;
             @if (mail != "")
             {
-                <li id="logged-in" class="nav-item dropdown">
-                    <a style="color: white;" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        @Username
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a style="color: #efefef" class="dropdown-item" href="~/login.cshtml">Logout</a>
-                    </div>
+                <li style="list-style: none;" id="logged-in" class="nav-item dropdown">
+                    <form method="post">
+                        <a style="color: white;" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            @Username
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <input name="logout" value="Logout" type="submit" style="color: #efefef" class="dropdown-item" />
+                        </div>
+                    </form>
                 </li>
             }
             else
@@ -243,7 +300,7 @@
                 <p class="text-center">Copyright 2019 | Designed by <a id="wizard" href="#">A Wizard</a></p>
                 <center>
                     <div>
-                        <a id="social-ic" href="#"><i class="fab fa-facebook-square" ></i></a>
+                        <a id="social-ic" href="#"><i class="fab fa-facebook-square"></i></a>
                         <a id="twitter-ic" href="#"><i class="fab fa-twitter"></i></a>
                         <a id="social-ic" href="#"><i class="fab fa-linkedin"></i></a>
                         <a id="social-ic" href="#"><i class="fab fa-instagram"></i></a>
@@ -255,6 +312,7 @@
     </footer>
     <div style="padding: 100px;" id="footer"></div>
     <!-- Footer -->
-
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
 </body>
 </html>
