@@ -2,10 +2,12 @@
     from {
         transform: rotate(0deg);
         font-size: 10px;
+        color: #808080;
     }
     to {
         transform: rotate(360deg);
-        font-size: 14px;
+        font-size: 10px;
+        color: #dddddd;
     }
 }
 
@@ -48,7 +50,7 @@
 }
 .vote:focus #loading{
     animation-name: spin;
-    animation-duration: 3000ms;
+    animation-duration: 2500ms;
     animation-iteration-count: infinite;
 }
 #upvoted {

@@ -41,7 +41,7 @@
     if (IsPost)
     {
         Post_Id = Request.QueryString["PostId"].AsInt();
-        db.Execute("DELETE FROM [Forum_IsVoted] WHERE Post_Post_Id = @0", Post_Id);
+        db.Execute("DELETE FROM [IsVoted] WHERE Post_Post_Id = @0", Post_Id);
         db.Execute("DELETE FROM [Comments] WHERE Post_Post_Id = @0", Post_Id);
         db.Execute("DELETE FROM [Post] WHERE Post_Id = @0", Post_Id);
         Response.Redirect("~/PostPage.cshtml?ForumId=" + Forum_Id);
@@ -63,10 +63,6 @@
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     <style type="text/css">
-
-        body {
-            font-family: 'Varela Round', sans-serif;
-        }
 
         .modal-confirm {
             color: #636363;
