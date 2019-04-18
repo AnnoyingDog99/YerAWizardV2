@@ -13,30 +13,37 @@
     int Downvote = 0;
     var Forum_Forum_Id = 0;
     int Post_Id = 0;
+
+    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
+    string provider = "System.Data.SqlClient";
+    Database db = Database.OpenConnectionString(connectionString, provider);
+
+    if (Session["mail"] != null)
+    {
+        var UserData = db.QuerySingle("SELECT * FROM Profiel WHERE Email = @0", Session["mail"]);
+        Username = UserData.Username;
+        Rank = UserData.Rank;
+    }
+    else { Response.Redirect("~/login.cshtml"); }
+
     if (Request.QueryString["ForumId"] != null)
     {
         Forum_Forum_Id = Request.QueryString["ForumId"].AsInt();
     }
     else { Response.Redirect("~/ForumPage.cshtml"); }
 
-    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
-    string provider = "System.Data.SqlClient";
-    Database db = Database.OpenConnectionString(connectionString, provider);
-    var UserData = db.QuerySingle("SELECT * FROM Profiel WHERE Email = @0", Session["mail"]);
-    if (UserData == null)
-    {
-        Response.Redirect("~/login.cshtml");
-    }
-    Username = UserData.Username;
-    Rank = UserData.Rank;
     var ForumData = db.QuerySingle("SELECT * FROM [Forum] WHERE Forum_Id = @0", Forum_Forum_Id);
-    ForumName = ForumData.Forum_name;
-    ForumDesc = ForumData.Description;
-    string IsPrivate = ForumData.IsPrivate;
-    if (IsPrivate == "Y" && Rank != "Owner" && Rank != "Teacher")
+    if (ForumData != null)
     {
-        Response.Redirect("~/ForumPage.cshtml");
+        ForumName = ForumData.Forum_name;
+        ForumDesc = ForumData.Description;
+        string IsPrivate = ForumData.IsPrivate;
+        if (IsPrivate == "Y" && Rank != "Owner" && Rank != "Teacher")
+        {
+            Response.Redirect("~/ForumPage.cshtml");
+        }
     }
+    else { Response.Redirect("~/ForumPage.cshtml"); }
     var SelectPost = db.Query("SELECT * FROM [Post] WHERE Forum_Forum_Id = @0 ORDER BY Post_Id DESC", Forum_Forum_Id);
 }
 <!DOCTYPE html>
