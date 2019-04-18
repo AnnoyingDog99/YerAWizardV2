@@ -369,3 +369,16 @@
 .text{
     margin:20px 0px;
 }
+
+#clearBtn {
+    margin-left: 16px;
+    border: none;
+    background: none;
+    color: #dddddd;
+    cursor: pointer;
+}
+#clearBtn:hover {
+    border: none;
+    background: none;
+    color: white;
+}

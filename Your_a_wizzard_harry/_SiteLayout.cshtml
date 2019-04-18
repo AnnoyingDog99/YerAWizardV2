@@ -2,12 +2,12 @@
     string Username = "";
     string mail = "";
     string Rank = "";
+    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
+    string provider = "System.Data.SqlClient";
+    Database db = Database.OpenConnectionString(connectionString, provider);
     if (Session["mail"] != null)
     {
         mail = Session["mail"].ToString();
-        string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
-        string provider = "System.Data.SqlClient";
-        Database db = Database.OpenConnectionString(connectionString, provider);
 
         Username = db.QuerySingle("SELECT Username FROM Profiel WHERE Email = @0", mail).Username;
         Rank = db.QuerySingle("SELECT Rank FROM Profiel WHERE Email = @0", mail).Rank;
@@ -15,16 +15,27 @@
 
     if (Rank != "Student" && Rank != "Teacher" && Rank != "Owner")
     {
-        if (PageData["current"] != "Home" && PageData["current"] != "About" && PageData["current"] != "contact")
+        if (PageData["current"] != "Home" && PageData["current"] != "About" && PageData["current"] != "Contact")
         {
             Response.Redirect("~/login.cshtml");
         }
     }
 
-    if (IsPost && Request.Form["logout"] == "Logout")
+    var Notifications = db.Query("SELECT * FROM Notifications WHERE Profiel_Username = @0", Username);
+    int Notifications_Amount = db.QuerySingle("SELECT COUNT(Notification_Id) AS Amount FROM Notifications WHERE Profiel_Username = @0", Username).Amount;
+
+    if (IsPost)
     {
-        Session.Abandon();
-        Response.Redirect("~/login.cshtml");
+        if (Request.Form["logout"] == "Logout")
+        {
+            Session.Abandon();
+            Response.Redirect("~/login.cshtml");
+        }
+        else if (Request.Form["clear"] == "clear")
+        {
+            db.Execute("DELETE FROM Notifications WHERE Profiel_Username = @0", Username);
+            Response.Redirect(Request.RawUrl);
+        }
     }
 }
 
@@ -42,8 +53,8 @@
 </head>
 <body>
     <!-- Navigation bar -->
-    <nav class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark">
-        <a id="Logo" class="navbar-brand" href="#">Platform 9 3/4</a>
+    <nav class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark" style="padding-bottom: 0px; padding-top: 0px;">
+        <a id="Logo" class="navbar-brand" href="~/HomePage.cshtml"><img style="max-width: 120px;" src="~/Images/9_34_improv_v2.png"/></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -201,16 +212,39 @@
                     </li>
                 }
             </ul>
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
+            <li style="list-style: none;" class="nav-item dropdown">
+                @if (Notifications_Amount != 0)
+                {
+                    <a style="color: #dddddd;" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="far fa-envelope">
-                            <span class="badge badge-info">#</span>
+                            @if (Notifications_Amount != 0)
+                            {
+                                <span class="badge badge-info">@Notifications_Amount</span>
+                            }
                         </i>
                     </a>
-                </li>
-            </ul>
-            &nbsp; &nbsp;
+                }
+                else
+                {
+                    <a style="color: #808080;" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="far fa-envelope">
+                        </i>
+                    </a>
+                }
+                <div style="right: 0; left: auto;" class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    @foreach (var notification in Notifications)
+                    {
+                        <a style="color: #efefef; cursor: pointer;" class="dropdown-item" onclick="window.location = '@notification.Url';"><span style="color: #0094ff">@notification.Subject_Username</span> &nbsp; @notification.Notification</a>
+                        <div style="background-color: rgba(0, 0, 0, 0.5); padding: 0.5px; margin: 6px;"></div>
+                    }
+                    @if (Notifications_Amount != 0)
+                    {
+                        <form method="post">
+                            <button id="clearBtn" type="submit" name="clear" value="clear">Clear All</button>
+                        </form>
+                    }
+                </div>
+            </li>
             @if (mail != "")
             {
                 <li style="list-style: none;" id="logged-in" class="nav-item dropdown">
@@ -234,6 +268,7 @@
                     </center>
                 </div>
             }
+            <div style="padding-right: 20px;"></div>
         </div>
     </nav>
     <!-- Navigation bar -->
