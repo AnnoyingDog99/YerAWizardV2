@@ -1,0 +1,52 @@
+﻿@{
+    var path = "";
+    var displaypath = "";
+    var username = "";
+    var newdescription = "";
+    username = Request.QueryString["username"];
+    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
+    string provider = "System.Data.SqlClient";
+    Database db = Database.OpenConnectionString(connectionString, provider);
+    var current = "SELECT Prof_Picture, Description FROM Profiel Where Username = @0";
+    string currentimage = db.QuerySingle(current, username).Prof_Picture;
+    string currentdescription = db.QuerySingle(current, username).Description;
+    if (IsPost)
+    {
+        var image = WebImage.GetImageFromRequest();
+        if(image != null)
+        {
+            path = @"~\ProfilePicture\" + Path.GetFileName(image.FileName);
+            displaypath = @"\ProfilePicture\" + Path.GetFileName(image.FileName);
+            image.Save(path);
+
+            var profpic = "UPDATE Profiel SET Prof_Picture = @0 WHERE Username = @1";
+            db.Execute(profpic, displaypath, username);
+        }
+        if(currentdescription != null)
+        {
+            var updatedescription = "UPDATE Profiel SET Description = @0 WHERE Username = @1";
+            db.Execute(updatedescription, newdescription, username);
+        }
+    }
+}
+
+<form method="post" enctype="multipart/form-data">
+    <input type="file" name="image" />
+    <textarea type="text">@currentdescription</textarea>
+    <input type="submit" value="submit" />
+</form>
+@if (!IsPost)
+{
+    <img style="max-height:130px; min-height:130px; max-width: 100px; min-width:100px" src="@currentimage" />
+    <div>
+
+    </div>
+}
+else
+{
+    <img style="max-height:130px; min-height:130px; max-width: 100px; min-width:100px" src="@displaypath" />
+}
+
+
+
+

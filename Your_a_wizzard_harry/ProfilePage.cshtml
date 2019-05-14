@@ -4,18 +4,12 @@
     Database db = Database.OpenConnectionString(connectionString, provider);
     var mail = "";
     mail = Session["mail"].ToString();
-    ////Imagestuff V
-    //var getimage = "SELECT Imageding FROM [images] where id = @0";
-    //var image = db.QuerySingle(getimage, 1).Imageding;
-    ////byte[] data = Convert.FromBase64String(image);
-    //File.WriteAllBytes(@"E:\Github repo\Project WebDev\YerAWizardV2\Your_a_wizzard_harry\gurbe.jpg", image);
 
-
-    //Imagestuff ^
     var getUsername = "SELECT Username, User_Points, Prof_Picture, Description FROM [Profiel] WHERE Email = @0";
     string Username = db.QuerySingle(getUsername, mail).Username;
     int points = db.QuerySingle(getUsername, mail).User_Points;
     string description = db.QuerySingle(getUsername, mail).Description;
+    string profpic = db.QuerySingle(getUsername, mail).Prof_Picture;
     var PostContent = "";
     if (IsPost && Request["comment"].IsEmpty())
     {
@@ -498,6 +492,7 @@
             <div class="col-md-12 text-center ">
                 <div class="panel panel-default">
                     <div class="userprofile social" style="background-color:#343a40">
+                        <img style="max-height:130px; min-height:130px; max-width: 100px; min-width:100px; border: 2px; border-color: gray " src="@profpic" />
                         <h3 class="username">@profilename</h3>
                         <p></p>
                         <div class="socials tex-center">
@@ -509,6 +504,9 @@
                                 <i class="fa fa-twitter"></i>
                             </a> <a href="" class="btn btn-circle btn-warning "><i class="fa fa-envelope"></i></a>
                         </div>
+                        <button>
+                            <a href="~/ProfileSettings.cshtml?username=@Username">Edit Profile</a>
+                        </button>
                     </div>
                     <div class="col-md-12">
                         <ul class="nav nav-pills pull-left countlist" role="tablist" style="color:white">
