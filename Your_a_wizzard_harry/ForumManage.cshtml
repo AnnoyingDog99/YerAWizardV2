@@ -70,7 +70,7 @@
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <title></title>
     <link href="~/Stylesheets/bootstrap.min.css" rel="stylesheet" id="bootstrap-css" />
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
     <link href="~/Stylesheets/Forum.css" rel="stylesheet" type="text/css" />
     <link href="~/Stylesheets/Layout.css" rel="stylesheet" type="text/css" />
     <meta charset="utf-8" />
@@ -79,18 +79,18 @@
     <div class="container">
         <center>
             <div style="padding-bottom: 50px;"></div>
-            <div class="col-md-4" style="background-color: #343a40">
-                <div style="padding-top: 10px;"></div>
+            <div class="col-md-4" style="background: url(../Images/scroll.jpg) no-repeat center; background-size: cover;">
+                <div style="padding-top: 30px;"></div>
                 <form class="form-horizontal" action="" method="post" id="myform">
                     <div class="form-group">
-                        <label style="color: white;" for="title">Forum Title</label>
+                        <label style="color: black;" for="title">Forum Title</label>
                         @if (Title != "")
                         {
-                            <input style="border-radius: 10px;" type="text" class="form-control" id="question" name="title" placeholder="Type Forum Title Here" cols="40" rows="5" style="resize:vertical;" value="@Title" required>
+                            <input style="background: url(../Images/scroll.jpg) no-repeat center; border-radius: 10px;" type="text" class="form-control" id="question" name="title" placeholder="Type Forum Title Here" cols="40" rows="5" style="resize:vertical;" value="@Title" required>
                         }
                         else
                         {
-                            <input style="border-radius: 10px;" type="text" class="form-control" id="question" name="title" placeholder="Type Forum Title Here" cols="40" rows="5" style="resize:vertical;" required>
+                            <input style="background: url(../Images/scroll.jpg) no-repeat center; border-radius: 10px;" type="text" class="form-control" id="question" name="title" placeholder="Type Forum Title Here" cols="40" rows="5" style="resize:vertical;" required>
                         }
                     </div>
                     <div id="fielda">
@@ -98,33 +98,33 @@
                             <!-- Text input-->
                             <hr />
                             <div class="form-group">
-                                <label style="color: white;" for="csetitle">Forum Description</label>
+                                <label style="color: black;" for="csetitle">Forum Description</label>
                                 @if (Description != "")
                                 {
-                                    <textarea style="border-radius: 10px;" type="text" class="form-control" id="question" name="description" placeholder="Type Forum Description Here" cols="40" rows="5" style="resize:vertical;" required>@Description</textarea>
+                                    <textarea style="background: url(../Images/scroll.jpg) no-repeat center; border-radius: 10px;" type="text" class="form-control" id="question" name="description" placeholder="Type Forum Description Here" cols="40" rows="5" style="resize:vertical;" required>@Description</textarea>
                                 }
                                 else
                                 {
-                                    <textarea style="border-radius: 10px;" type="text" class="form-control" id="question" name="description" placeholder="Type Forum Description Here" cols="40" rows="5" style="resize:vertical;" required></textarea>
+                                    <textarea style="background: url(../Images/scroll.jpg) no-repeat center; border-radius: 10px;" type="text" class="form-control" id="question" name="description" placeholder="Type Forum Description Here" cols="40" rows="5" style="resize:vertical;" required></textarea>
                                 }
                             </div>
                             <hr />
                             <div class="form-group">
-                                <label style="color: white;" for="options">Category</label>
+                                <label style="color: black;" for="options">Category</label>
                                 <div data-role="dynamic-fields">
                                     <div class="form-inline">
                                         <div class="form-group">
                                             <div>
                                                 @if (Category == "Community")
                                                 {
-                                                    <select style="border-radius: 4px; border: none;" class="select" name="category">
+                                                    <select style="background: url(../Images/scroll.jpg) no-repeat center; border-radius: 4px; border: none;" class="select" name="category">
                                                         <option value="Community">Community</option>
                                                         <option value="General">General</option>
                                                     </select>
                                                 }
                                                 else
                                                 {
-                                                    <select style="border-radius: 4px; border: none;" class="select" name="category">
+                                                    <select style="background: url(../Images/scroll.jpg) no-repeat center; border-radius: 4px; border: none;" class="select" name="category">
                                                         <option value="General">General</option>
                                                         <option value="Community">Community</option>
                                                     </select>
@@ -136,11 +136,11 @@
                                     <div class="form-inline">
                                         @if (IsPrivate == "Y")
                                         {
-                                            <input checked name="isprivate" type="checkbox" value="Y" placeholder="Y" /> <span style="color: white;">Private</span>
+                                            <input style="background: url(../Images/scroll.jpg) no-repeat center;" checked name="isprivate" type="checkbox" value="Y" placeholder="Y" /> <span style="color: black;">Private</span>
                                         }
                                         else
                                         {
-                                            <input name="isprivate" type="checkbox" value="Y" placeholder="Y" /> <span style="color: white;">Private</span>
+                                            <input style="background: url(../Images/scroll.jpg) no-repeat center;" name="isprivate" type="checkbox" value="Y" placeholder="Y" /> <span style="color: black;">Private</span>
                                         }
                                     </div>
                                 </div>  <!-- /div[data-role="dynamic-fields"] -->
@@ -152,8 +152,8 @@
                     <div class="form-group">
                         @if (Request.QueryString["ForumId"] != null)
                         {
-                            <label style="color: #dddddd">Icon</label>
-                            <select style="border-radius: 4px; border: none;" class="select-icon" name="icon">
+                            <label style="color: black;">Icon</label>
+                            <select style="background: url(../Images/scroll.jpg) no-repeat center; border-radius: 4px; border: none;" class="select-icon" name="icon">
                                 <option value="@Icon">Current</option>
                                 <option value="clipboard">Default</option>
                                 <option value="book">&#xf02d Book</option>
@@ -165,8 +165,8 @@
                         }
                         else
                         {
-                            <label style="color: #dddddd">Icon</label>
-                            <select class="select-icon" name="icon">
+                            <label style="color: black;">Icon</label>
+                            <select style="background: url(../Images/scroll.jpg) no-repeat center; border-radius: 4px; border: none;" class="select-icon" name="icon">
                                 <option value="clipboard">Default</option>
                                 <option value="book">&#xf02d Book</option>
                                 <option value="magic">&#xf0d0 Wand</option>
@@ -189,7 +189,7 @@
                         }
                     </div>
                 </form>
-                <div style="padding-bottom: 20px;"></div>
+                <div style="padding-bottom: 30px;"></div>
             </div>
         </center>
     </div>

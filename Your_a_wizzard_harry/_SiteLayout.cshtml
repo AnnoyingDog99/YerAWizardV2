@@ -231,19 +231,23 @@
                         </i>
                     </a>
                 }
-                <div style="right: 0; left: auto;" class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    @foreach (var notification in Notifications)
-                    {
-                        <a style="color: #efefef; cursor: pointer;" class="dropdown-item" onclick="window.location = '@notification.Url';"><span style="color: #0094ff">@notification.Subject_Username</span> &nbsp; @notification.Notification</a>
-                        <div style="background-color: rgba(0, 0, 0, 0.5); padding: 0.5px; margin: 6px;"></div>
-                    }
-                    @if (Notifications_Amount != 0)
-                    {
-                        <form method="post">
-                            <button id="clearBtn" type="submit" name="clear" value="clear">Clear All</button>
-                        </form>
-                    }
-                </div>
+            <div style="right: 0; left: auto;" class="dropdown-menu" aria-labelledby="navbarDropdown">
+                @foreach (var notification in Notifications)
+                {
+                    <a style="color: #efefef; cursor: pointer;" class="dropdown-item" onclick="window.location = '@notification.Url';"><span style="color: #0094ff">@notification.Subject_Username</span> &nbsp; @notification.Notification</a>
+                    <div style="background-color: rgba(0, 0, 0, 0.5); padding: 0.5px; margin: 6px;"></div>
+                }
+                @if (Notifications_Amount != 0)
+                {
+                    <form method="post">
+                        <button id="clearBtn" type="submit" name="clear" value="clear">Clear All</button>
+                    </form>
+                }
+                else
+                {
+                    <p style="color: #efefef; cursor: pointer;" class="dropdown-item">No notifications here <i class="fas fa-hat-wizard"></i></p>
+                }
+            </div>
             </li>
             @if (mail != "")
             {
