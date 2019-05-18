@@ -13,6 +13,12 @@
     int Downvote = 0;
     var Forum_Forum_Id = 0;
     int Post_Id = 0;
+    string currentSort = "top";
+
+    if (Request.QueryString["sort"] != null)
+    {
+        currentSort = Request.QueryString["sort"];
+    }
 
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
     string provider = "System.Data.SqlClient";
@@ -44,17 +50,37 @@
         }
     }
     else { Response.Redirect("~/ForumPage.cshtml"); }
-    var SelectPost = db.Query("SELECT * FROM [Post] WHERE Forum_Forum_Id = @0 ORDER BY Post_Id DESC", Forum_Forum_Id);
+    var SelectPosts = db.Query("SELECT * FROM [Post] WHERE Forum_Forum_Id = @0 ORDER BY Upvote DESC", Forum_Forum_Id);
+    if (currentSort == "new")
+    {
+        SelectPosts = db.Query("SELECT * FROM [Post] WHERE Forum_Forum_Id = @0 ORDER BY Post_Id DESC", Forum_Forum_Id);
+    }
+
+    if (IsPost)
+    {
+        if (Rank != "Teacher" && Rank != "Owner")
+        {
+            db.Close();
+            Response.Redirect(Request.RawUrl);
+        }
+        int Id = Request.Form["post_delete"].AsInt();
+        db.Execute("DELETE FROM [Reports] WHERE Post_Post_Id = @0", Id);
+        db.Execute("DELETE FROM [IsVoted] WHERE Post_Post_Id = @0", Id);
+        db.Execute("DELETE FROM [Replies] WHERE Post_Post_Id = @0", Id);
+        db.Execute("DELETE FROM [Comments] WHERE Post_Post_Id = @0", Id);
+        db.Execute("DELETE FROM [Post] WHERE Post_Id = @0", Id);
+        Response.Redirect("~/PostPage.cshtml?ForumId=" + Forum_Forum_Id);
+    }
 }
 <!DOCTYPE html>
 <html>
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="~/Stylesheets/ForumSelect.css" rel="stylesheet" type="text/css" />
-    <link href="~/Stylesheets/Forum.css" rel="stylesheet" type="text/css" />
     <link href="~/Stylesheets/Layout.css" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Crimson+Text" rel="stylesheet">
 </head>
-<body style="background-color: #202225;">
+<body style="background-color: #202225; font-family: 'Crimson Text', serif;">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
     <div class="container">
         <div class="row" style="padding:20px">
@@ -67,8 +93,20 @@
                             <p style="color: #dddddd; ">@ForumDesc</p>
                             <a style="float: right;" class="add-btn" href="~/PostAdd.cshtml?ForumId=@Forum_Forum_Id"><i class="fas fa-plus"></i>&nbsp; <span>Add Post</span></a>
                         </div>
+                        <div>
+                            @if (currentSort == "top")
+                            {
+                                <span style="color: #dddddd;">Sort by: &nbsp; &nbsp; <span style="color: #00bb49">Top</span>&nbsp;</span>
+                                <a href="~/PostPage.cshtml?ForumId=@Forum_Forum_Id&sort=new">New</a>
+                            }
+                            else if (currentSort == "new")
+                            {
+                                <span style="color: #dddddd;">Sort by: &nbsp; &nbsp; <a href="~/PostPage.cshtml?ForumId=@Forum_Forum_Id&sort=top">Top</a>&nbsp;</span>
+                                <span style="color: #00bb49">New</span>
+                            }
+                        </div>
                         <div style="padding-bottom: 45px;"></div>
-                        @foreach (var post in SelectPost)
+                        @foreach (var post in SelectPosts)
                         {
                             PostTitle = post.Post_Title;
                             Upvote = post.Upvote;
@@ -76,48 +114,75 @@
                             Username_Poster = post.Profiel_Username;
                             Post_Id = post.Post_Id;
 
-                        <div class="forum-item active" style="color:white">
-                            <div class="row">
-                                <div class="col-md-9">
-                                    <div class="forum-icon">
-                                        <i class="fa fa-bolt" style="color:#007aff"></i>
-                                    </div>
-                                    <a href="CommentsPage.cshtml?ForumId=@Forum_Forum_Id&PostId=@Post_Id" class="forum-item-title" style="color:#007aff">@PostTitle </a>
-                                    <div class="forum-sub-title" style="color:white">@Username_Poster</div>
+                    <div class="forum-item active" style="color:white">
+                        <div class="row">
+                            <div class="col-md-9">
+                                <div class="forum-icon">
+                                    <i class="fa fa-bolt" style="color:#007aff"></i>
                                 </div>
-                                <div class="col-md-1 forum-info">
-                                    <form method="post">
-                                        <span class="views-number" style="color:white">
-                                            @Upvote
-                                        </span>
-                                        <div>
-                                            <small style="color:white">Upvotes</small>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="col-md-1 forum-info">
-                                    <form method="post">
-                                        <span class="views-number" style="color:white">
-                                            @Downvote
-                                        </span>
-                                        <div>
-                                            <small style="color:white">Downvotes</small>
-                                        </div>
-                                    </form>
-                                </div>
+                                <a style="color:#007aff; font-size: 24px;" href="CommentsPage.cshtml?ForumId=@Forum_Forum_Id&PostId=@Post_Id" class="forum-item-title">@PostTitle </a>
+                                <div class="forum-sub-title" style="color:white">@Username_Poster</div>
                             </div>
-                            @if (Username == Username_Poster)
-                            {
-                                <div id="EdDel">
-                                    <a style="color: #a00000" href="~/PostDelete.cshtml?ForumId=@Forum_Forum_Id&PostId=@Post_Id">Delete</a>
-                                </div>
-                            }
+                            <div class="col-md-1 forum-info">
+                                <form method="post">
+                                    <span class="views-number" style="color:white">
+                                        @Upvote
+                                    </span>
+                                    <div>
+                                        <small style="color:white">Upvotes</small>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-1 forum-info">
+                                <form method="post">
+                                    <span class="views-number" style="color:white">
+                                        @Downvote
+                                    </span>
+                                    <div>
+                                        <small style="color:white">Downvotes</small>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
+                        @if (Username == Username_Poster)
+                        {
+                            <div id="EdDel">
+                                <a style="color: #a00000" href="#postDelete_@Post_Id" data-toggle="modal">Delete</a>
+                            </div>
+                        }
+                         <div id="postDelete_@Post_Id" class="modal fade" style="display: none;">
+                            <form method="post">
+                                <div class="modal-dialog modal-confirm">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <div class="icon-box">
+                                                <i class="fas fa-exclamation"></i>
+                                            </div>
+                                            <h4 class="modal-title">Delete Post</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Are you sure you want to delete <br /> <span style="font-weight: bold;">@PostTitle</span>?<br /></p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+                                            <button value="@Post_Id" name="post_delete" type="submit" class="btn btn-danger">Delete</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                         </div>
+                    </div>
                         }
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        setInterval(function () {
+            $("#reloadContent").load(location.href + " #reloadContent>*", "");
+        };
+    </script>
 </body>
 </html> 
