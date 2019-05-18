@@ -1,4 +1,5 @@
-﻿@{
+﻿@using System.IO;
+@{
     var path = "";
     var displaypath = "";
     var username = "";
@@ -13,7 +14,7 @@
     if (IsPost)
     {
         var image = WebImage.GetImageFromRequest();
-        if(image != null)
+        if (image == null)
         {
             path = @"~\ProfilePicture\" + Path.GetFileName(image.FileName);
             displaypath = @"\ProfilePicture\" + Path.GetFileName(image.FileName);
@@ -22,7 +23,19 @@
             var profpic = "UPDATE Profiel SET Prof_Picture = @0 WHERE Username = @1";
             db.Execute(profpic, displaypath, username);
         }
-        if(currentdescription != null)
+        if (image != null)
+        {
+            var serverpath = Server.MapPath(currentimage);
+            File.Delete(serverpath);
+
+            path = @"~\ProfilePicture\" + Path.GetFileName(image.FileName);
+            displaypath = @"\ProfilePicture\" + Path.GetFileName(image.FileName);
+            image.Save(path);
+
+            var profpic = "UPDATE Profiel SET Prof_Picture = @0 WHERE Username = @1";
+            db.Execute(profpic, displaypath, username);
+        }
+        if (currentdescription == null)
         {
             var updatedescription = "UPDATE Profiel SET Description = @0 WHERE Username = @1";
             db.Execute(updatedescription, newdescription, username);

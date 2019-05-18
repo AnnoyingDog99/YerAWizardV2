@@ -40,7 +40,7 @@
                 {
                     Session["mail"] = Request.Form["mail"];
                     var selectrank = "SELECT Rank FROM [Profiel] WHERE Email = @0";
-        var ownerrank = db.QuerySingle(selectrank, mail).rank;
+                    var ownerrank = db.QuerySingle(selectrank, mail).rank;
                     if (ownerrank == "Owner")
                     {
                         Response.Redirect("~/Admin page.cshtml");
@@ -55,7 +55,7 @@
                 else
                 {
                     var selectrank = "SELECT Rank FROM [Profiel] WHERE Email = @0";
-    var ownerrank = db.QuerySingle(selectrank, mail).rank;
+                    var ownerrank = db.QuerySingle(selectrank, mail).rank;
                     if (ownerrank == "Owner")
                     {
                         Response.Redirect("~/Admin page.cshtml");
@@ -76,6 +76,8 @@
     <link href="~/Stylesheets/StyleSheetLogin.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
+
+
         .field-validation-error {
             color: red;
         }
