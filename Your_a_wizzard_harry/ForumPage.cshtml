@@ -25,26 +25,6 @@
     var General = db.Query("SELECT * FROM Forum WHERE Category = 'General'");
     var Community = db.Query("SELECT * FROM Forum WHERE Category = 'Community'");
 
-    if (IsPost)
-    {
-        if (Request.Form["forum_delete"] != null)
-        {
-            if (Rank != "Teacher" && Rank != "Owner")
-            {
-                db.Close();
-                Response.Redirect("~/ForumPage.cshtml");
-            }
-            int Id = Request.Form["forum_delete"].AsInt();
-            db.Execute("DELETE FROM Reports WHERE Forum_Forum_Id = @0", Id);
-            db.Execute("DELETE FROM IsVoted WHERE Forum_Forum_Id = @0", Id);
-            db.Execute("DELETE FROM Replies  WHERE Forum_Forum_Id = @0", Id);
-            db.Execute("DELETE FROM Comments WHERE Forum_Forum_Id = @0", Id);
-            db.Execute("DELETE FROM Post WHERE Forum_Forum_Id = @0", Id);
-            db.Execute("DELETE FROM Forum WHERE Forum_Id = @0", Id);
-            db.Close();
-            Response.Redirect("~/ForumPage.cshtml");
-        }
-    }
 }
 <!DOCTYPE html>
 <html>
@@ -53,10 +33,8 @@
     <link href="~/Stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="~/Stylesheets/ForumSelect.css" rel="stylesheet" type="text/css" />
     <link href="~/Stylesheets/Layout.css" rel="stylesheet" type="text/css" />
-    <link href="https://fonts.googleapis.com/css?family=Crimson+Text" rel="stylesheet">
-    <title></title>
 </head>
-<body style="background-color: #202225; font-family: 'Crimson Text', serif;">
+<body style="background-color: #202225;">
     <div style="padding-top: 30px;"></div>
     <div class="container">
         <div class="row">
@@ -81,74 +59,52 @@
                         @foreach (var forum in General)
                         {
                             var AmmountOfPosts = db.QuerySingle("SELECT COUNT(Post_Id) AS Amount FROM Post WHERE Forum_Forum_Id = @0", forum.Forum_Id);
-                    <div class="forum-item active">
-                        <div class="row">
-                            <div class="col-md-11">
-                                <div class="forum-icon">
-                                    <i class="fa fa-@forum.Icon"></i>
-                                </div>
-                                @if (forum.IsPrivate != "Y" || Rank == "Owner" || Rank == "Teacher")
-                                {
-                                    <div>
-                                        @if (forum.IsPrivate == "Y" && Rank == "Owner" || forum.IsPrivate == "Y" && Rank == "Teacher")
-                                        {<a style="font-size: 22px;" href="PostPage.cshtml?ForumId=@forum.Forum_Id" class="forum-item-title"><i style="color: #acacac" class="fas fa-lock-open"></i>&nbsp;@forum.Forum_name</a> }
-                                    else
-                                    { <a style="font-size: 22px;" href="PostPage.cshtml?ForumId=@forum.Forum_Id" class="forum-item-title">@forum.Forum_name</a>}
-                                    </div>
-                                }
-                                else
-                                {
-                                    <i style="color: #808080" class="fa fa-lock"></i>
-                                    <label class="link-replace" href="PostPage.cshtml?ForumId=@forum.Forum_Id">@forum.Forum_name</label>
-                                }
-                                <div class="forum-sub-title">@forum.Description</div>
-                            </div>
-
-                            <div class="col-md-1 forum-info">
-                                <span class="views-number" style="color: white;">
-                                    @AmmountOfPosts.Amount
-                                </span>
-                                <div>
-                                    @if (AmmountOfPosts.Amount == 1)
-                                    {
-                                        <small>Post</small>
-                                    }
-                                    else
-                                    { <small>Posts</small>}
-                                </div>
-                            </div>
-                            @if (Rank == "Owner" || Rank == "Teacher")
-                            {
-                                <div id="EdDel">
-                                    <a href="~/ForumManage.cshtml?ForumId=@forum.Forum_Id">Edit</a>
-                                    &nbsp;
-                                    <a style="color: #a00000" href="#forumDelete_@forum.Forum_Id" data-toggle="modal">Delete</a>
-                                </div>
-                            }
-                        </div>
-                         <div id="forumDelete_@forum.Forum_Id" class="modal fade" style="display: none;">
-                            <form method="post">
-                                <div class="modal-dialog modal-confirm">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <div class="icon-box">
-                                                <i class="fas fa-exclamation"></i>
+                            <div class="forum-item active">
+                                <div class="row">
+                                    <div class="col-md-11">
+                                        <div class="forum-icon">
+                                            <i class="fa fa-@forum.Icon"></i>
+                                        </div>
+                                        @if (forum.IsPrivate != "Y" || Rank == "Owner" || Rank == "Teacher")
+                                        {
+                                            <div>
+                                                @if (forum.IsPrivate == "Y" && Rank == "Owner" || forum.IsPrivate == "Y" && Rank == "Teacher")
+                                                {<a href="PostPage.cshtml?ForumId=@forum.Forum_Id" class="forum-item-title"><i style="color: #acacac" class="fas fa-lock-open"></i>&nbsp;@forum.Forum_name</a> }
+                                            else
+                                            { <a href="PostPage.cshtml?ForumId=@forum.Forum_Id" class="forum-item-title">@forum.Forum_name</a>}
                                             </div>
-                                            <h4 class="modal-title">Delete Forum</h4>
-                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>Are you sure you want to delete <br /> <span style="font-weight: bold;">@forum.Forum_name</span>?<br /></p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
-                                            <button value="@forum.Forum_Id" name="forum_delete" type="submit" class="btn btn-danger">Delete</button>
+                                        }
+                                        else
+                                        {
+                                            <i style="color: #808080" class="fa fa-lock"></i>
+                                            <label class="link-replace" href="PostPage.cshtml?ForumId=@forum.Forum_Id">@forum.Forum_name</label>
+                                        }
+                                        <div class="forum-sub-title">@forum.Description</div>
+                                    </div>
+
+                                    <div class="col-md-1 forum-info">
+                                        <span class="views-number" style="color: white;">
+                                            @AmmountOfPosts.Amount
+                                        </span>
+                                        <div>
+                                            @if (AmmountOfPosts.Amount == 1)
+                                            {
+                                                <small>Post</small>
+                                            }
+                                            else
+                                            { <small>Posts</small>}
                                         </div>
                                     </div>
+                                    @if (Rank == "Owner" || Rank == "Teacher")
+                                    {
+                                        <div id="EdDel">
+                                            <a href="~/ForumManage.cshtml?ForumId=@forum.Forum_Id">Edit</a>
+                                            &nbsp;
+                                            <a style="color: #a00000" href="~/ForumDelete.cshtml?ForumId=@forum.Forum_Id">Delete</a>
+                                        </div>
+                                    }
                                 </div>
-                            </form>
-                         </div>
-                    </div>
+                            </div>
                         }
 
                         <div style="padding-bottom: 20px;"></div>
@@ -158,74 +114,52 @@
                         @foreach (var forum in Community)
                         {
                             var AmmountOfPosts = db.QuerySingle("SELECT COUNT(Post_Id) AS Amount FROM Post WHERE Forum_Forum_Id = @0", forum.Forum_Id);
-                    <div class="forum-item">
-                        <div class="row">
-                            <div class="col-md-11">
-                                <div class="forum-icon">
-                                    <i class="fa fa-@forum.Icon"></i>
-                                </div>
-                                @if (forum.IsPrivate != "Y" || Rank == "Owner" || Rank == "Teacher")
-                                {
-                                    <div>
-                                        @if (forum.IsPrivate == "Y" && Rank == "Owner" || forum.IsPrivate == "Y" && Rank == "Teacher")
-                                        {<a style="color: white; font-size: 22px;" href="PostPage.cshtml?ForumId=@forum.Forum_Id" class="forum-item-title"><i style="color: #acacac" class="fas fa-lock-open"></i>&nbsp;@forum.Forum_name</a> }
-                                    else
-                                    { <a style="color: white; font-size: 22px;" href="PostPage.cshtml?ForumId=@forum.Forum_Id" class="forum-item-title">@forum.Forum_name</a>}
-                                    </div>
-                                }
-                                else
-                                {
-                                    <i style="color: #808080" class="fa fa-lock"></i>
-                                    <label class="link-replace-white" href="PostPage.cshtml?ForumId=@forum.Forum_Id">@forum.Forum_name</label>
-                                }
-                                <div class="forum-sub-title">@forum.Description</div>
-                            </div>
-
-                            <div class="col-md-1 forum-info">
-                                <span class="views-number" style="color: white;">
-                                    @AmmountOfPosts.Amount
-                                </span>
-                                <div>
-                                    @if (AmmountOfPosts.Amount == 1)
-                                    {
-                                        <small>Post</small>
-                                    }
-                                    else
-                                    { <small>Posts</small>}
-                                </div>
-                            </div>
-                            @if (Rank == "Owner" || Rank == "Teacher")
-                            {
-                                <div id="EdDel">
-                                    <a href="~/ForumManage.cshtml?ForumId=@forum.Forum_Id">Edit</a>
-                                    &nbsp;
-                                    <a style="color: #a00000" href="#forumDelete_@forum.Forum_Id" data-toggle="modal">Delete</a>
-                                </div>
-                            }
-                        </div>
-                        <div id="forumDelete_@forum.Forum_Id" class="modal fade" style="display: none;">
-                            <form method="post">
-                                <div class="modal-dialog modal-confirm">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <div class="icon-box">
-                                                <i class="fas fa-exclamation"></i>
+                            <div class="forum-item">
+                                <div class="row">
+                                    <div class="col-md-11">
+                                        <div class="forum-icon">
+                                            <i class="fa fa-@forum.Icon"></i>
+                                        </div>
+                                        @if (forum.IsPrivate != "Y" || Rank == "Owner" || Rank == "Teacher")
+                                        {
+                                            <div>
+                                                @if (forum.IsPrivate == "Y" && Rank == "Owner" || forum.IsPrivate == "Y" && Rank == "Teacher")
+                                                {<a style="color: white;" href="PostPage.cshtml?ForumId=@forum.Forum_Id" class="forum-item-title"><i style="color: #acacac" class="fas fa-lock-open"></i>&nbsp;@forum.Forum_name</a> }
+                                            else
+                                            { <a style="color: white;" href="PostPage.cshtml?ForumId=@forum.Forum_Id" class="forum-item-title">@forum.Forum_name</a>}
                                             </div>
-                                            <h4 class="modal-title">Delete Forum</h4>
-                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>Are you sure you want to delete <br /> <span style="font-weight: bold;">@forum.Forum_name</span>?<br /></p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
-                                            <button value="@forum.Forum_Id" name="forum_delete" type="submit" class="btn btn-danger">Delete</button>
+                                        }
+                                        else
+                                        {
+                                            <i style="color: #808080" class="fa fa-lock"></i>
+                                            <label class="link-replace-white" href="PostPage.cshtml?ForumId=@forum.Forum_Id">@forum.Forum_name</label>
+                                        }
+                                        <div class="forum-sub-title">@forum.Description</div>
+                                    </div>
+
+                                    <div class="col-md-1 forum-info">
+                                        <span class="views-number" style="color: white;">
+                                            @AmmountOfPosts.Amount
+                                        </span>
+                                        <div>
+                                            @if (AmmountOfPosts.Amount == 1)
+                                            {
+                                                <small>Post</small>
+                                            }
+                                            else
+                                            { <small>Posts</small>}
                                         </div>
                                     </div>
+                                    @if (Rank == "Owner" || Rank == "Teacher")
+                                    {
+                                        <div id="EdDel">
+                                            <a href="~/ForumManage.cshtml?ForumId=@forum.Forum_Id">Edit</a>
+                                            &nbsp;
+                                            <a style="color: #a00000" href="~/ForumDelete.cshtml?ForumId=@forum.Forum_Id">Delete</a>
+                                        </div>
+                                    }
                                 </div>
-                            </form>
-                        </div>
-                    </div>
+                            </div>
                         }
                         @if (Rank == "Owner" || Rank == "Teacher")
                         {
