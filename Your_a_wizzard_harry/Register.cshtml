@@ -1,39 +1,50 @@
 ﻿@{
-                Validation.RequireField("Username", "You must enter an Username");
-                Validation.Add("Username", Validator.StringLength(50, 3, "Your Username can not be longer than 50 characters in length or shorter than 3 characters"));
-                Validation.RequireField("Password", "You must enter a Password");
-                Validation.Add("Password", Validator.StringLength(50, 3, "Your Password can not be longer than 50 characters in length or shorter than 3 characters"));
-                Validation.RequireField("ConfirmPassword", "You must confirm your Password");
-                Validation.RequireField("Email", "You must enter an Email");
-                Validation.Add("Email", Validator.StringLength(50, 3, "Your Email can not be longer than 50 characters in length or shorter than 3 characters"));
-                Validation.RequireField("ConfirmEmail", "You must confrim your Email");
-                string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
-                string provider = "System.Data.SqlClient";
-                Database db = Database.OpenConnectionString(connectionString, provider);
+    Validation.RequireField("Username", "You must enter an Username");
+    Validation.Add("Username", Validator.StringLength(50, 3, "Your Username can not be longer than 50 characters in length or shorter than 3 characters"));
+    Validation.RequireField("Password", "You must enter a Password");
+    Validation.Add("Password", Validator.StringLength(50, 3, "Your Password can not be longer than 50 characters in length or shorter than 3 characters"));
+    Validation.RequireField("ConfirmPassword", "You must confirm your Password");
+    Validation.RequireField("Email", "You must enter an Email");
+    Validation.Add("Email", Validator.StringLength(50, 3, "Your Email can not be longer than 50 characters in length or shorter than 3 characters"));
+    Validation.RequireField("ConfirmEmail", "You must confrim your Email");
+    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
+    string provider = "System.Data.SqlClient";
+    Database db = Database.OpenConnectionString(connectionString, provider);
 
 
-                var Username = "";
-                var Password = "";
-                var ConfirmPassword = "";
-                var Email = "";
-                var ConfirmEmail = "";
-                var Rank = "Student";
-                int userpoints = 0;
+    var Username = "";
+    var Password = "";
+    var ConfirmPassword = "";
+    var Email = "";
+    var hashed = "";
+    var sha256 = "";
+    var sha1 = "";
+    var ConfirmEmail = "";
+    var Rank = "Student";
+    int userpoints = 0;
+    var salt = "";
+    var hashedPassword = "";
 
-                //Add some kind of error messege if the forms are not filled in
-                if (IsPost && Validation.IsValid())
-                {
-                    Username = Request.Form["Username"];
-                    Password = Request.Form["Password"];
-                    ConfirmPassword = Request.Form["ConfirmPassword"];
-                    Email = Request.Form["Email"];
-                    ConfirmEmail = Request.Form["ConfirmEmail"];
 
-                    var checkuserdata = db.QuerySingle("SELECT COUNT(Username) AS telUser, COUNT(Email) AS telEmail FROM [Profiel] WHERE Username = @0 OR Email = @1", Username, Email);
-                    int countuser = checkuserdata.telUser;
-                    int countmail = checkuserdata.telEmail;
-                    if (countuser == 1)
-                    {
+
+    //Add some kind of error messege if the forms are not filled in
+    if (IsPost && Validation.IsValid())
+    {
+        Username = Request.Form["Username"];
+        Password = Request.Form["Password"];
+        ConfirmPassword = Request.Form["ConfirmPassword"];
+        Email = Request.Form["Email"];
+        ConfirmEmail = Request.Form["ConfirmEmail"];
+
+        //hashed = Crypto.Hash(Password, "MD5");
+        //sha256 = Crypto.SHA256(Password);
+        //sha1 = Crypto.SHA1(Password);
+        //hashedPassword = Crypto.HashPassword(Password);
+        var checkuserdata = db.QuerySingle("SELECT COUNT(Username) AS telUser, COUNT(Email) AS telEmail FROM [Profiel] WHERE Username = @0 OR Email = @1", Username, Email);
+        int countuser = checkuserdata.telUser;
+        int countmail = checkuserdata.telEmail;
+        if (countuser == 1)
+        {
             <div class="alert">
                 Username already taken
             </div>
@@ -147,7 +158,7 @@
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
 
-    <div class="container">
+    <div class="container" style="position:absolute">
         <div class="card card-login mx-auto text-center bg-dark">
             <div class="card-header mx-auto bg-dark">
                 <a href="~/HomePage.cshtml"> <img src="~/Images/hp logo.png" class="w-75" alt="Logo"> </a><br />
@@ -190,7 +201,36 @@
 
         </div>
     </div>
+    <script>
+        var Doc = document,
+            ox = oy = 0,
+            mDis = 80,
+            id = 0;
+        Doc.addEventListener('mousemove', track);
+        Doc.addEventListener('touchmove', track);
+        function track(event) {
+            var e = event.pageX ? event : event.targetTouches[0];
+            var dis = Math.round(Math.sqrt((ox - e.pageX) * (ox - e.pageX) + (oy - e.pageY) * (oy - e.pageY))),
+                xdiff = e.pageX - ox, ydiff = e.pageY - oy,
+                ang = Math.atan2(ydiff, xdiff) * 180 / Math.PI;
+            if (dis > mDis) {
+                ox = e.pageX; oy = e.pageY;
+                var ND = Doc.createElement('div');
+                TweenLite.set(ND, {
+                    className: 'foot', rotation: ang, x: e.pageX, y: e.pageY, scaleY: id & 1 ? -1 : 1, transformOrigin: "50% -70%"
+                });
+                Doc.body.appendChild(ND);
+                id++;
+                TweenLite.to(ND, 5, {
+                    opacity: 0, onComplete: function () {
+                        this.target.parentNode.removeChild(this.target);
+                    }
+                })
+            }
+        };
 
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
 
 </body>
 </html>

@@ -37,8 +37,8 @@
         if (!Request.QueryString["User"].IsEmpty())
         {
             Username = Request.QueryString["User"];
-            var DeleteUser = "DELETE FROM [Profiel] WHERE Username = @0";
-            db.Execute(DeleteUser, Username);
+            var BlockUser = "UPDATE Profiel SET Is_Blocked = @0 WHERE Username = @1";
+            db.Execute(BlockUser, 1, Username);
             Response.Redirect("~/Admin page.cshtml");
         }
     }

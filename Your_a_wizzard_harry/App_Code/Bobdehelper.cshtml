@@ -1,0 +1,7 @@
+﻿@helper  Sessionnull() { 
+if (Session["mail"] == null)
+{
+        Response.Redirect("~/login.cshtml");
+}
+    }
+}
