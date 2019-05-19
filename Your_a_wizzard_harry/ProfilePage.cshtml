@@ -3,6 +3,7 @@
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
     var mail = "";
+    @Bobdehelper.Sessionnull();
     mail = Session["mail"].ToString();
 
     var getUsername = "SELECT Username, User_Points, Prof_Picture, Description FROM [Profiel] WHERE Email = @0";
