@@ -1,14 +1,19 @@
 ﻿@{
-    var mail = "";
+    string mail = "";
+    Bobdehelper.Sessionnull();
     mail = Session["mail"].ToString();
 
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
 
-    var getUser = "SELECT Rank FROM [Profiel] WHERE Email = @0";
-    var rank = db.QuerySingle(getUser, mail).rank;
-    if (rank != "Student" && rank != "Teacher" && rank != "Owner")
+    string checkrank = "";
+    var t = new Functions();
+    if (t.Rank(mail) == "Student" || t.Rank(mail) == "Teacher" || t.Rank(mail) == "Owner")
+    {
+        checkrank = t.Rank(mail);
+    }
+    else
     {
         Response.Redirect("~/login.cshtml");
     }

@@ -13,23 +13,23 @@
     string nr4house = "";
     int nr4points = 0;
     var pointdifference = 0;
-    var mail = "";
-    if (Session["mail"] != null)
+    string mail = "";
+    Bobdehelper.Sessionnull();
+    mail = Session["mail"].ToString();
+    string checkrank = "";
+    var t = new Functions();
+    if (t.Rank(mail) == "Student" || t.Rank(mail) == "Teacher" || t.Rank(mail) == "Owner")
     {
-        mail = Session["mail"].ToString();
+        checkrank = t.Rank(mail);
     }
-    else { Response.Redirect("~/login.cshtml"); }
+    if (t.Rank(mail) == "NoRank")
+    {
+        Response.Redirect("~/login.cshtml");
+    }
 
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
-
-    var getUser = "SELECT Rank FROM [Profiel] WHERE Email = @0";
-    var rank = db.QuerySingle(getUser, mail).rank;
-    if (rank != "Student" && rank != "Teacher" && rank != "Owner")
-    {
-        Response.Redirect("~/login.cshtml");
-    }
 
     var SelectTotalPointsGryf = "SELECT SUM(User_Points) AS Total FROM Profiel Where House_House_Id = @0 AND Rank = @1";
     var TotalPointsGryf = db.QuerySingle(SelectTotalPointsGryf, Gryf, Rank);
@@ -157,8 +157,7 @@
     <link href="https://fonts.googleapis.com/css?family=Cabin+Condensed" rel="stylesheet">
     <style>
         th {
-            padding-right:40px;
-
+            padding-right: 40px;
         }
     </style>
 </head>
@@ -182,7 +181,7 @@
                         </h4>
                         <div style="color: white">
                             @gridGryf.GetHtml(columns: gridGryf.Columns(gridGryf.Column("Username"), gridGryf.Column("User_Points")))
-                            
+
 
                         </div>
                         <br />
