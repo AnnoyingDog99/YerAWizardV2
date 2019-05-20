@@ -1,15 +1,20 @@
 ﻿@using WebMatrix.Data;
 @{
-    var mail = "";
+    string mail = "";
+    Bobdehelper.Sessionnull();
     mail = Session["mail"].ToString();
 
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
 
-    var getUser = "SELECT Rank FROM [Profiel] WHERE Email = @0";
-    var rank = db.QuerySingle(getUser, mail).rank;
-    if (rank != "Owner")
+    var t = new Functions();
+    string checkrank = "";
+    if (t.Rank(mail) == "Owner")
+    {
+        checkrank = t.Rank(mail);
+    }
+    else
     {
         Response.Redirect("~/login.cshtml");
     }

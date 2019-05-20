@@ -9,8 +9,12 @@ using WebMatrix.Data;
 /// </summary>
 public class Functions
 {
+    private Database db;
     public Functions()
     {
+        string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
+        string provider = "System.Data.SqlClient";
+        Database db = Database.OpenConnectionString(connectionString, provider);
     }
 
     /// <summary>
@@ -26,10 +30,6 @@ public class Functions
     /// <param name="Reply_Id">The Id of the reply where the content is posted</param>
     public void Vote(string voter, string type, string is_voted_as, string vote, int Forum_Id, int Post_Id, int Comment_Id, int Reply_Id)
     {
-        string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
-        string provider = "System.Data.SqlClient";
-        Database db = Database.OpenConnectionString(connectionString, provider);
-
         if (type != "Post" && type != "Comment" && type != "Reply")
         {
             return;
@@ -215,5 +215,32 @@ public class Functions
                 }
                 break;
         }
+    }
+    /// <summary>
+    /// Checks the visitors rank and returns it as a string
+    /// </summary>
+    /// <param name="mail">the mail of the visitor that is given by the session </param>
+    /// <returns>the visitors rank as a string</returns>
+    public string Rank (string mail)
+    {
+        var getUser = "SELECT Rank FROM [Profiel] WHERE Email = @0";
+        string rank = db.QuerySingle(getUser, mail).rank;
+        if (rank == "Student")
+        {
+            return "Student";
+        }
+        else if (rank == "Teacher")
+        {
+            return "Teacher";
+        }
+        else if (rank == "Owner")
+        {
+            return "Owner";
+        }
+        else
+        {
+            return "NoRank";
+        }
+
     }
 }

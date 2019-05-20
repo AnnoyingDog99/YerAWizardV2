@@ -2,16 +2,31 @@
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
-    var mail = "";
-    @Bobdehelper.Sessionnull();
+    string mail = "";
+    Bobdehelper.Sessionnull();
     mail = Session["mail"].ToString();
-
-    var getUsername = "SELECT Username, User_Points, Prof_Picture, Description FROM [Profiel] WHERE Email = @0";
-    string Username = db.QuerySingle(getUsername, mail).Username;
-    int points = db.QuerySingle(getUsername, mail).User_Points;
-    string description = db.QuerySingle(getUsername, mail).Description;
-    string profpic = db.QuerySingle(getUsername, mail).Prof_Picture;
+    string checkrank = "";
+    var t = new Functions();
+    if (t.Rank(mail) == "Student" || t.Rank(mail) == "Teacher" || t.Rank(mail) == "Owner")
+    {
+        checkrank = t.Rank(mail);
+    }
+    else
+    {
+        Response.Redirect("~/login.cshtml");
+    }
+    string profilename = Request.QueryString["username"];
+    var currentprofile = "SELECT User_Points, Prof_Picture, Description, SUM(Upvote), SUM(Downvote) FROM Profiel, Post WHERE Username = @0 AND Profiel.Username = Post.Profiel_Username GROUP BY User_Points, Prof_Picture, Description";
+    var upanddown = "SELECT Profiel.Username, SUM(Upvote) AS Upvotes, SUM(Downvote) AS Downvotes FROM Profiel, Post WHERE Profiel.Username = @0 AND Profiel.Username = Post.Profiel_Username GROUP BY Profiel.Username";
+    int upvotes = db.QuerySingle(upanddown, profilename).Upvotes;
+    int downvotes = db.QuerySingle(upanddown, profilename).Downvotes;
+    int points = db.QuerySingle(currentprofile, profilename).User_Points;
+    string description = db.QuerySingle(currentprofile, profilename).Description;
+    string profpic = db.QuerySingle(currentprofile, profilename).Prof_Picture;
+    var visitor = "SELECT Username FROM [Profiel] WHERE Email = @0";
+    string visitorusername = db.QuerySingle(visitor, mail).Username;
     var PostContent = "";
+
     if (IsPost && Request["comment"].IsEmpty())
     {
         <div class="alert">
@@ -22,13 +37,13 @@
     string comments = Request["comment"];
     string time = DateTime.Now.ToShortTimeString();
     string date = DateTime.Now.ToShortDateString();
-    string profilename = Request.QueryString["profile"];
+
     if (IsPost && !Request["comment"].IsEmpty())
     {
         var Insertprofilecomment = "INSERT INTO [Comments] (Username_Username, Comment, [Time], [Date], Profiel_Profiel_Username) Values (@0, @1, @2, @3, @4)";
-        db.Execute(Insertprofilecomment, Username, comments, time, date, profilename);
+        db.Execute(Insertprofilecomment, visitorusername, comments, time, date, profilename);
     }
-    var SelectComments = db.Query("SELECT * FROM Comments WHERE Profiel_Profiel_Username = @0 ORDER BY Comment_Id DESC", Username);
+    var SelectComments = db.Query("SELECT * FROM Comments, Profiel WHERE Profiel_Profiel_Username = @0 AND Comments.Profiel_Profiel_Username = Profiel.Username ORDER BY Comment_Id DESC", profilename);
 
 
 }
@@ -513,19 +528,13 @@
                     <div class="userprofile social">
                         <img style="max-height:130px; min-height:130px; max-width: 100px; min-width:100px; border: 2px; border-color: gray " src="@profpic" />
                         <h3 class="username">@profilename</h3>
-                        <p></p>
-                        <div class="socials tex-center">
-                            <a href="" class="btn btn-circle btn-primary ">
-                                <i class="fa fa-facebook"></i>
-                            </a> <a href="" class="btn btn-circle btn-danger ">
-                                <i class="fa fa-google-plus"></i>
-                            </a> <a href="" class="btn btn-circle btn-info ">
-                                <i class="fa fa-twitter"></i>
-                            </a> <a href="" class="btn btn-circle btn-warning "><i class="fa fa-envelope"></i></a>
-                        </div>
-                        <button>
-                            <a href="~/ProfileSettings.cshtml?username=@Username">Edit Profile</a>
+                        @if(profilename == visitorusername)
+                        {
+                        <button type="button" class="btn btn-outline-dark" onclick="window.location.href = '/ProfileSettings.cshtml?username=@visitorusername';">
+                            Edit Profile
                         </button>
+                        }
+
                     </div>
                     <div class="col-md-12">
                         <ul class="nav nav-pills pull-left countlist" role="tablist" style="color:white">
@@ -537,13 +546,13 @@
                             </li>
                             <li role="presentation">
                                 <h3>
-                                    245<br>
+                                    @upvotes<br>
                                     <small>Upvotes</small>
                                 </h3>
                             </li>
                             <li role="presentation">
                                 <h3>
-                                    500<br>
+                                    @downvotes<br>
                                     <small>Downvotes</small>
                                 </h3>
                             </li>
@@ -592,10 +601,10 @@
 
                                                           <div id="date-time" class="row">
                                                               <div class="col-md-12">
-                                                                  <img src="~/Images/9_34_solo.png" style="max-height:42px; max-width:42px; margin-right:20px; border: thin solid grey; display:inline-block; float:left" />
+                                                                  <a href="~/ProfilePage.cshtml?username=@comment.Username_Username"><img src="@comment.Prof_Picture" style="max-height:42px; max-width:42px; min-height:42px; min-width:42px; margin-right:20px; border: thin solid grey; display:inline-block; float:left" /></a>
 
                                                                   <div style="display:inline-block; float:left">
-                                                                      <label>@comment.Username_Username</label> <label style="color:darkgray"> &nbsp; @comment.Date &#64; @comment.Time</label>
+                                                                      <a href="~/ProfilePage.cshtml?username=@comment.Username_Username">@comment.Username_Username</a> <label style="color:darkgray"> &nbsp; @comment.Date &#64; @comment.Time</label>
                                                                       <br />
                                                                       <label style="color:white; word-break:normal">@comment.Comment</label>
                                                                   </div>

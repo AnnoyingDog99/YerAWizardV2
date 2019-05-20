@@ -23,7 +23,7 @@
         var dbcountuser = "SELECT COUNT(*) AS Counter FROM [Profiel] WHERE Email = @0 AND Password = @1";
         var dbcountuserquery = db.QuerySingle(dbcountuser, mail, password);
         var dbcheckpw = "SELECT Password FROM Profiel WHERE Email = @0";
-        var pw = db.QuerySingle(dbcheckpw, mail).Password;
+        var pw = db.QuerySingle(dbcheckpw, mail);
         //verify = Crypto.VerifyHashedPassword(dbcountuserquery.password, password);
         int counter = dbcountuserquery.Counter;
         if (counter == 0)
@@ -34,6 +34,7 @@
         }
         else
         {
+            pw = pw.Password;
             if (Request.UrlReferrer.AbsolutePath == Request.Url.AbsolutePath)
             {
                 if (Session["mail"] == null)
@@ -129,7 +130,7 @@
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
     @*<script src="~/Scripts/maraudersmapscript.js"></script>*@
-    <div style="float:left" class="container">
+    <div style="float:initial" class="container">
         <div class="card card-login mx-auto text-center bg-dark">
             <div class="card-header mx-auto bg-dark">
                 <a href="~/HomePage.cshtml"> <img src="~/Images/hp logo.png" class="w-75" alt="Logo"> </a><br />

@@ -4,7 +4,6 @@
     PageData["current"] = "Forums";
 
     /// Variables ///
-    string mail = "";
     string errorMsg = "";
     string ForumName = "";
     string ForumDesc = "";
@@ -36,11 +35,9 @@
     }
     else { Response.Redirect("~/ForumPage.cshtml"); }
 
-    if (Session["mail"] != null)
-    {
-        mail = Session["mail"].ToString();
-    }
-    else { Response.Redirect("~/login.cshtml"); }
+    string mail = "";
+    Bobdehelper.Sessionnull();
+    mail = Session["mail"].ToString();
     /// ---------------- ///
 
 
