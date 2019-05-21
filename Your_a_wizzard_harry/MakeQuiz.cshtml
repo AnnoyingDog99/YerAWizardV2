@@ -1,6 +1,6 @@
 ﻿@{
     string mail = "";
-    Bobdehelper.Sessionnull();
+    @Bobdehelper.Sessionnull();
     mail = Session["mail"].ToString();
 
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
@@ -26,7 +26,7 @@
     int counter = Request.Form["counter"].AsInt();
     if (IsPost)
     {
-        if(startquestions == false)
+        if (startquestions == false)
         {
             string addexamname = "Insert into exam (exam_name, Lesson_Id) Values (@0,@1)";
             var insertexam = db.Execute(addexamname, examname, dummylesson_id);
@@ -36,7 +36,7 @@
 
         startquestions = true;
 
-        if(counter != 0)
+        if (counter != 0)
         {
             int questionpoints = Request.Form["amountofpoints"].AsInt();
             string questionname = Request.Form["question_name"];
@@ -65,9 +65,9 @@
             var insertquestion3 = db.Execute(addquestion, iscorrect3, answer2, 3, question_Id);
             var insertquestion4 = db.Execute(addquestion, iscorrect4, answer2, 4, question_Id);
         }
-        if(counter > amountofquestions)
+        if (counter > amountofquestions)
         {
-            // ga naar lesson page 
+            // ga naar lesson page
         }
         counter++;
     }

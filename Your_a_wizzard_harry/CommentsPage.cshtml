@@ -36,7 +36,7 @@
     else { Response.Redirect("~/ForumPage.cshtml"); }
 
     string mail = "";
-    Bobdehelper.Sessionnull();
+    @Bobdehelper.Sessionnull();
     mail = Session["mail"].ToString();
     /// ---------------- ///
 
@@ -198,10 +198,10 @@
             }
 
             .modal-confirm h4 {
-        text-align: center;
-        font-size: 26px;
-        margin: 30px 0 -10px;
-    }
+                text-align: center;
+                font-size: 26px;
+                margin: 30px 0 -10px;
+            }
 
             .modal-confirm .close {
                 position: absolute;
@@ -222,7 +222,7 @@
             }
 
                 .modal-confirm .modal-footer a {
-        color: #999;
+                    color: #999;
                 }
 
             .modal-confirm .icon-box {
@@ -236,11 +236,11 @@
             }
 
                 .modal-confirm .icon-box i {
-        color: #f15e5e;
+                    color: #f15e5e;
                     font-size: 46px;
-        display: inline-block;
-        margin-top: 13px;
-    }
+                    display: inline-block;
+                    margin-top: 13px;
+                }
 
             .modal-confirm .btn {
                 color: #fff;
@@ -395,7 +395,7 @@
                         <div>
                             @if (currentSort == "top")
                             {
-                                <span style="color: #dddddd;">Sort by: &nbsp; &nbsp; <span style="color: #00bb49">Top</span>&nbsp;</span> 
+                                <span style="color: #dddddd;">Sort by: &nbsp; &nbsp; <span style="color: #00bb49">Top</span>&nbsp;</span>
                                 <a href="~/CommentsPage.cshtml?PostId=@Post_Id&ForumId=@Forum_Forum_Id&sort=new">New</a>
                             }
                             else if (currentSort == "new")
@@ -406,131 +406,131 @@
                         </div>
                         <br /><br />
                         <!-- Foreach -->
-                       @foreach (var comment in SelectComments)
-                       {
-                           string C_is_voted_as = "";
-                           string CommenterRank = db.QuerySingle("SELECT Rank FROM Profiel WHERE Username = @0", comment.Username_Username).Rank;
-                           int Replies_Amount = db.QuerySingle("SELECT COUNT(Reply_Id) AS Amount FROM Replies WHERE Comment_Comment_Id = @0", comment.Comment_Id).Amount;
-                           var C_Get_is_voted_as = db.QuerySingle("SELECT Voted FROM IsVoted WHERE Comment_Comment_Id = @0 AND Username_Username = @1", comment.Comment_Id, Username_Commenter);
-                           int check_if_user_reported_comment = db.QuerySingle("SELECT COUNT(Reported_by) AS Count FROM Reports WHERE Reported_by = @0 AND Comment_Comment_Id = @1", Username_Commenter, comment.Comment_Id).Count;
-                           if (C_Get_is_voted_as != null)
-                           {
-                               C_is_voted_as = C_Get_is_voted_as.Voted;
-                           }
-                    <div class="forum-item active" style="color:white">
-                        @if (check_if_user_reported_comment == 1)
+                        @foreach (var comment in SelectComments)
                         {
-                            <a class="link-replace" style="float: right; color: #007aff; font-size: 12px;">Reported!</a>
-                        }
-                        else
-                        {
-                            <a style="float: right; color: #a00000;" href="#commentReport_@comment.Comment_Id" data-toggle="modal">Report</a>
-                        }
-                        <div class="row">
-                            <div class="col-md-9">
-                                <div class="forum-icon">
-                                    <i class="fa fa-user" style="color: #dddddd"></i>
-                                </div>
-                                @switch (CommenterRank)
+                            string C_is_voted_as = "";
+                            string CommenterRank = db.QuerySingle("SELECT Rank FROM Profiel WHERE Username = @0", comment.Username_Username).Rank;
+                            int Replies_Amount = db.QuerySingle("SELECT COUNT(Reply_Id) AS Amount FROM Replies WHERE Comment_Comment_Id = @0", comment.Comment_Id).Amount;
+                            var C_Get_is_voted_as = db.QuerySingle("SELECT Voted FROM IsVoted WHERE Comment_Comment_Id = @0 AND Username_Username = @1", comment.Comment_Id, Username_Commenter);
+                            int check_if_user_reported_comment = db.QuerySingle("SELECT COUNT(Reported_by) AS Count FROM Reports WHERE Reported_by = @0 AND Comment_Comment_Id = @1", Username_Commenter, comment.Comment_Id).Count;
+                            if (C_Get_is_voted_as != null)
+                            {
+                                C_is_voted_as = C_Get_is_voted_as.Voted;
+                            }
+                            <div class="forum-item active" style="color:white">
+                                @if (check_if_user_reported_comment == 1)
                                 {
-                                    case "Student":
-                                        <label class="forum-item-title" style="color:#007aff">@comment.Username_Username <p class="rank">(@CommenterRank)</p></label>
-                                        break;
-                                    case "Teacher":
-                                        <label class="forum-item-title" style="color:#007aff">@comment.Username_Username <p class="rank" style="color: #cc3c71">(@CommenterRank)</p></label>
-                                        break;
-                                    case "Owner":
-                                        <label class="forum-item-title" style="color:#007aff">@comment.Username_Username <p class="rank" style="color: #ff7220">(@CommenterRank)</p></label>
-                                        break;
+                                    <a class="link-replace" style="float: right; color: #007aff; font-size: 12px;">Reported!</a>
                                 }
-                                <div class="forum-sub-title" style="color:white">@comment.Comment</div>
-                                <div style="padding-bottom: 20px;"></div>
-                            </div>
-                            <div style="float:left; display:inline; width: 20%;" class="col-md-1 forum-info">
-                                <form method="post">
-                                    <span class="views-number" style="color:white; font-size: 14px;">
-                                        @comment.Upvote
-                                    </span>
-                                    <div>
-                                        <small id="display-none" style="color:white; font-size: 11px;">Upvotes</small>
-                                        <button class="vote" name="UpvoteC" type="submit" value="@comment.Comment_Id">
-                                            @if (C_is_voted_as == "Upvoted")
-                                            {<i id="upvoted" class="fas fa-arrow-alt-circle-up" style="font-size: 12px;"></i> }
-                                            else
-                                            { <i id="notvoted" class="fa fa-arrow-alt-circle-up" style="font-size: 12px;"></i>}
-                                            <i id="loading" class="fas fa-broom"></i>
-                                        </button>
+                                else
+                                {
+                                    <a style="float: right; color: #a00000;" href="#commentReport_@comment.Comment_Id" data-toggle="modal">Report</a>
+                                }
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <div class="forum-icon">
+                                            <i class="fa fa-user" style="color: #dddddd"></i>
+                                        </div>
+                                        @switch (CommenterRank)
+                                        {
+                                            case "Student":
+                                                <label class="forum-item-title" style="color:#007aff">@comment.Username_Username <p class="rank">(@CommenterRank)</p></label>
+                                                break;
+                                            case "Teacher":
+                                                <label class="forum-item-title" style="color:#007aff">@comment.Username_Username <p class="rank" style="color: #cc3c71">(@CommenterRank)</p></label>
+                                                break;
+                                            case "Owner":
+                                                <label class="forum-item-title" style="color:#007aff">@comment.Username_Username <p class="rank" style="color: #ff7220">(@CommenterRank)</p></label>
+                                                break;
+                                        }
+                                        <div class="forum-sub-title" style="color:white">@comment.Comment</div>
+                                        <div style="padding-bottom: 20px;"></div>
                                     </div>
-                                </form>
-                            </div>
-                            <div style="float:left; display:inline; width: 20%;" class="col-md-1 forum-info">
-                                <form method="post">
-                                    <span class="views-number" style="color:white; font-size: 14px;">
-                                        @comment.Downvote
-                                    </span>
-                                    <div>
-                                        <small id="display-none" style="color:white; font-size: 11px;">Downvotes</small>
-                                        <button class="vote" name="DownvoteC" type="submit" value="@comment.Comment_Id">
-                                            @if (C_is_voted_as == "Downvoted")
-                                            {<i id="downvoted" class="fas fa-arrow-alt-circle-down" style="font-size: 12px;"></i> }
-                                            else
-                                            { <i id="notvoted" class="fa fa-arrow-alt-circle-down" style="font-size: 12px;"></i>}
-                                            <i id="loading" class="fas fa-broom"></i>
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-
-                        <div id="date-time" class="row">
-                            <div class="col-3">
-                                <label>@comment.Time</label>
-                            </div>
-                            &nbsp;
-                            <div class="col-3">
-                                <label>@comment.Date</label>
-                            </div>
-                        </div>
-                        <div style="padding-bottom: 4px;"></div>
-                        @if (Replies_Amount == 0)
-                        {
-                            <a style="margin-left: 50px;" href="~/Replies.cshtml?CommentId=@comment.Comment_Id&PostId=@Post_Id&ForumId=@Forum_Forum_Id">Reply</a>
-                        }
-                        else
-                        {
-                            <a style="margin-left: 50px;" href="~/Replies.cshtml?CommentId=@comment.Comment_Id&PostId=@Post_Id&ForumId=@Forum_Forum_Id">View Replies (@Replies_Amount)</a>
-                        }
-                        <div style="padding-bottom: 6px;"></div>
-                        <div id="commentReport_@comment.Comment_Id" class="modal fade" style="display: none;">
-                            <form method="post">
-                                <div class="modal-dialog modal-confirm">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <div class="icon-box">
-                                                <i class="fas fa-exclamation"></i>
+                                    <div style="float:left; display:inline; width: 20%;" class="col-md-1 forum-info">
+                                        <form method="post">
+                                            <span class="views-number" style="color:white; font-size: 14px;">
+                                                @comment.Upvote
+                                            </span>
+                                            <div>
+                                                <small id="display-none" style="color:white; font-size: 11px;">Upvotes</small>
+                                                <button class="vote" name="UpvoteC" type="submit" value="@comment.Comment_Id">
+                                                    @if (C_is_voted_as == "Upvoted")
+                                                    {<i id="upvoted" class="fas fa-arrow-alt-circle-up" style="font-size: 12px;"></i> }
+                                                    else
+                                                    { <i id="notvoted" class="fa fa-arrow-alt-circle-up" style="font-size: 12px;"></i>}
+                                                    <i id="loading" class="fas fa-broom"></i>
+                                                </button>
                                             </div>
-                                            <h4 class="modal-title">Report Comment</h4>
-                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>Reason for reporting: <br /> <span style="font-weight: bold;">@comment.Comment</span>?<br /></p>
-                                            <center>
-                                                <select name="comment_reason" style="max-width: 200px;">
-                                                    <option value="offensive">This comment is Offensive.</option>
-                                                    <option value="spam">This comment is Spam.</option>
-                                                    <option value="dangerous">This comment contains Dangerous or Inappropriate content.</option>
-                                                </select>
-                                            </center>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
-                                            <button value="@comment.Comment_Id" name="comment_report" type="submit" class="btn btn-danger">Report</button>
-                                        </div>
+                                        </form>
+                                    </div>
+                                    <div style="float:left; display:inline; width: 20%;" class="col-md-1 forum-info">
+                                        <form method="post">
+                                            <span class="views-number" style="color:white; font-size: 14px;">
+                                                @comment.Downvote
+                                            </span>
+                                            <div>
+                                                <small id="display-none" style="color:white; font-size: 11px;">Downvotes</small>
+                                                <button class="vote" name="DownvoteC" type="submit" value="@comment.Comment_Id">
+                                                    @if (C_is_voted_as == "Downvoted")
+                                                    {<i id="downvoted" class="fas fa-arrow-alt-circle-down" style="font-size: 12px;"></i> }
+                                                    else
+                                                    { <i id="notvoted" class="fa fa-arrow-alt-circle-down" style="font-size: 12px;"></i>}
+                                                    <i id="loading" class="fas fa-broom"></i>
+                                                </button>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
-                            </form>
-                        </div>
-                    </div>
+
+                                <div id="date-time" class="row">
+                                    <div class="col-3">
+                                        <label>@comment.Time</label>
+                                    </div>
+                                    &nbsp;
+                                    <div class="col-3">
+                                        <label>@comment.Date</label>
+                                    </div>
+                                </div>
+                                <div style="padding-bottom: 4px;"></div>
+                                @if (Replies_Amount == 0)
+                                {
+                                    <a style="margin-left: 50px;" href="~/Replies.cshtml?CommentId=@comment.Comment_Id&PostId=@Post_Id&ForumId=@Forum_Forum_Id">Reply</a>
+                                }
+                                else
+                                {
+                                    <a style="margin-left: 50px;" href="~/Replies.cshtml?CommentId=@comment.Comment_Id&PostId=@Post_Id&ForumId=@Forum_Forum_Id">View Replies (@Replies_Amount)</a>
+                                }
+                                <div style="padding-bottom: 6px;"></div>
+                                <div id="commentReport_@comment.Comment_Id" class="modal fade" style="display: none;">
+                                    <form method="post">
+                                        <div class="modal-dialog modal-confirm">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <div class="icon-box">
+                                                        <i class="fas fa-exclamation"></i>
+                                                    </div>
+                                                    <h4 class="modal-title">Report Comment</h4>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Reason for reporting: <br /> <span style="font-weight: bold;">@comment.Comment</span>?<br /></p>
+                                                    <center>
+                                                        <select name="comment_reason" style="max-width: 200px;">
+                                                            <option value="offensive">This comment is Offensive.</option>
+                                                            <option value="spam">This comment is Spam.</option>
+                                                            <option value="dangerous">This comment contains Dangerous or Inappropriate content.</option>
+                                                        </select>
+                                                    </center>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+                                                    <button value="@comment.Comment_Id" name="comment_report" type="submit" class="btn btn-danger">Report</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         }
                     </div>
                 </div>
@@ -542,7 +542,7 @@
 
 @functions{
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <param name="type"></param>
     /// <param name="is_voted_as"></param>

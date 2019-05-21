@@ -1,7 +1,7 @@
 ﻿@using WebMatrix.Data;
 @{
     string mail = "";
-    Bobdehelper.Sessionnull();
+    @Bobdehelper.Sessionnull();
     mail = Session["mail"].ToString();
 
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
@@ -139,7 +139,7 @@
                         </div>
                     </article>
                 </section>
-                
+
                 <section>
                     <article>
                         @gridPost.GetHtml(tableStyle: "grid", headerStyle: "head", alternatingRowStyle: "alt", columns: gridPost.Columns(gridPost.Column("Post_Id"), gridPost.Column("Post_Title"), gridPost.Column("Profiel_Username"), gridPost.Column(format: @<a href="~/DeletePost.cshtml?PostId=@item.Post_Id">Delete</a>)))
