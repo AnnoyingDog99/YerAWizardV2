@@ -4,7 +4,7 @@
     PageData["current"] = "Houses";
 
     string mail = "";
-    Bobdehelper.Sessionnull();
+    @Bobdehelper.Sessionnull();
     mail = Session["mail"].ToString();
 
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
@@ -72,13 +72,13 @@
                         <div class="socials tex-center">
                             <a href="~/Gryffindor.cshtml" class="btn btn-circle btn-primary" id="houseGrBtn">
                                 <i class="#"></i>
-                            </a> 
+                            </a>
                             <a href="~/Hufflepuff.cshtml" class="btn btn-circle btn-warning" id="houseHuBtn">
                                 <i class="#"></i>
-                            </a> 
+                            </a>
                             <a href="~/Ravenclaw.cshtml" class="btn btn-circle btn-info" id="houseRaBtn">
                                 <i class="#"></i>
-                            </a> 
+                            </a>
                             <a href="~/Slytherin.cshtml" class="btn btn-circle btn-danger" id="houseSlBtn">
                                 <i class="#"></i>
                             </a>

@@ -3,7 +3,7 @@
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
     string mail = "";
-    Bobdehelper.Sessionnull();
+    @Bobdehelper.Sessionnull();
     mail = Session["mail"].ToString();
     string checkrank = "";
     var t = new Functions();
@@ -126,7 +126,6 @@
                 box-shadow: 0px 3px 10px 0 rgba(0, 0, 0, 0.15);
                 -moz-box-shadow: 0px 3px 10px 0 rgba(0, 0, 0, 0.15);
                 -webkit-box-shadow: 0px 3px 10px 0 rgba(0, 0, 0, 0.15);
-                -ms-box-shadow: 0px 3px 10px 0 rgba(0, 0, 0, 0.15);
                 position: relative;
             }
 
@@ -171,7 +170,6 @@
             box-shadow: 0px 2px 5px 0 rgba(0, 0, 0, 0.15);
             -moz-box-shadow: 0px 2px 5px 0 rgba(0, 0, 0, 0.15);
             -webkit-box-shadow: 0px 2px 5px 0 rgba(0, 0, 0, 0.15);
-            -ms-box-shadow: 0px 2px 5px 0 rgba(0, 0, 0, 0.15);
         }
 
         .userprofile.small {
@@ -189,7 +187,6 @@
                 box-shadow: 0px 3px 10px 0 rgba(0, 0, 0, 0.15);
                 -moz-box-shadow: 0px 3px 10px 0 rgba(0, 0, 0, 0.15);
                 -webkit-box-shadow: 0px 3px 10px 0 rgba(0, 0, 0, 0.15);
-                -ms-box-shadow: 0px 3px 10px 0 rgba(0, 0, 0, 0.15);
                 position: relative;
                 float: left;
             }
@@ -375,11 +372,9 @@
             box-shadow: 0px 2px 10px 0 rgba(0, 0, 0, 0.05);
             -moz-box-shadow: 0px 2px 10px 0 rgba(0, 0, 0, 0.05);
             -webkit-box-shadow: 0px 2px 10px 0 rgba(0, 0, 0, 0.05);
-            -ms-box-shadow: 0px 2px 10px 0 rgba(0, 0, 0, 0.05);
             transition: all ease 0.5s;
             -moz-transition: all ease 0.5s;
             -webkit-transition: all ease 0.5s;
-            -ms-transition: all ease 0.5s;
             margin-bottom: 35px;
             border-radius: 0px;
             position: relative;
@@ -435,7 +430,6 @@
             box-shadow: 0px 3px 10px 0 rgba(0, 0, 0, 0.15);
             -moz-box-shadow: 0px 3px 10px 0 rgba(0, 0, 0, 0.15);
             -webkit-box-shadow: 0px 3px 10px 0 rgba(0, 0, 0, 0.15);
-            -ms-box-shadow: 0px 3px 10px 0 rgba(0, 0, 0, 0.15);
         }
 
         .media:first-child {
@@ -599,7 +593,7 @@
                                                       string CommenterRank = db.QuerySingle("SELECT Rank FROM Profiel WHERE Username = @0", comment.Username_Username).Rank;
                                                       <div class="forum-item active" style="color:white; border: thin solid grey; padding:5px 5px 5px 5px;">
 
-                                                          <div id="date-time" class="row">
+                                                          <div class="row" style="margin-bottom:0px !important">
                                                               <div class="col-md-12">
                                                                   <a href="~/ProfilePage.cshtml?username=@comment.Username_Username"><img src="@comment.Prof_Picture" style="max-height:42px; max-width:42px; min-height:42px; min-width:42px; margin-right:20px; border: thin solid grey; display:inline-block; float:left" /></a>
 

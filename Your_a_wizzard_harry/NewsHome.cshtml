@@ -3,7 +3,7 @@
     Page.Title = "News ";
 
     string mail = "";
-    Bobdehelper.Sessionnull();
+    @Bobdehelper.Sessionnull();
     mail = Session["mail"].ToString();
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
     string provider = "System.Data.SqlClient";
@@ -27,7 +27,7 @@
 <head>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <link rel="stylesheet" href="~/NewsStyle.css">
-    <link href="~/Stylesheets/Layout.css" rel="stylesheet" type="text/css"/>
+    <link href="~/Stylesheets/Layout.css" rel="stylesheet" type="text/css" />
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
@@ -146,14 +146,14 @@
                 <!--Owner add news-->
                 @if (checkrank == "Owner")
                 {
-                <div class="card">
-                    <div class="card-body">
-                        <h3 class="heading-large">Add Newsarticle</h3>
-                        <div align="center" style="padding-top: 10px">
-                            <a href="~/AddNews.cshtml" type="button" class="btn btn-warning btn-lg"> Add News</a>
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="heading-large">Add Newsarticle</h3>
+                            <div align="center" style="padding-top: 10px">
+                                <a href="~/AddNews.cshtml" type="button" class="btn btn-warning btn-lg"> Add News</a>
+                            </div>
                         </div>
                     </div>
-                </div>
                 }
                 <!--Video box-->
                 <div class="video-sec">
