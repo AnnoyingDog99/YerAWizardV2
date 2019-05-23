@@ -38,7 +38,7 @@
     string username = db.QueryValue(getusername, mail);
     string checkifisfraud = "SELECT Marked_Lesson From Profiel_Has_Lesson WHERE Profiel_Username = @0 AND Lesson_Id = @1";
     var marked_lesson = db.QueryValue(checkifisfraud, username, lesson_Id);
-    if (marked_lesson != false)
+    if (marked_lesson !=null)
     {
         Response.Redirect("~/Lessons/Lessons");
     }
