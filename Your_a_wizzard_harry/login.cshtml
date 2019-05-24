@@ -3,7 +3,8 @@
     Validation.RequireField("password", "You must enter a password");
     var mail = "";
     var password = "";
-    var verify = false;
+    var sha256 = "";
+    var salt = "";
 
 
 
@@ -11,21 +12,17 @@
 
     if (IsPost && Validation.IsValid())
     {
-
-        mail = Request.Form["mail"];
-        password = Request.Form["password"];
-
         string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
         string provider = "System.Data.SqlClient";
         Database db = Database.OpenConnectionString(connectionString, provider);
 
-        // counts amount of users with a certain mail and password (0 means no user, 1 means user, > 1 means double users?)
-        var dbcountuser = "SELECT COUNT(*) AS Counter FROM [Profiel] WHERE Email = @0 AND Password = @1";
-        var dbcountuserquery = db.QuerySingle(dbcountuser, mail, password);
-        var dbcheckpw = "SELECT Password FROM Profiel WHERE Email = @0";
-        var pw = db.QuerySingle(dbcheckpw, mail);
-        //verify = Crypto.VerifyHashedPassword(dbcountuserquery.password, password);
+        mail = Request.Form["mail"];
+        password = Request.Form["password"];
+
+        var dbcountuser = "SELECT COUNT(*) AS Counter FROM [Profiel] WHERE Email = @0";
+        var dbcountuserquery = db.QuerySingle(dbcountuser, mail);
         int counter = dbcountuserquery.Counter;
+
         if (counter == 0)
         {
             <div class="alert">
@@ -34,40 +31,62 @@
         }
         else
         {
-            pw = pw.Password;
-            if (Request.UrlReferrer.AbsolutePath == Request.Url.AbsolutePath)
+            string getsalt = "SELECT Salt, Password FROM Profiel WHERE Email = @0";
+
+            salt = db.QuerySingle(getsalt, mail).salt;
+            var checkpassword = db.QuerySingle(getsalt, mail).Password;
+            sha256 = Crypto.SHA256(salt + password);
+            if (sha256 == checkpassword)
             {
-                if (Session["mail"] == null)
+                if (Request.UrlReferrer.AbsolutePath == Request.Url.AbsolutePath)
                 {
-                    Session["mail"] = Request.Form["mail"];
-                    var selectrank = "SELECT Rank FROM [Profiel] WHERE Email = @0";
-                    var ownerrank = db.QuerySingle(selectrank, mail).rank;
-                    if (ownerrank == "Owner")
+                    if (Session["mail"] == null)
                     {
-                        Response.Redirect("~/Admin page.cshtml");
+                        Session["mail"] = Request.Form["mail"];
+                        var selectrank = "SELECT Rank FROM [Profiel] WHERE Email = @0";
+                        var ownerrank = db.QuerySingle(selectrank, mail).rank;
+                        if (ownerrank == "Owner")
+                        {
+                            Response.Redirect("~/Admin page.cshtml");
+                        }
+                        else
+                        {
+                            Response.Redirect("~/HomePage.cshtml");
+                        }
+
+
                     }
                     else
                     {
-                        Response.Redirect("~/HomePage.cshtml");
-                    }
-
-
-                }
-                else
-                {
-                    var selectrank = "SELECT Rank FROM [Profiel] WHERE Email = @0";
-                    var ownerrank = db.QuerySingle(selectrank, mail).rank;
-                    if (ownerrank == "Owner")
-                    {
-                        Response.Redirect("~/Admin page.cshtml");
-                    }
-                    else
-                    {
-                        Response.Redirect("~/HomePage.cshtml");
+                        var selectrank = "SELECT Rank FROM [Profiel] WHERE Email = @0";
+                        var ownerrank = db.QuerySingle(selectrank, mail).rank;
+                        if (ownerrank == "Owner")
+                        {
+                            Response.Redirect("~/Admin page.cshtml");
+                        }
+                        else
+                        {
+                            Response.Redirect("~/HomePage.cshtml");
+                        }
                     }
                 }
+
             }
+            else
+            {
+                <div class="alert">
+                    oopsiewhoopsie, you typed a wrong thyngywyngy
+                </div>
+            }
+
+
         }
+
+
+
+        // counts amount of users with a certain mail and password (0 means no user, 1 means user, > 1 means double users?)
+
+
     }
 }
 
@@ -130,39 +149,39 @@
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
     @*<script src="~/Scripts/maraudersmapscript.js"></script>*@
-    <div style="float:left" class="container">
+    <div style="position:absolute; right:0; left:0;" class="container">
         <div class="card card-login mx-auto text-center bg-dark">
             <div class="card-header mx-auto bg-dark">
                 <a href="~/HomePage.cshtml"> <img src="~/Images/hp logo.png" class="w-75" alt="Logo"> </a><br />
                 @Html.ValidationSummary()
 
             </div>
-                <div class="card-body">
-                    <form action="" method="post">
-                        @Html.ValidationMessage("mail")
-                        <div class="input-group form-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"><img style="max-width:26px" src="~/Images/wizard hat.png" /></span>
-                            </div>
-                            <input value="@Request.Form["mail"]" type="text" name="mail" class="form-control" placeholder="Email">
+            <div class="card-body">
+                <form action="" method="post">
+                    @Html.ValidationMessage("mail")
+                    <div class="input-group form-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><img style="max-width:26px" src="~/Images/wizard hat.png" /></span>
                         </div>
-                        @Html.ValidationMessage("password")
-                        <div class="input-group form-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"><img style="max-width:26px" src="~/Images/elder wand white.png" /></span>
-                            </div>
-                            <input value="@Request.Form["password"]" type="password" name="password" class="form-control" placeholder="Password">
+                        <input value="@Request.Form["mail"]" type="text" name="mail" class="form-control" placeholder="Email">
+                    </div>
+                    @Html.ValidationMessage("password")
+                    <div class="input-group form-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><img style="max-width:26px" src="~/Images/elder wand white.png" /></span>
                         </div>
+                        <input value="@Request.Form["password"]" type="password" name="password" class="form-control" placeholder="Password">
+                    </div>
 
-                        <div class="form-group">
-                            <input type="submit" name="btn" value="Login" class="btn btn-outline-danger float-right login_btn">
-                        </div>
+                    <div class="form-group">
+                        <input type="submit" name="btn" value="Login" class="btn btn-outline-danger float-right login_btn">
+                    </div>
 
-                    </form>
-                    <button style="float:left" type="button" class="btn btn-outline-light" onclick="window.location.href = '/Register.cshtml';">
-                        Register
-                    </button>
-                </div>
+                </form>
+                <button style="float:left" type="button" class="btn btn-outline-light" onclick="window.location.href = '/Register.cshtml';">
+                    Register
+                </button>
+            </div>
         </div>
     </div>
     <script>
@@ -196,4 +215,4 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
 </body>
-</html> 
+</html>
