@@ -29,6 +29,7 @@
         var UserData = db.QuerySingle("SELECT * FROM Profiel WHERE Email = @0", Session["mail"]);
         Username = UserData.Username;
         Rank = UserData.Rank;
+
     }
     else { Response.Redirect("~/login.cshtml"); }
 
@@ -75,18 +76,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
     <link href="~/Stylesheets/ForumSelect.css" rel="stylesheet" type="text/css" />
     <link href="~/Stylesheets/Layout.css" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Crimson+Text" rel="stylesheet">
 </head>
-<body style="background-color: #202225; font-family: 'Crimson Text', serif;">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<body style="background-image: url(Images/HP_backgr_forum.jpg); background-repeat: no-repeat; background-size: cover; font-family: 'Crimson Text', serif;">
     <div class="container">
         <div class="row" style="padding:20px">
             <div class="col-lg-12">
                 <div class="wrapper wrapper-content animated fadeInRight">
-                    <div class="ibox-content forum-container" style="background-color: #343a40">
+                    <div class="ibox-content forum-container" style="background-color: rgba(52, 58, 64, 0.75);">
                         <a href="~/ForumPage.cshtml">back</a>
                         <div class="forum-title">
                             <h3 style="color: white">@ForumName</h3>
@@ -114,65 +114,65 @@
                             Username_Poster = post.Profiel_Username;
                             Post_Id = post.Post_Id;
 
-                    <div class="forum-item active" style="color:white">
-                        <div class="row">
-                            <div class="col-md-9">
-                                <div class="forum-icon">
-                                    <i class="fa fa-bolt" style="color:#007aff"></i>
-                                </div>
-                                <a style="color:#007aff; font-size: 24px;" href="CommentsPage.cshtml?ForumId=@Forum_Forum_Id&PostId=@Post_Id" class="forum-item-title">@PostTitle </a>
-                                <div class="forum-sub-title" style="color:white">@Username_Poster</div>
-                            </div>
-                            <div class="col-md-1 forum-info">
-                                <form method="post">
-                                    <span class="views-number" style="color:white">
-                                        @Upvote
-                                    </span>
-                                    <div>
-                                        <small style="color:white">Upvotes</small>
+                            <div class="forum-item active" style="color:white">
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <div class="forum-icon">
+                                            <i class="fa fa-bolt" style="color:#007aff"></i>
+                                        </div>
+                                        <a style="color:#007aff; font-size: 24px;" href="CommentsPage.cshtml?ForumId=@Forum_Forum_Id&PostId=@Post_Id" class="forum-item-title">@PostTitle </a>
+                                        <div class="forum-sub-title" style="color:white">@Username_Poster</div>
                                     </div>
-                                </form>
-                            </div>
-                            <div class="col-md-1 forum-info">
-                                <form method="post">
-                                    <span class="views-number" style="color:white">
-                                        @Downvote
-                                    </span>
-                                    <div>
-                                        <small style="color:white">Downvotes</small>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                        @if (Username == Username_Poster)
-                        {
-                            <div id="EdDel">
-                                <a style="color: #a00000" href="#postDelete_@Post_Id" data-toggle="modal">Delete</a>
-                            </div>
-                        }
-                         <div id="postDelete_@Post_Id" class="modal fade" style="display: none;">
-                            <form method="post">
-                                <div class="modal-dialog modal-confirm">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <div class="icon-box">
-                                                <i class="fas fa-exclamation"></i>
+                                    <div class="col-md-1 forum-info">
+                                        <form method="post">
+                                            <span class="views-number" style="color:white">
+                                                @Upvote
+                                            </span>
+                                            <div>
+                                                <small style="color:white">Upvotes</small>
                                             </div>
-                                            <h4 class="modal-title">Delete Post</h4>
-                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>Are you sure you want to delete <br /> <span style="font-weight: bold;">@PostTitle</span>?<br /></p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
-                                            <button value="@Post_Id" name="post_delete" type="submit" class="btn btn-danger">Delete</button>
-                                        </div>
+                                        </form>
+                                    </div>
+                                    <div class="col-md-1 forum-info">
+                                        <form method="post">
+                                            <span class="views-number" style="color:white">
+                                                @Downvote
+                                            </span>
+                                            <div>
+                                                <small style="color:white">Downvotes</small>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
-                            </form>
-                         </div>
-                    </div>
+                                @if (Username == Username_Poster)
+                                {
+                                    <div id="EdDel">
+                                        <a style="color: #a00000" href="#postDelete_@Post_Id" data-toggle="modal">Delete</a>
+                                    </div>
+                                }
+                                <div id="postDelete_@Post_Id" class="modal fade" style="display: none;">
+                                    <form method="post">
+                                        <div class="modal-dialog modal-confirm">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <div class="icon-box">
+                                                        <i class="fas fa-exclamation"></i>
+                                                    </div>
+                                                    <h4 class="modal-title">Delete Post</h4>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Are you sure you want to delete <br /> <span style="font-weight: bold;">@PostTitle</span>?<br /></p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+                                                    <button value="@Post_Id" name="post_delete" type="submit" class="btn btn-danger">Delete</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         }
                     </div>
                 </div>
