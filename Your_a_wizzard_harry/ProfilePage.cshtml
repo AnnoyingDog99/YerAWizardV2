@@ -1,7 +1,12 @@
 ﻿@{
+    Layout = "~/_SiteLayout.cshtml";
+    Page.Title = "Hufflepuff";
+    PageData["current"] = "Houses";
+
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
+
     string mail = "";
     @Bobdehelper.Sessionnull();
     mail = Session["mail"].ToString();
@@ -18,7 +23,11 @@
     int upvotes = 0;
     int downvotes = 0;
     string profilename = Request.QueryString["username"];
-    var currentprofile = "SELECT User_Points, Prof_Picture, Description FROM Profiel WHERE Username = @0";
+    string currentprofile = "SELECT User_Points, Prof_Picture, Description FROM Profiel WHERE Username = @0";
+    if (db.QuerySingle(currentprofile, profilename) == null)
+    {
+        Response.Redirect("~/HomePage.cshtml");
+    }
     var upanddown = "SELECT Profiel.Username, SUM(Upvote) AS Upvotes, SUM(Downvote) AS Downvotes FROM Profiel, Post WHERE Profiel.Username = @0 AND Profiel.Username = Post.Profiel_Username GROUP BY Profiel.Username";
     try
     {
@@ -68,9 +77,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link href="~/Stylesheets/Layout.css" rel="stylesheet" />
     <link href="~/Stylesheets/Forum.css" type="text/css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="~/Stylesheets/Layout.css" rel="stylesheet" type="text/css" />
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <style>
@@ -117,7 +127,6 @@
             font-family: 'Roboto', sans-serif;
             font-weight: 400;
             background-color: #f0f3f5;
-            margin-top: 40px;
         }
         /*==============================*/
         /*====== siderbar user profile =====*/
@@ -128,7 +137,6 @@
 
         .userprofile {
             width: 100%;
-            float: left;
             clear: both;
             margin: 40px auto
         }
@@ -525,13 +533,10 @@
     </style>
 </head>
 <body>
-
-
     <!------ Include the above in your HEAD tag ---------->
     <div id="background">
         <img class="stretch" src="~/Images/hpback4.jpg" />
     </div>
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
     <div class="container" style="background-color:rgba(44, 47, 51, 0.66);">
         <div class="row">
             <div class="col-md-12 text-center ">
@@ -541,7 +546,7 @@
                         <h3 class="username">@profilename</h3>
                         @if(profilename == visitorusername)
                         {
-                        <button type="button" class="btn btn-outline-dark" onclick="window.location.href = '/ProfileSettings.cshtml?username=@visitorusername';">
+                        <button type="button" class="btn btn-outline-light" onclick="window.location.href = '/ProfileSettings.cshtml?username=@visitorusername';">
                             Edit Profile
                         </button>
                         }
@@ -602,7 +607,7 @@
                                         </div>
                                         <br /><br />
                                         <!-- Foreach -->
-                                              <div style="overflow:auto; height:500px">
+                                              <div style="overflow-y: scroll; overflow-x: hidden; height:500px;">
 
 
                                                   @foreach (var comment in SelectComments)
