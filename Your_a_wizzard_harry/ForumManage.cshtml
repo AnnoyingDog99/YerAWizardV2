@@ -92,6 +92,7 @@
                         {
                             <input style="background: url(../Images/scroll.jpg) no-repeat center; border-radius: 10px;" type="text" class="form-control" id="question" name="title" placeholder="Type Forum Title Here" cols="40" rows="5" style="resize:vertical;" required>
                         }
+                    <span style="color: rgb(120, 0, 0)">@Html.ValidationMessage("title")</span>
                     </div>
                     <div id="fielda">
                         <div id="fielda0">
@@ -107,6 +108,7 @@
                                 {
                                     <textarea style="background: url(../Images/scroll.jpg) no-repeat center; border-radius: 10px;" type="text" class="form-control" id="question" name="description" placeholder="Type Forum Description Here" cols="40" rows="5" style="resize:vertical;" required></textarea>
                                 }
+                            <span style="color: rgb(120, 0, 0)">@Html.ValidationMessage("description")</span>
                             </div>
                             <hr />
                             <div class="form-group">
