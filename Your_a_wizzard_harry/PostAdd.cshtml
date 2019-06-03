@@ -57,20 +57,19 @@
                     <div class="form-group">
                         <label style="color: white;" for="title">Post Title</label>
                         <input style="border-radius: 10px;" type="text" class="form-control" id="question" name="title" placeholder="Type Post Title Here" cols="40" rows="5" required>
+                        <span style="color: rgb(120, 0, 0)">@Html.ValidationMessage("title");</span>
                     </div>
                     <div id="fielda">
                         <div id="fielda0">
-                            <!-- Text input-->
                             <hr />
                             <div class="form-group">
                                 <label style="color: white;" for="csetitle">Post Content</label>
                                 <textarea style="border-radius: 10px;" type="text" class="form-control" id="question" name="content" placeholder="Type Post Content Here" cols="40" rows="5" required></textarea>
+                                <span style="color: rgb(120, 0, 0)">@Html.ValidationMessage("content");</span>
                             </div>
                             <hr />
                         </div>
-                        <!--end field0-->
                     </div>
-                    <!--end field-->
                     <div class="form-group">
                         <a href="~/PostPage.cshtml?ForumId=@Forum_Id" class="cancelBtn">cancel</a>
                         &nbsp;
