@@ -38,17 +38,24 @@
             Session.Abandon();
             Response.Redirect("~/login.cshtml");
         }
-        else if (Request.Form["clear"] == "clear")
-        {
-            db.Execute("DELETE FROM Notifications WHERE Profiel_Username = @0", Username);
-            Response.Redirect(Request.RawUrl);
-        }
+        
         else if (Request.Form["notification"] != null)
         {
             int Id = Request.Form["notification"].AsInt();
             string Url = db.QuerySingle("SELECT Url FROM Notifications WHERE Notification_Id = @0", Id).Url;
             db.Execute("UPDATE Notifications SET Is_Read = @0 WHERE Notification_Id = @1", 1, Id);
             Response.Redirect(Url);
+        }
+        else if (Request.Form["notification_remove"] != null)
+        {
+            int Id = Request.Form["notification_remove"].AsInt();
+            db.Execute("DELETE FROM Notifications WHERE Profiel_Username = @0 AND Notification_Id = @1", Username, Id);
+            Response.Redirect(Request.RawUrl);
+        }
+        else if (Request.Form["clear"] == "clear")
+        {
+            db.Execute("DELETE FROM Notifications WHERE Profiel_Username = @0", Username);
+            Response.Redirect(Request.RawUrl);
         }
     }
 }
@@ -68,7 +75,7 @@
 </head>
 <body>
     <!-- Navigation bar -->
-    <nav class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark" style="padding-bottom: 0px; padding-top: 0px;">
+    <nav class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark" style="padding-bottom: 0px; padding-top: 0px; z-index: 2;">
         <a id="Logo" class="navbar-brand" href="~/HomePage.cshtml"><img style="max-width: 120px;" src="~/Images/9_34_improv_v2.png"/></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -246,15 +253,18 @@
                         </i>
                     </a>
                 }
-            <div style="right: 0; left: auto;" class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <div style="right: 0; left: auto;" id="notifications" class="dropdown-menu" aria-labelledby="navbarDropdown">
                 @foreach (var notification in Notifications)
                 {
                     <form method="post">
                         @if (notification.Is_Read != true)
                         {
-                            <button name="notification" type="submit" value="@notification.Notification_Id" style="color: #efefef; cursor: pointer;" class="dropdown-item">
-                                <span style="color: #0094ff">@notification.Subject_Username</span> &nbsp; @notification.Notification
-                            </button>
+                            <div style="width: 100%;">
+                                <button name="notification_remove" value="@notification.Notification_Id" style="width: 10%; background: none; cursor: pointer; border: none; margin-top: 4px; color: #dddddd;"><i class="fas fa-times"></i></button>
+                                <button name="notification" type="submit" value="@notification.Notification_Id" style="color: #efefef; cursor: pointer; width: 90%; float: right; padding-right: 50px;" class="dropdown-item">
+                                    <span style="color: #0094ff">@notification.Subject_Username</span> &nbsp; @notification.Notification
+                                </button>
+                            </div>
                         }
                         else
                         {
@@ -289,7 +299,7 @@
                                 @Username
                             </div>
                         </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <div style="left: -20px;" class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a style="color: #efefef" class="dropdown-item" href="~/ProfilePage.cshtml?username=@Username">Profile</a>
                             <div style="background-color: rgba(0, 0, 0, 0.5); padding: 0.5px; margin: 6px;"></div>
                             <input name="logout" value="Logout" type="submit" style="color: #efefef" class="dropdown-item" />
