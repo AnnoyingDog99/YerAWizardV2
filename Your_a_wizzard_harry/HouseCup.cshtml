@@ -1,4 +1,9 @@
 ﻿@{
+    Layout = "~/_SiteLayout.cshtml";
+    Page.Title = "HouseCup";
+    PageData["current"] = "HouseCup";
+
+
     string Rank = "Student";
     int Gryf = 1;
     int Huf = 2;
@@ -156,13 +161,29 @@
     <title>Page Title</title>
     <link href="https://fonts.googleapis.com/css?family=Cabin+Condensed" rel="stylesheet">
     <style>
+        #background {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            z-index: -1;
+        }
+
+        .stretch {
+            width: 100%;
+            height: 100%;
+        }
+
         th {
             padding-right: 40px;
         }
     </style>
 </head>
-<body style="background-image: url(Images/HC.png); background-size: cover">
-
+<body>
+    <div id="background">
+        <img class="stretch" src="~/Images/hpbackhouse.png" />
+    </div>
     <div class="container">
 
         <!-- Page Heading -->
@@ -177,7 +198,7 @@
                     <a href="#"><img class="card-img-top" style="margin-top: 5px" src="~/Images/ScoreG.png" alt=""></a>
                     <div class="card-body">
                         <h4 class="card-title">
-                            <a href="#">Project One</a>
+                            <a href="#">Gryffindor</a>
                         </h4>
                         <div style="color: white">
                             @gridGryf.GetHtml(columns: gridGryf.Columns(gridGryf.Column("Username"), gridGryf.Column("User_Points")))
@@ -197,7 +218,7 @@
                     <a href="#"><img class="card-img-top" style="margin-top: 20px" src="~/Images/ScoreH.png" alt=""></a>
                     <div class="card-body">
                         <h4 class="card-title">
-                            <a href="#">Project Two</a>
+                            <a href="#">Hufflepuff</a>
                         </h4>
                         <div style="color: white">
                             @gridHuf.GetHtml(tableStyle: "webgrid", columns: gridHuf.Columns(gridHuf.Column("Username"), gridHuf.Column("User_Points")))
@@ -215,7 +236,7 @@
                     <a href="#"><img class="card-img-top" style="margin-top: 20px" src="~/Images/ScoreR.png" alt=""></a>
                     <div class="card-body">
                         <h4 class="card-title">
-                            <a href="#">Project Three</a>
+                            <a href="#">Ravenclaw</a>
                         </h4>
                         <div style="color: white">
                             @gridRav.GetHtml(columns: gridRav.Columns(gridRav.Column("Username"), gridRav.Column("User_Points")))
@@ -233,7 +254,7 @@
                     <a href="#"><img class="card-img-top" style="margin-top: 15px" src="~/Images/ScoreS.png" alt=""></a>
                     <div class="card-body">
                         <h4 class="card-title">
-                            <a href="#">Project Four</a>
+                            <a href="#">Slytherin</a>
                         </h4>
                         <div style="color: white">
                             @gridSlyth.GetHtml(columns: gridSlyth.Columns(gridSlyth.Column("Username"), gridSlyth.Column("User_Points")))
