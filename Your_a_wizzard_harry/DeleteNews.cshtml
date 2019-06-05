@@ -21,8 +21,6 @@
         Response.Redirect("~/login.cshtml");
     }
 
-
-
     int Id = 1;
     string Title = "";
     string Description = "";
@@ -43,7 +41,6 @@
         Response.Redirect("~/NewsHome.cshtml");
     }
 }
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -57,6 +54,7 @@
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     <style type="text/css">
+
 
         body {
             font-family: 'Varela Round', sans-serif;
@@ -192,7 +190,7 @@
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                         </div>
                                         <div class="modal-body">
-                                            <p>Are you sure you want to delete the forum:<br /> <span style="font-weight: bold;">@Title</span>?<br /> This will remove the article, this action cannot be undone</p>
+                                            <p>Are you sure you want to delete: <br /> <span style="font-weight: bold;">@Title</span>?<br /> This will remove the article, this action cannot be undone</p>
                                         </div>
                                         <form class="modal-footer" method="post">
                                             <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>

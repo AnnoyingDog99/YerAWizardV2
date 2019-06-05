@@ -22,12 +22,12 @@
 
     int i = 1;
     var News = db.Query("SELECT * FROM News");
+    var Newsimg = "SELECT News_IMG FROM News WHERE News_Id = @0";
 
 }
 <head>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <link rel="stylesheet" href="~/NewsStyle.css">
-    <link href="~/Stylesheets/Layout.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="~/NewsStyle.css">    
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
@@ -46,7 +46,6 @@
                                 <h2 class=" title-small"><a href="~/ForumPage.cshtml">Welcome New Community Members</a></h2>
                                 <br />
                             </div>
-                            <p class="card-text"><small class="text-time"><em>10 mins ago</em></small></p>
                         </div>
                     </div>
                     <div class="card">
@@ -56,7 +55,6 @@
                             <div class="news-title">
                                 <h2 class=" title-small"><a href="https://harrypotter.fandom.com/wiki/Hogwarts_School_of_Witchcraft_and_Wizardry">Hogwarts School of Witchcraft and Wizardry is the British wizarding school.</a></h2>
                             </div>
-                            <p class="card-text"><small class="text-time"><em>30 mins ago</em></small></p>
                         </div>
                     </div>
                 </div>
@@ -68,7 +66,6 @@
                             <div class="news-title">
                                 <h2 class=" title-small"><a href="https://harrypotter.fandom.com/wiki/Daily_Prophet">The Daily Prophet is a wizarding newspaper based in London, England.</a></h2>
                             </div>
-                            <p class="card-text"><small class="text-time"><em>10 mins ago</em></small></p>
                         </div>
                     </div>
                     <div class="card">
@@ -77,9 +74,7 @@
                         <div class="card-body">
                             <div class="news-title">
                                 <h2 class=" title-small"><a href="https://www.jkrowling.com/about/">Read all about J.K. Rowling</a></h2> <br /><br />
-
                             </div>
-                            <p class="card-text"><small class="text-time"><em>20 mins ago</em></small></p>
                         </div>
                     </div>
                 </div>
@@ -125,7 +120,6 @@
                                     <div class="news-media"><img class="img-fluid" src="~/Images/CNews3.png" alt=""></div>
                                     <div class="news-title">
                                         <h2 class=" title-large"><a href="https://harrypotter.fandom.com/wiki/Hogwarts_Houses">Hogwarts Houses</a></h2>
-
                                     </div>
                                     <br />
                                     <div></div>
@@ -140,21 +134,25 @@
     </section>
     <section class="banner-sec" style="background-color: #202225">
         <div class="container">
-
             <h3 class="heading-large" style="max-width:30%; float: left;color:white">News Feed</h3>
             <aside class="col-lg-4 side-bar col-md-12 float-right">
-                <!--Owner add news-->
-                @if (checkrank == "Owner")
+
+                <!--Owner add news-->                
+            @if (checkrank == "Owner")
                 {
-                    <div class="card">
-                        <div class="card-body">
-                            <h3 class="heading-large">Add Newsarticle</h3>
-                            <div align="center" style="padding-top: 10px">
-                                <a href="~/AddNews.cshtml" type="button" class="btn btn-warning btn-lg"> Add News</a>
-                            </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="heading-large">Add Newsarticle</h3>
+                        <div align="center" style="padding-top: 10px">
+                        <a href="~/AddNews.cshtml" type="button" class="btn btn-warning btn-lg"> Add News</a>
                         </div>
                     </div>
+                </div>
                 }
+            else
+            {
+
+            }       
                 <!--Video box-->
                 <div class="video-sec">
                     <h3 class="heading-large" style="color:white">Featured Video</h3>
@@ -165,32 +163,97 @@
                     </div>
                 </div>
             </aside>
-
             <!--News feed-->
             <br /><br />
+           
             @foreach (var id in News)
             {
                 <div class="row">
-                    <div class="col-lg-8 col-md-12" style="padding-top: 5px ;">
+                    <div class="col-lg-8 col-md-12" style="padding-top: 5px;">
                         <div class="newsarticle">
                             <a style="color:black" href="#item'@i'" data-toggle="collapse">@id.Title</a>
+                            <!--Owner only-->
+                            @if (checkrank == "Owner")
+                            {
                             <div class="float-right" style="">
                                 <a href="~/AddNews.cshtml?NewsId=@id.News_Id">Edit</a>
                                 &nbsp;
                                 <a style="color: #a00000" href="~/DeleteNews.cshtml?NewsId=@id.News_Id">Delete</a>
                             </div>
+                            }
+                            else
+                            {
+
+                            }
+                            <!--// -->            
                         </div>
                         <div id="item'@i'" class="collapse">
-                            <div class="newscontent">
-                                <!-- var inhoud/ image-->
-                                <p>@id.Description </p>
+                            <div class="newscontent" style="padding:5px 5px;">
+                                @if (Newsimg != null)
+                                {
+                                    <!-- inhoud/ image-->
+                                    <div align:right style="width:100%">
+                                        <p style="float:right"><em>Last edit:@id.Date</em></p>
+                                        &nbsp;
+                                    </div>
+                                    <div>
+                                        <img class="img-left" style="max-height:200px; max-width: 150px; border: 3px; border-color: black; float:left; margin:5px 5px;" src="@id.News_IMG" />
+                                        <p>@id.Description </p>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div align:right style="width:100%">
+                                        <p style="float:right"><em>Last edit:@id.Date</em></p>
+                                        &nbsp;
+                                    </div>
+                                    <div>
+                                        <p>@id.Description </p>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>
                 </div>
                 i++;
-            }
+            }            
             <!--/Newsfeed-->
+
+            <!--Sample /test -->
+            @*<div class="row">
+                <div class="col-lg-8 col-md-12" style="padding-top: 5px;">
+                    <div class="newsarticle">
+                        <a style="color:black" href="#item" data-toggle="collapse">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam est.</a>
+                        <!--Owner only?-->
+                        <div class="float-right" style="">
+                            <a href="">Edit</a>
+                            &nbsp;
+                            <a style="color: #a00000" href="">Delete</a>
+                        </div>
+                        <!--// -->
+                    </div>
+                    <div id="item" class="collapse">
+                        <div class="newscontent" style="padding:5px 5px;">
+                           <!-- inhoud/ image-->
+                                <div align:right style="width:100%">
+                                    <p style="float:right"><em>Last edit:</em></p>
+                                    &nbsp;
+                                </div>
+                                <div>
+                                    <img class="img-left" style="max-height:200px; max-width: 150px; border: 3px; border-color: black; float:left; margin:5px 5px;" src="https://images-na.ssl-images-amazon.com/images/I/510siZ5RBUL.jpg" />
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec leo nisi, blandit id cursus et, volutpat in turpis. Sed pellentesque nunc pulvinar aliquet egestas. Curabitur in enim nibh. In vestibulum massa ac viverra porta. Aenean tortor mi, feugiat vel massa et, fringilla bibendum libero. Sed at elit leo. Nunc dui ante, fermentum in posuere vitae, ultricies id dui. Donec commodo tortor blandit scelerisque dictum. Mauris congue interdum dolor, eu condimentum quam semper vitae. Etiam leo sem, congue id dolor id, lobortis lobortis mi. Etiam ultrices imperdiet vulputate. Fusce vulputate magna eget scelerisque sodales. Sed pharetra nulla in vulputate rhoncus. Morbi ut dolor sed ipsum congue vestibulum. Morbi et eros porta enim varius rutrum. </p>
+                                    <div class="float-right" style="">
+                                        <a href=#>Edit</a>
+                                        &nbsp;
+                                        <a style="color: #a00000" href=#>Delete</a>
+                                    </div>
+                                </div>
+                            <br />
+                                
+                        </div>
+                    </div>
+                </div>
+            </div>*@            
         </div>
     </section>
 </body>
