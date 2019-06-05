@@ -1,5 +1,25 @@
 ﻿@{
+    string Username = "";
+    string mail = "";
+    string Rank = "";
+    string prof_pic = "";
+    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
+    string provider = "System.Data.SqlClient";
+    string houseid = "SELECT House_House_Id FROM Profiel WHERE Username = @0";
+    Database db = Database.OpenConnectionString(connectionString, provider);
 
+    if (Session["mail"] != null)
+    {
+        mail = Session["mail"].ToString();
+        Username = db.QuerySingle("SELECT Username FROM Profiel WHERE Email = @0", mail).Username;
+        Rank = db.QuerySingle("SELECT Rank FROM Profiel WHERE Email = @0", mail).Rank;
+        prof_pic = db.QuerySingle("SELECT Prof_Picture FROM Profiel WHERE Email = @0", mail).Prof_Picture;
+    }
+    var k = db.QuerySingle(houseid, Username).House_House_Id;
+    if (k != null)
+    {
+        Response.Redirect("~/Houses.cshtml");
+    }
 }
 
 <!DOCTYPE html>
