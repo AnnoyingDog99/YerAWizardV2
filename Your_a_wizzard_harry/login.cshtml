@@ -1,23 +1,53 @@
 ﻿@{
     Validation.RequireField("mail", "You must enter an Email");
     Validation.RequireField("password", "You must enter a password");
-    var mail = "";
-    var password = "";
-    var sha256 = "";
-    var salt = "";
 
+    string mail = "";
+    string password = "";
+    string sha256 = "";
+    string salt = "";
 
+    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
+    string provider = "System.Data.SqlClient";
+    Database db = Database.OpenConnectionString(connectionString, provider);
 
+    if (Request.Cookies["User"] != null && Request.Cookies["Pass"] != null)
+    {
+        mail = Request.Cookies["User"].Value;
+        password = Request.Cookies["Pass"].Value;
 
+        string getsalt = "SELECT Salt, Password FROM Profiel WHERE Email = @0";
+        var checkpassword = db.QuerySingle(getsalt, mail).Password;
+
+        if (password == checkpassword)
+        {
+            Session["mail"] = mail;
+            HttpCookie Login_Mail = new HttpCookie("User");
+            HttpCookie Login_Pass = new HttpCookie("Pass");
+
+            Login_Mail.HttpOnly = true;
+            Login_Mail.Value = mail;
+            Login_Mail.Expires = DateTime.Now.AddDays(1);
+            Response.Cookies.Add(Login_Mail);
+
+            Login_Pass.HttpOnly = true;
+            Login_Pass.Value = password;
+            Login_Pass.Expires = DateTime.Now.AddDays(1);
+            Response.Cookies.Add(Login_Pass);
+
+            Response.Redirect("~/HomePage.cshtml");
+        }
+    }
 
     if (IsPost && Validation.IsValid())
     {
-        string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
-        string provider = "System.Data.SqlClient";
-        Database db = Database.OpenConnectionString(connectionString, provider);
+
 
         mail = Request.Form["mail"];
-        password = Request.Form["password"];
+        if (Request.Cookies["Pass"] == null)
+        {
+            password = Request.Form["password"];
+        }
 
         var dbcountuser = "SELECT COUNT(*) AS Counter FROM [Profiel] WHERE Email = @0";
         var dbcountuserquery = db.QuerySingle(dbcountuser, mail);
@@ -31,45 +61,76 @@
         }
         else
         {
-            string getsalt = "SELECT Salt, Password FROM Profiel WHERE Email = @0";
+            string getsalt = "SELECT Salt, Password, Is_Blocked FROM Profiel WHERE Email = @0";
 
             salt = db.QuerySingle(getsalt, mail).salt;
             var checkpassword = db.QuerySingle(getsalt, mail).Password;
-            sha256 = Crypto.SHA256(salt + password);
+            var block = db.QuerySingle(getsalt, mail).Is_Blocked;
+            if (Request.Cookies["Pass"] != null)
+            {
+                sha256 = password;
+            }
+            else
+            {
+                sha256 = Crypto.SHA256(salt + password);
+            }
             if (sha256 == checkpassword)
             {
-                if (Request.UrlReferrer.AbsolutePath == Request.Url.AbsolutePath)
+                if (block == null || block == false)
                 {
-                    if (Session["mail"] == null)
+                    if (Request.UrlReferrer.AbsolutePath == Request.Url.AbsolutePath)
                     {
-                        Session["mail"] = Request.Form["mail"];
-                        var selectrank = "SELECT Rank FROM [Profiel] WHERE Email = @0";
-                        var ownerrank = db.QuerySingle(selectrank, mail).rank;
-                        if (ownerrank == "Owner")
+                        if (Session["mail"] == null)
                         {
-                            Response.Redirect("~/Admin page.cshtml");
+                            Session["mail"] = Request.Form["mail"];
+                            var selectrank = "SELECT Rank FROM [Profiel] WHERE Email = @0";
+                            var ownerrank = db.QuerySingle(selectrank, mail).rank;
+                            if (ownerrank == "Owner")
+                            {
+                                Response.Redirect("~/Admin page.cshtml");
+                            }
+                            else
+                            {
+                                if (Request.Form["remember_me"] != null)
+                                {
+                                    HttpCookie Login_Mail = new HttpCookie("User");
+                                    HttpCookie Login_Pass = new HttpCookie("Pass"); //Authentication token would be more seu
+
+                                    Login_Mail.HttpOnly = true;
+                                    Login_Mail.Value = mail;
+                                    Login_Mail.Expires = DateTime.Now.AddDays(1);
+                                    Response.Cookies.Add(Login_Mail);
+
+                                    Login_Pass.HttpOnly = true;
+                                    Login_Pass.Value = db.QuerySingle("Select Password FROM Profiel WHERE Email = @0", mail).Password;
+                                    Login_Pass.Expires = DateTime.Now.AddDays(1);
+                                    Response.Cookies.Add(Login_Pass);
+                                }
+                                Response.Redirect("~/HomePage.cshtml");
+                            }
                         }
                         else
                         {
-                            Response.Redirect("~/HomePage.cshtml");
-                        }
-
-
-                    }
-                    else
-                    {
-                        var selectrank = "SELECT Rank FROM [Profiel] WHERE Email = @0";
-                        var ownerrank = db.QuerySingle(selectrank, mail).rank;
-                        if (ownerrank == "Owner")
-                        {
-                            Response.Redirect("~/Admin page.cshtml");
-                        }
-                        else
-                        {
-                            Response.Redirect("~/HomePage.cshtml");
+                            var selectrank = "SELECT Rank FROM [Profiel] WHERE Email = @0";
+                            var ownerrank = db.QuerySingle(selectrank, mail).rank;
+                            if (ownerrank == "Owner")
+                            {
+                                Response.Redirect("~/Admin page.cshtml");
+                            }
+                            else
+                            {
+                                Response.Redirect("~/HomePage.cshtml");
+                            }
                         }
                     }
                 }
+                else
+                {
+                    <div class="alert">
+                        Account blocked
+                    </div>
+                }
+
 
             }
             else
@@ -78,15 +139,8 @@
                     oopsiewhoopsie, you typed a wrong thyngywyngy
                 </div>
             }
-
-
         }
-
-
-
         // counts amount of users with a certain mail and password (0 means no user, 1 means user, > 1 means double users?)
-
-
     }
 }
 
@@ -96,8 +150,6 @@
     <link href="~/Stylesheets/StyleSheetLogin.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
-
-
         .field-validation-error {
             color: red;
         }
@@ -152,7 +204,7 @@
     <div style="position:absolute; right:0; left:0;" class="container">
         <div class="card card-login mx-auto text-center bg-dark">
             <div class="card-header mx-auto bg-dark">
-                <a href="~/HomePage.cshtml"> <img src="~/Images/hp logo.png" class="w-75" alt="Logo"> </a><br />
+                <img src="~/Images/hp logo.png" class="w-75" alt="Logo"><br />
                 @Html.ValidationSummary()
 
             </div>
@@ -172,7 +224,13 @@
                         </div>
                         <input value="@Request.Form["password"]" type="password" name="password" class="form-control" placeholder="Password">
                     </div>
-
+                    <!---->
+                    <div class="input-group form-group">
+                        <div style="text-align: left; color: white;">
+                            <input type="checkbox" name="remember_me" value="1" /> &nbsp; Remember me
+                        </div>
+                    </div>
+                    <!---->
                     <div class="form-group">
                         <input type="submit" name="btn" value="Login" class="btn btn-outline-danger float-right login_btn">
                     </div>

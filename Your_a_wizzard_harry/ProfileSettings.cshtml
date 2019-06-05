@@ -19,20 +19,24 @@
         Response.Redirect("~/login.cshtml");
     }
     newdescription = Request["description"];
+    if (Request.QueryString["username"] == null)
+    {
+        Response.Redirect("~/HomePage.cshtml");
+    }
     username = Request.QueryString["username"];
+
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
+
     var current = "SELECT Prof_Picture, Description FROM Profiel Where Username = @0";
     string currentimage = db.QuerySingle(current, username).Prof_Picture;
     string currentdescription = db.QuerySingle(current, username).Description;
 
-
-
     if (IsPost)
     {
         var image = WebImage.GetImageFromRequest();
-        if (currentimage == null)
+        if (currentimage == null && image != null)
         {
             path = @"~\ProfilePicture\" + Path.GetFileName(image.FileName);
             displaypath = @"\ProfilePicture\" + Path.GetFileName(image.FileName);
@@ -41,7 +45,7 @@
             var profpic = "UPDATE Profiel SET Prof_Picture = @0 WHERE Username = @1";
             db.Execute(profpic, displaypath, username);
         }
-        if (currentimage != null)
+        if (currentimage != null && image != null)
         {
             var serverpath = Server.MapPath(currentimage);
             File.Delete(serverpath);
@@ -58,6 +62,7 @@
             var updatedescription = "UPDATE Profiel SET Description = @0 WHERE Username = @1";
             db.Execute(updatedescription, newdescription, username);
         }
+        Response.Redirect("~/ProfilePage.cshtml?username=" + username);
     }
 }
 
@@ -518,6 +523,14 @@
             color: #607D8B;
             overflow: visible;
         }
+        #inputfile {
+	        opacity: 0;
+	        overflow: hidden;
+	        z-index: -1;
+        }
+        #custom-inputfile:hover{
+            color: rgba(0, 0, 0, 0.05);
+        }
     </style>
 </head>
 <body>
@@ -537,13 +550,16 @@
                         <img style="max-height:130px; min-height:130px; max-width: 100px; min-width:100px; border: 2px; border-color: gray " src="@currentimage" />
                         <h3 class="username">@username</h3>
                         <form method="post" enctype="multipart/form-data">
-                            <input class="btn btn-outline-dark" type="file" name="image" />
+                            <label style="position: absolute; left: 0;" id="custom-inputfile" class="btn btn-outline-dark">
+                                Select Image
+                            </label>
+                            <input id="inputfile" class="btn btn-outline-dark" type="file" name="image" />
                             <br />
                             <textarea style="color:white; background-color:rgba(234, 23, 23, 0); border-color: lightslategray; overflow: auto;" id="form7" class="md-textarea form-control" placeholder="Comment something..." rows="3" name="description" type="text">@currentdescription</textarea>
                             <br />
-                            <input style="float:left" class="btn btn-outline-dark" type="submit" value="Save Changes" />
+                            <input style="float:right" class="btn btn-outline-dark" type="submit" value="Save Changes" />
                         </form>
-                        <button style="float:right" type="button" class="btn btn-outline-dark" onclick="window.location.href = '/ProfilePage.cshtml?username=@username';">
+                        <button style="float:left" type="button" class="btn btn-outline-dark" onclick="window.location.href = '/ProfilePage.cshtml?username=@username';">
                             Go back to profile
                         </button>
 
