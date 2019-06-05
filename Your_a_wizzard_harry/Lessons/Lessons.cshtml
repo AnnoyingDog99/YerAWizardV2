@@ -41,6 +41,11 @@
         lesson_Info = db.QueryValue(GetLessonInfo, 1);
 
         getlesson_Id = "SELECT Lesson_Id FROM Lesson WHERE Selected_Lesson = @0";
+        var k = db.QueryValue(getlesson_Id, 1);
+        if(k == null )
+        {
+            Response.Redirect("~/Lessons/NoLessons.cshtml");
+        }
         lesson_id = db.QueryValue(getlesson_Id, 1);
 
         //
