@@ -6,17 +6,25 @@
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
+
     if (Session["mail"] != null)
     {
         mail = Session["mail"].ToString();
-        Username = db.QuerySingle("SELECT Username FROM Profiel WHERE Email = @0", mail).Username;
-        Rank = db.QuerySingle("SELECT Rank FROM Profiel WHERE Email = @0", mail).Rank;
-        prof_pic = db.QuerySingle("SELECT Prof_Picture FROM Profiel WHERE Email = @0", mail).Prof_Picture;
+        try
+        {
+            Username = db.QuerySingle("SELECT Username FROM Profiel WHERE Email = @0", mail).Username;
+            Rank = db.QuerySingle("SELECT Rank FROM Profiel WHERE Email = @0", mail).Rank;
+            prof_pic = db.QuerySingle("SELECT Prof_Picture FROM Profiel WHERE Email = @0", mail).Prof_Picture;
+        }
+        catch (Exception)
+        {
+            Session.Abandon();
+        }
     }
 
     if (Rank != "Student" && Rank != "Teacher" && Rank != "Owner")
     {
-        if (PageData["current"] != "Home" && PageData["current"] != "About" && PageData["current"] != "Contact")
+        if (PageData["current"] != "Home" && PageData["current"] != "About" && PageData["current"] != "Contact" && PageData["current"] != "HouseCup")
         {
             Response.Redirect("~/login.cshtml");
         }
@@ -36,9 +44,21 @@
         if (Request.Form["logout"] == "Logout")
         {
             Session.Abandon();
+            if (Request.Cookies["User"] != null && Request.Cookies["Pass"] != null)
+            {
+                HttpCookie[] cookies = new HttpCookie[2];
+                cookies[0] = HttpContext.Current.Request.Cookies["User"];
+                cookies[1] = HttpContext.Current.Request.Cookies["Pass"];
+                foreach (var cookie in cookies)
+                {
+                    cookie.Expires = DateTime.Now.AddDays(-10);
+                    cookie.Value = null;
+                    HttpContext.Current.Response.SetCookie(cookie);
+                }
+            }
             Response.Redirect("~/login.cshtml");
         }
-        
+
         else if (Request.Form["notification"] != null)
         {
             int Id = Request.Form["notification"].AsInt();
@@ -75,8 +95,8 @@
 </head>
 <body>
     <!-- Navigation bar -->
-    <nav class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark" style="padding-bottom: 0px; padding-top: 0px; z-index: 2;">
-        <a id="Logo" class="navbar-brand" href="~/HomePage.cshtml"><img style="max-width: 120px;" src="~/Images/9_34_improv_v2.png"/></a>
+    <nav class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark" style="padding-bottom: 0px; padding-top: 0px; z-index: 2; font-size: 16px !important; font-family: -apple-system,BlinkMacSystemFont, Segoe UI ,Roboto, Helvetica Neue ,Arial,sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji !important;">
+        <a id="Logo" class="navbar-brand" href="~/HomePage.cshtml"><img style="max-width: 120px;" src="~/Images/9_34_improv_v2.png" /></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -253,40 +273,40 @@
                         </i>
                     </a>
                 }
-            <div style="right: 0; left: auto;" id="notifications" class="dropdown-menu" aria-labelledby="navbarDropdown">
-                @foreach (var notification in Notifications)
-                {
-                    <form method="post">
-                        @if (notification.Is_Read != true)
-                        {
-                            <div style="width: 100%;">
-                                <button name="notification_remove" value="@notification.Notification_Id" style="width: 10%; background: none; cursor: pointer; border: none; margin-top: 4px; color: #dddddd;"><i class="fas fa-times"></i></button>
-                                <button name="notification" type="submit" value="@notification.Notification_Id" style="color: #efefef; cursor: pointer; width: 90%; float: right; padding-right: 50px;" class="dropdown-item">
-                                    <span style="color: #0094ff">@notification.Subject_Username</span> &nbsp; @notification.Notification
+                <div style="right: 0; left: auto;" id="notifications" class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    @foreach (var notification in Notifications)
+                    {
+                        <form method="post">
+                            @if (notification.Is_Read != true)
+                            {
+                                <div style="width: 100%;">
+                                    <button name="notification_remove" value="@notification.Notification_Id" style="width: 10%; background: none; cursor: pointer; border: none; margin-top: 4px; color: #dddddd;"><i class="fas fa-times"></i></button>
+                                    <button name="notification" type="submit" value="@notification.Notification_Id" style="color: #efefef; cursor: pointer; width: 90%; float: right; padding-right: 50px;" class="dropdown-item">
+                                        <span style="color: #0094ff">@notification.Subject_Username</span> &nbsp; @notification.Notification
+                                    </button>
+                                </div>
+                            }
+                            else
+                            {
+                                <button name="notification" type="submit" value="@notification.Notification_Id" style="color: rgba(207, 207, 207, 0.65); cursor: pointer;" class="dropdown-item">
+                                    <span style="color: rgba(0, 125, 215, 0.65)">@notification.Subject_Username</span> &nbsp; @notification.Notification
                                 </button>
-                            </div>
-                        }
-                        else
-                        {
-                            <button name="notification" type="submit" value="@notification.Notification_Id" style="color: rgba(207, 207, 207, 0.65); cursor: pointer;" class="dropdown-item">
-                                <span style="color: rgba(0, 125, 215, 0.65)">@notification.Subject_Username</span> &nbsp; @notification.Notification
-                            </button>
-                        }
-                    </form>
-                    <!--<a style="color: #efefef; cursor: pointer;" class="dropdown-item" onclick="window.location = '@notification.Url';"><span style="color: #0094ff">@notification.Subject_Username</span> &nbsp; @notification.Notification</a>-->
-                    <div style="background-color: rgba(0, 0, 0, 0.5); padding: 0.5px; margin: 6px;"></div>
-                }
-                @if (Notifications_Amount != 0 || clearable == true)
-                {
-                    <form method="post">
-                        <button id="clearBtn" type="submit" name="clear" value="clear">Clear All</button>
-                    </form>
-                }
-                else
-                {
-                    <p style="color: #efefef; cursor: pointer;" class="dropdown-item">No notifications here <i class="fas fa-hat-wizard"></i></p>
-                }
-            </div>
+                            }
+                        </form>
+                        <!--<a style="color: #efefef; cursor: pointer;" class="dropdown-item" onclick="window.location = '@notification.Url';"><span style="color: #0094ff">@notification.Subject_Username</span> &nbsp; @notification.Notification</a>-->
+                        <div style="background-color: rgba(0, 0, 0, 0.5); padding: 0.5px; margin: 6px;"></div>
+                    }
+                    @if (Notifications_Amount != 0 || clearable == true)
+                    {
+                        <form method="post">
+                            <button id="clearBtn" type="submit" name="clear" value="clear">Clear All</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <p style="color: #efefef; cursor: pointer;" class="dropdown-item">No notifications here <i class="fas fa-hat-wizard"></i></p>
+                    }
+                </div>
             </li>
             @if (mail != "")
             {
@@ -323,6 +343,7 @@
     <!-- Navigation bar -->
     @RenderBody()
     <!-- Footer -->
+    
     <footer id="footer" class="footer">
         <div id="footer">
             <div class="container bottom_border">
@@ -394,7 +415,7 @@
             </div>
         </div>
     </footer>
-    <div style="padding: 20px;" id="footer"></div>
+    <div style="padding: 100px;" id="footer"></div>
     <!-- Footer -->
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>

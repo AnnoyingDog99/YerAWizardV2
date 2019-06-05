@@ -8,6 +8,7 @@
     Database db = Database.OpenConnectionString(connectionString, provider);
 
     string mail = "";
+    string profilename = "";
     @Bobdehelper.Sessionnull();
     mail = Session["mail"].ToString();
     string checkrank = "";
@@ -22,7 +23,15 @@
     }
     int upvotes = 0;
     int downvotes = 0;
-    string profilename = Request.QueryString["username"];
+    try
+    {
+        profilename = Request.QueryString["username"];
+    }
+    catch (Exception)
+    {
+        Response.Redirect("~/HomePage.cshtml");
+    }
+
     string currentprofile = "SELECT User_Points, Prof_Picture, Description FROM Profiel WHERE Username = @0";
     if (db.QuerySingle(currentprofile, profilename) == null)
     {
