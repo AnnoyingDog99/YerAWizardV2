@@ -6,6 +6,7 @@
     string password = "";
     string sha256 = "";
     string salt = "";
+    string checkpassword = "";
 
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
     string provider = "System.Data.SqlClient";
@@ -17,32 +18,33 @@
         password = Request.Cookies["Pass"].Value;
 
         string getsalt = "SELECT Salt, Password FROM Profiel WHERE Email = @0";
-        var checkpassword = db.QuerySingle(getsalt, mail).Password;
-
-        if (password == checkpassword)
+        if (db.QuerySingle(getsalt, mail) != null)
         {
-            Session["mail"] = mail;
-            HttpCookie Login_Mail = new HttpCookie("User");
-            HttpCookie Login_Pass = new HttpCookie("Pass");
+            checkpassword = db.QuerySingle(getsalt, mail).Password;
 
-            Login_Mail.HttpOnly = true;
-            Login_Mail.Value = mail;
-            Login_Mail.Expires = DateTime.Now.AddDays(1);
-            Response.Cookies.Add(Login_Mail);
+            if (password == checkpassword)
+            {
+                Session["mail"] = mail;
+                HttpCookie Login_Mail = new HttpCookie("User");
+                HttpCookie Login_Pass = new HttpCookie("Pass");
 
-            Login_Pass.HttpOnly = true;
-            Login_Pass.Value = password;
-            Login_Pass.Expires = DateTime.Now.AddDays(1);
-            Response.Cookies.Add(Login_Pass);
+                Login_Mail.HttpOnly = true;
+                Login_Mail.Value = mail;
+                Login_Mail.Expires = DateTime.Now.AddDays(1);
+                Response.Cookies.Add(Login_Mail);
 
-            Response.Redirect("~/HomePage.cshtml");
+                Login_Pass.HttpOnly = true;
+                Login_Pass.Value = password;
+                Login_Pass.Expires = DateTime.Now.AddDays(1);
+                Response.Cookies.Add(Login_Pass);
+
+                Response.Redirect("~/HomePage.cshtml");
+            }
         }
     }
 
     if (IsPost && Validation.IsValid())
     {
-
-
         mail = Request.Form["mail"];
         if (Request.Cookies["Pass"] == null)
         {
@@ -64,7 +66,7 @@
             string getsalt = "SELECT Salt, Password, Is_Blocked FROM Profiel WHERE Email = @0";
 
             salt = db.QuerySingle(getsalt, mail).salt;
-            var checkpassword = db.QuerySingle(getsalt, mail).Password;
+            checkpassword = db.QuerySingle(getsalt, mail).Password;
             var block = db.QuerySingle(getsalt, mail).Is_Blocked;
             if (Request.Cookies["Pass"] != null)
             {
