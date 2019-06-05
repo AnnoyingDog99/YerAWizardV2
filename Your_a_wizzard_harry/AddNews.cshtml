@@ -49,14 +49,15 @@
 
 
         // Add image //
-        if (currentimage == null)
+        if (currentimage == "" && image != null)
         {
             path = @"~\NewsImage\" + Path.GetFileName(image.FileName);
-            displaypath = @"\NewsImage\Picture\" + Path.GetFileName(image.FileName);
+            displaypath = @"\NewsImage\" + Path.GetFileName(image.FileName);
+            News_IMG = displaypath;
             image.Save(path);
         }
 
-        if (currentimage != null)
+        else if (currentimage != "" && image != null)
         {
             var serverpath = Server.MapPath(currentimage);
             File.Delete(serverpath);
