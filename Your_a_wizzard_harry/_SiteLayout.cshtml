@@ -288,9 +288,12 @@
                             }
                             else
                             {
-                                <button name="notification" type="submit" value="@notification.Notification_Id" style="color: rgba(207, 207, 207, 0.65); cursor: pointer;" class="dropdown-item">
+                                <div style="width: 100%;">
+                                    <button name="notification_remove" value="@notification.Notification_Id" style="width: 10%; background: none; cursor: pointer; border: none; margin-top: 4px; color: #dddddd;"><i class="fas fa-times"></i></button>
+                                    <button name="notification" type="submit" value="@notification.Notification_Id" style="color: rgba(207, 207, 207, 0.65); cursor: pointer; width: 90%; float: right; padding-right: 50px;" class="dropdown-item">
                                     <span style="color: rgba(0, 125, 215, 0.65)">@notification.Subject_Username</span> &nbsp; @notification.Notification
-                                </button>
+                                    </button>
+                                </div>
                             }
                         </form>
                         <!--<a style="color: #efefef; cursor: pointer;" class="dropdown-item" onclick="window.location = '@notification.Url';"><span style="color: #0094ff">@notification.Subject_Username</span> &nbsp; @notification.Notification</a>-->

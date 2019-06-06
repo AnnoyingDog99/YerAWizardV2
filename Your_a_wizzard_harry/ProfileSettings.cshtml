@@ -47,8 +47,11 @@
         }
         if (currentimage != null && image != null)
         {
-            var serverpath = Server.MapPath(currentimage);
-            File.Delete(serverpath);
+            if(currentimage != @"\ProfilePicture\default.png")
+            {
+                var serverpath = Server.MapPath(currentimage);
+                File.Delete(serverpath);
+            }
 
             path = @"~\ProfilePicture\" + Path.GetFileName(image.FileName);
             displaypath = @"\ProfilePicture\" + Path.GetFileName(image.FileName);

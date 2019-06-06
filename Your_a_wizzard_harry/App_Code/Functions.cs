@@ -241,6 +241,57 @@ public class Functions
         {
             return "NoRank";
         }
+    }
 
+    public int[] GetPositions(int Gr, int Hu, int Ra, int Sl)
+    {
+        int[] position_Array = new int[4];
+
+        int Gr_Pos = 0;
+        int Hu_Pos = 0;
+        int Ra_Pos = 0;
+        int Sl_Pos = 0;
+
+
+        int[] points_Array = new int[4];
+
+        points_Array[0] = Gr;
+        points_Array[1] = Hu;
+        points_Array[2] = Ra;
+        points_Array[3] = Sl;
+
+        for (int x = 0; x <= 3; x++)
+        {
+            int position_int = 1;
+            int position_from_first = 0;
+            for (int i = 0; i <= 3; i++)
+            {
+                if (points_Array[x] < points_Array[i] && x != i)
+                {
+                    position_from_first++;
+                }
+            }
+            position_int += position_from_first;
+            switch (x)
+            {
+                case 0:
+                    Gr_Pos = position_int;
+                    break;
+                case 1:
+                    Hu_Pos = position_int;
+                    break;
+                case 2:
+                    Ra_Pos = position_int;
+                    break;
+                case 3:
+                    Sl_Pos = position_int;
+                    break;
+            }
+        }
+        position_Array[0] = Gr_Pos;
+        position_Array[1] = Hu_Pos;
+        position_Array[2] = Ra_Pos;
+        position_Array[3] = Sl_Pos;
+        return position_Array;
     }
 }

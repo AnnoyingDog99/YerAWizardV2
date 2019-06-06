@@ -60,18 +60,13 @@
     {
         if (Request.Form["post_delete"] != null)
         {
-            if (Rank != "Teacher" && Rank != "Owner")
-        {
-            db.Close();
+            int Id = Request.Form["post_delete"].AsInt();
+            db.Execute("DELETE FROM [Reports] WHERE Post_Post_Id = @0", Id);
+            db.Execute("DELETE FROM [IsVoted] WHERE Post_Post_Id = @0", Id);
+            db.Execute("DELETE FROM [Replies] WHERE Post_Post_Id = @0", Id);
+            db.Execute("DELETE FROM [Comments] WHERE Post_Post_Id = @0", Id);
+            db.Execute("DELETE FROM [Post] WHERE Post_Id = @0", Id);
             Response.Redirect(Request.RawUrl);
-        }
-        int Id = Request.Form["post_delete"].AsInt();
-        db.Execute("DELETE FROM [Reports] WHERE Post_Post_Id = @0", Id);
-        db.Execute("DELETE FROM [IsVoted] WHERE Post_Post_Id = @0", Id);
-        db.Execute("DELETE FROM [Replies] WHERE Post_Post_Id = @0", Id);
-        db.Execute("DELETE FROM [Comments] WHERE Post_Post_Id = @0", Id);
-        db.Execute("DELETE FROM [Post] WHERE Post_Id = @0", Id);
-        Response.Redirect("~/PostPage.cshtml?ForumId=" + Forum_Forum_Id);
         }
     }
 }
