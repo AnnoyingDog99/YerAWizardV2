@@ -1,7 +1,6 @@
 ﻿@{
     Layout = "~/_SiteLayout.cshtml";
-    Page.Title = "Hufflepuff";
-    PageData["current"] = "Houses";
+    Page.Title = "ProfilePage";
 
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
     string provider = "System.Data.SqlClient";
@@ -621,12 +620,13 @@
 
                                                   @foreach (var comment in SelectComments)
                                                   {
+                                                      string image = db.QuerySingle("SELECT Prof_Picture FROM Profiel WHERE Username = @0", comment.Username_Username).Prof_Picture;
                                                       string CommenterRank = db.QuerySingle("SELECT Rank FROM Profiel WHERE Username = @0", comment.Username_Username).Rank;
                                                       <div class="forum-item active" style="color:white; border: thin solid grey; padding:5px 5px 5px 5px;">
 
                                                           <div class="row" style="margin-bottom:0px !important">
                                                               <div class="col-md-12">
-                                                                  <a href="~/ProfilePage.cshtml?username=@comment.Username_Username"><img src="@comment.Prof_Picture" style="max-height:42px; max-width:42px; min-height:42px; min-width:42px; margin-right:20px; border: thin solid grey; display:inline-block; float:left" /></a>
+                                                                  <a href="~/ProfilePage.cshtml?username=@comment.Username_Username"><img src="@image" style="max-height:42px; max-width:42px; min-height:42px; min-width:42px; margin-right:20px; border: thin solid grey; display:inline-block; float:left" /></a>
 
                                                                   <div style="display:inline-block; float:left">
                                                                       <a href="~/ProfilePage.cshtml?username=@comment.Username_Username">@comment.Username_Username</a> <label style="color:darkgray"> &nbsp; @comment.Date &#64; @comment.Time</label>

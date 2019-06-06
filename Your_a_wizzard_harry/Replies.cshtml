@@ -130,19 +130,18 @@
                     Response.Redirect(Request.RawUrl);
                 }
                 string reason = Request.Form["comment_reason"];
-                db.Execute("INSERT INTO Reports(Forum_Forum_Id, Post_Post_Id, Comment_Comment_Id, Reason, Reported_by) VALUES(@0, @1, @2, @3, @4)", Forum_Forum_Id, Post_Id, Comment_Id, reason, Username_Commenter);
-                db.Execute("UPDATE Post SET Report = 1 WHERE Post_Post_Id = @0 AND Comment_Comment_Id = @1", Post_Id, Comment_Id);
+                db.Execute("INSERT INTO Reports(Forum_Forum_Id, Post_Post_Id, Comment_Comment_Id, Reason, Reported_by) VALUES(@0, @1, @2, @3, @4)", Forum_Forum_Id, Post_Id, Comment_Id, reason, Username_Replier);
             }
             else if (Request.Form["reply_report"] != null)
             {
                 int Reply_Id = Request.Form["Reply_report"].AsInt();
-                int check_if_user_reported_reply = db.QuerySingle("SELECT COUNT(Reported_by) AS Count FROM Reports WHERE Reported_by = @0 AND Reply_Reply_Id = @1", Username_Commenter, Reply_Id).Count;
+                int check_if_user_reported_reply = db.QuerySingle("SELECT COUNT(Reported_by) AS Count FROM Reports WHERE Reported_by = @0 AND Reply_Reply_Id = @1", Username_Replier, Reply_Id).Count;
                 if (check_if_user_reported_reply != 0)
                 {
                     Response.Redirect(Request.RawUrl);
                 }
                 string reason = Request.Form["reply_reason"];
-                db.Execute("INSERT INTO Reports(Forum_Forum_Id, Post_Post_Id, Comment_Comment_Id, Reply_Reply_Id, Reason, Reported_by) VALUES(@0, @1, @2, @3, @4, @5)", Forum_Forum_Id, Post_Id, Comment_Id, Reply_Id, reason, Username_Commenter);
+                db.Execute("INSERT INTO Reports(Forum_Forum_Id, Post_Post_Id, Comment_Comment_Id, Reply_Reply_Id, Reason, Reported_by) VALUES(@0, @1, @2, @3, @4, @5)", Forum_Forum_Id, Post_Id, Comment_Id, Reply_Id, reason, Username_Replier);
                 //Optional set Report = 1, Column [Report] does not exist in the Table [Comments]
             }
             Response.Redirect(Request.RawUrl);
@@ -183,6 +182,16 @@
                 R_VotedAs = R_Get_is_voted_as.Voted;
             }
             Send_Vote_Data(type, R_VotedAs, Username_Replier);
+            Response.Redirect(Request.RawUrl);
+        }
+
+        ///Delete
+        if (Request.Form["reply_delete"] != null)
+        {
+            int Id = Request.Form["reply_delete"].AsInt();
+            db.Execute("DELETE FROM [Reports] WHERE Reply_Reply_Id = @0", Id);
+            db.Execute("DELETE FROM [IsVoted] WHERE Reply_Reply_Id = @0", Id);
+            db.Execute("DELETE FROM [Replies] WHERE Reply_Id = @0", Id);
             Response.Redirect(Request.RawUrl);
         }
     }
@@ -461,60 +470,88 @@
                                 {
                                     <a style="float: right; color: #a00000;" href="#replyReport_@reply.Reply_Id" data-toggle="modal"><i style="color: #a00000;" class="fas fa-flag"></i></a>
                                 }
-                                <div class="row">
-                                    <div class="col-md-9">
-                                        <div class="forum-icon">
-                                            <img style="max-height:35px; min-height:30px; max-width: 30px; min-width:30px; border: 2px; border-color: gray " src="@replier_profpic" />
-                                        </div>
-                                        @switch (ReplierRank)
-                                        {
-                                            case "Student":
-                                                <label class="forum-item-title" style="color:#007aff"><a href="~/ProfilePage.cshtml?username=@reply.Username_Username">@reply.Username_Username</a> <p class="rank">(@ReplierRank)</p></label>
-                                                break;
-                                            case "Teacher":
-                                                <label class="forum-item-title" style="color:#007aff"><a href="~/ProfilePage.cshtml?username=@reply.Username_Username">@reply.Username_Username</a> <p class="rank" style="color: #cc3c71">(@ReplierRank)</p></label>
-                                                break;
-                                            case "Owner":
-                                                <label class="forum-item-title" style="color:#007aff"><a href="~/ProfilePage.cshtml?username=@reply.Username_Username">@reply.Username_Username</a> <p class="rank" style="color: #ff7220">(@ReplierRank)</p></label>
-                                                break;
-                                        }
-                                        <div class="forum-sub-title" style="color:white">@reply.Reply</div>
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <div class="forum-icon">
+                                        <img style="max-height:35px; min-height:30px; max-width: 30px; min-width:30px; border: 2px; border-color: gray " src="@replier_profpic" />
                                     </div>
-                                    <div style="float:left; display:inline; width: 20%;" class="col-md-1 forum-info">
-                                        <form method="post">
-                                            <span class="views-number" style="color:white; font-size: 14px;">
-                                                @reply.Upvote
-                                            </span>
-                                            <div>
-                                                <small id="display-none" style="color:white; font-size: 11px;">Upvotes</small>
-                                                <button class="vote" name="UpvoteR" type="submit" value="@reply.Reply_Id">
-                                                    @if (R_is_voted_as == "Upvoted")
-                                                    {<i id="upvoted" class="fas fa-arrow-alt-circle-up" style="font-size: 12px;"></i> }
-                                                    else
-                                                    { <i id="notvoted" class="fa fa-arrow-alt-circle-up" style="font-size: 12px;"></i>}
-                                                    <i id="loading" class="fas fa-broom"></i>
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div style="float:left; display:inline; width: 20%;" class="col-md-1 forum-info">
-                                        <form method="post">
-                                            <span class="views-number" style="color:white; font-size: 14px;">
-                                                @reply.Downvote
-                                            </span>
-                                            <div>
-                                                <small id="display-none" style="color:white; font-size: 11px;">Downvotes</small>
-                                                <button class="vote" name="DownvoteR" type="submit" value="@reply.Reply_Id">
-                                                    @if (R_is_voted_as == "Downvoted")
-                                                    {<i id="downvoted" class="fas fa-arrow-alt-circle-down" style="font-size: 12px;"></i> }
-                                                    else
-                                                    { <i id="notvoted" class="fa fa-arrow-alt-circle-down" style="font-size: 12px;"></i>}
-                                                    <i id="loading" class="fas fa-broom"></i>
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
+                                    @switch (ReplierRank)
+                                    {
+                                        case "Student":
+                                            <label class="forum-item-title" style="color:#007aff"><a href="~/ProfilePage.cshtml?username=@reply.Username_Username">@reply.Username_Username</a> <p class="rank">(@ReplierRank)</p></label>
+                                            break;
+                                        case "Teacher":
+                                            <label class="forum-item-title" style="color:#007aff"><a href="~/ProfilePage.cshtml?username=@reply.Username_Username">@reply.Username_Username</a> <p class="rank" style="color: #cc3c71">(@ReplierRank)</p></label>
+                                            break;
+                                        case "Owner":
+                                            <label class="forum-item-title" style="color:#007aff"><a href="~/ProfilePage.cshtml?username=@reply.Username_Username">@reply.Username_Username</a> <p class="rank" style="color: #ff7220">(@ReplierRank)</p></label>
+                                            break;
+                                    }
+                                    <div class="forum-sub-title" style="color:white">@reply.Reply</div>
                                 </div>
+                                <div style="float:left; display:inline; width: 20%;" class="col-md-1 forum-info">
+                                    <form method="post">
+                                        <span class="views-number" style="color:white; font-size: 14px;">
+                                            @reply.Upvote
+                                        </span>
+                                        <div>
+                                            <small id="display-none" style="color:white; font-size: 11px;">Upvotes</small>
+                                            <button class="vote" name="UpvoteR" type="submit" value="@reply.Reply_Id">
+                                                @if (R_is_voted_as == "Upvoted")
+                                                {<i id="upvoted" class="fas fa-arrow-alt-circle-up" style="font-size: 12px;"></i> }
+                                                else
+                                                { <i id="notvoted" class="fa fa-arrow-alt-circle-up" style="font-size: 12px;"></i>}
+                                                <i id="loading" class="fas fa-broom"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div style="float:left; display:inline; width: 20%;" class="col-md-1 forum-info">
+                                    <form method="post">
+                                        <span class="views-number" style="color:white; font-size: 14px;">
+                                            @reply.Downvote
+                                        </span>
+                                        <div>
+                                            <small id="display-none" style="color:white; font-size: 11px;">Downvotes</small>
+                                            <button class="vote" name="DownvoteR" type="submit" value="@reply.Reply_Id">
+                                                @if (R_is_voted_as == "Downvoted")
+                                                {<i id="downvoted" class="fas fa-arrow-alt-circle-down" style="font-size: 12px;"></i> }
+                                                else
+                                                { <i id="notvoted" class="fa fa-arrow-alt-circle-down" style="font-size: 12px;"></i>}
+                                                <i id="loading" class="fas fa-broom"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                                @if (Username_Replier == reply.Username_Username)
+                                {
+                                    <div id="EdDel">
+                                        <a style="color: #a00000" href="#postDelete_@reply.Reply_Id" data-toggle="modal">Delete</a>
+                                    </div>
+                                }
+                                <div id="postDelete_@reply.Reply_Id" class="modal fade" style="display: none;">
+                                    <form method="post">
+                                        <div class="modal-dialog modal-confirm">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <div class="icon-box">
+                                                        <i class="fas fa-exclamation"></i>
+                                                    </div>
+                                                    <h4 class="modal-title">Delete Reply</h4>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Are you sure you want to delete <br /> <span style="font-weight: bold;">@reply.Reply_Id</span>?<br /></p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+                                                    <button value="@reply.Reply_Id" name="reply_delete" type="submit" class="btn btn-danger">Delete</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                                 <div id="date-time" class="row">
                                     <div class="col-3">
                                         <label>@reply.Time</label>

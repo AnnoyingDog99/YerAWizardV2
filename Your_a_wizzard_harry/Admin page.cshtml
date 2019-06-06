@@ -21,7 +21,7 @@
 
     var selectUsers = db.Query("SELECT Username, Email, Rank FROM [Profiel]");
     var gridUser = new WebGrid(source: selectUsers, rowsPerPage: 10);
-    var selectPost = db.Query("SELECT Post_Id, Post_Title, Profiel_Username FROM [Post] WHERE Report = @0", "1");
+    var selectPost = db.Query("SELECT Report_Id FROM [Reports]");
     var gridPost = new WebGrid(source: selectPost, rowsPerPage: 10);
 
 }
@@ -142,7 +142,7 @@
 
                 <section>
                     <article>
-                        @gridPost.GetHtml(tableStyle: "grid", headerStyle: "head", alternatingRowStyle: "alt", columns: gridPost.Columns(gridPost.Column("Post_Id"), gridPost.Column("Post_Title"), gridPost.Column("Profiel_Username"), gridPost.Column(format: @<a href="~/DeletePost.cshtml?PostId=@item.Post_Id">Delete</a>)))
+                        @gridPost.GetHtml(tableStyle: "grid", headerStyle: "head", alternatingRowStyle: "alt", columns: gridPost.Columns(gridPost.Column("Report_Id"), gridPost.Column(format: @<a href="~/DeletePost.cshtml?PostId=@item.Report_Id">Details</a>)))
                     </article>
                 </section>
             </div>

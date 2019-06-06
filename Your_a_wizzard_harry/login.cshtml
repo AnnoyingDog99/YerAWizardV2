@@ -1,61 +1,60 @@
 ﻿@{
-    Validation.RequireField("mail", "You must enter an Email");
-    Validation.RequireField("password", "You must enter a password");
+                Validation.RequireField("mail", "You must enter an Email");
+                Validation.RequireField("password", "You must enter a password");
 
-    string mail = "";
-    string password = "";
-    string sha256 = "";
-    string salt = "";
-    string checkpassword = "";
+                string mail = "";
+                string password = "";
+                string sha256 = "";
+                string salt = "";
+                string checkpassword = "";
 
-    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
-    string provider = "System.Data.SqlClient";
-    Database db = Database.OpenConnectionString(connectionString, provider);
-
-    if (Request.Cookies["User"] != null && Request.Cookies["Pass"] != null)
-    {
-        mail = Request.Cookies["User"].Value;
-        password = Request.Cookies["Pass"].Value;
-
-        string getsalt = "SELECT Salt, Password, Is_Blocked FROM Profiel WHERE Email = @0";
-        if (db.QuerySingle(getsalt, mail) != null)
-        {
-            checkpassword = db.QuerySingle(getsalt, mail).Password;
-            var checkblock = db.QuerySingle(getsalt, mail).Is_Blocked;
-            if (password == checkpassword && checkblock == null || checkblock == false)
-            {
-                Session["mail"] = mail;
-                HttpCookie Login_Mail = new HttpCookie("User");
-                HttpCookie Login_Pass = new HttpCookie("Pass");
-
-                Login_Mail.HttpOnly = true;
-                Login_Mail.Value = mail;
-                Login_Mail.Expires = DateTime.Now.AddDays(1);
-                Response.Cookies.Add(Login_Mail);
-
-                Login_Pass.HttpOnly = true;
-                Login_Pass.Value = password;
-                Login_Pass.Expires = DateTime.Now.AddDays(1);
-                Response.Cookies.Add(Login_Pass);
-                Functions functions = new Functions();
-                string rank = functions.Rank(mail);
-                if (rank == "Owner")
+                string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
+                string provider = "System.Data.SqlClient";
+                Database db = Database.OpenConnectionString(connectionString, provider);
+                if (Request.Cookies["User"] != null && Request.Cookies["Pass"] != null)
                 {
-                    Response.Redirect("~/Admin page.cshtml");
-                }
-                else if (rank == "Student" || rank == "Teacher")
-                {
-                    Response.Redirect("~/HomePage.cshtml");
-                }
-            }
-            else if (checkblock == true)
-            {
-                Session.Abandon();
+                    mail = Request.Cookies["User"].Value;
+                    password = Request.Cookies["Pass"].Value;
+
+                    string getsalt = "SELECT Salt, Password, Is_Blocked FROM Profiel WHERE Email = @0";
+                    if (db.QuerySingle(getsalt, mail) != null)
+                    {
+                        checkpassword = db.QuerySingle(getsalt, mail).Password;
+                        var checkblock = db.QuerySingle(getsalt, mail).Is_Blocked;
+                        if (password == checkpassword && checkblock == null || checkblock == false)
+                        {
+                            Session["mail"] = mail;
+                            HttpCookie Login_Mail = new HttpCookie("User");
+                            HttpCookie Login_Pass = new HttpCookie("Pass");
+
+                            Login_Mail.HttpOnly = true;
+                            Login_Mail.Value = mail;
+                            Login_Mail.Expires = DateTime.Now.AddDays(1);
+                            Response.Cookies.Add(Login_Mail);
+
+                            Login_Pass.HttpOnly = true;
+                            Login_Pass.Value = password;
+                            Login_Pass.Expires = DateTime.Now.AddDays(1);
+                            Response.Cookies.Add(Login_Pass);
+                            Functions functions = new Functions();
+                            string rank = functions.Rank(mail);
+                            if (rank == "Owner")
+                            {
+                                Response.Redirect("~/Admin page.cshtml");
+                            }
+                            else if (rank == "Student" || rank == "Teacher")
+                            {
+                                Response.Redirect("~/HomePage.cshtml");
+                            }
+                        }
+                        else if (checkblock == true)
+                        {
+                            Session.Abandon();
                 <div class="alert">
                     Account blocked
                 </div>
             }
-        }
+    }
     }
 
     if (IsPost && Validation.IsValid())
@@ -67,8 +66,8 @@
         }
 
         var dbcountuser = "SELECT COUNT(*) AS Counter FROM [Profiel] WHERE Email = @0";
-        var dbcountuserquery = db.QuerySingle(dbcountuser, mail);
-        int counter = dbcountuserquery.Counter;
+    var dbcountuserquery = db.QuerySingle(dbcountuser, mail);
+    int counter = dbcountuserquery.Counter;
 
         if (counter == 0)
         {
@@ -80,7 +79,7 @@
         {
             string getsalt = "SELECT Salt, Password, Is_Blocked FROM Profiel WHERE Email = @0";
 
-            salt = db.QuerySingle(getsalt, mail).salt;
+    salt = db.QuerySingle(getsalt, mail).salt;
             checkpassword = db.QuerySingle(getsalt, mail).Password;
             var block = db.QuerySingle(getsalt, mail).Is_Blocked;
             if (Request.Cookies["Pass"] != null)
@@ -101,15 +100,15 @@
                         {
                             Session["mail"] = Request.Form["mail"];
                             var selectrank = "SELECT Rank FROM [Profiel] WHERE Email = @0";
-                            var ownerrank = db.QuerySingle(selectrank, mail).rank;
+    var ownerrank = db.QuerySingle(selectrank, mail).rank;
 
                             /// Creates a cookie ///
                             if (Request.Form["remember_me"] != null)
                             {
                                 HttpCookie Login_Mail = new HttpCookie("User");
-                                HttpCookie Login_Pass = new HttpCookie("Pass"); //Authentication token would be more seu
+    HttpCookie Login_Pass = new HttpCookie("Pass"); //Authentication token would be more seu
 
-                                Login_Mail.HttpOnly = true;
+    Login_Mail.HttpOnly = true;
                                 Login_Mail.Value = mail;
                                 Login_Mail.Expires = DateTime.Now.AddDays(1);
                                 Response.Cookies.Add(Login_Mail);
@@ -133,7 +132,7 @@
                         else
                         {
                             var selectrank = "SELECT Rank FROM [Profiel] WHERE Email = @0";
-                            var ownerrank = db.QuerySingle(selectrank, mail).rank;
+    var ownerrank = db.QuerySingle(selectrank, mail).rank;
                             if (ownerrank == "Owner")
                             {
                                 Response.Redirect("~/Admin page.cshtml");

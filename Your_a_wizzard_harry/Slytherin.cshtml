@@ -7,6 +7,17 @@
     @Bobdehelper.Sessionnull();
     mail = Session["mail"].ToString();
 
+    string nr1house = "";
+    int nr1points = 0;
+    string nr2house = "";
+    int nr2points = 0;
+    string nr3house = "";
+    int nr3points = 0;
+    string nr4house = "";
+    int nr4points = 0;
+    var pointdifference = 0;
+    string position = "";
+
     string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Harry_Potter.mdf;Integrated Security=True";
     string provider = "System.Data.SqlClient";
     Database db = Database.OpenConnectionString(connectionString, provider);
@@ -24,30 +35,52 @@
 
     int students = db.QuerySingle("SELECT COUNT(Username) AS Amount FROM Profiel WHERE House_House_Id = 4").Amount;
 
-    int points = Convert.ToInt32(db.QuerySingle("SELECT Points FROM HOUSE WHERE House_Id = 4").Points);
-
-    var positions = db.Query("SELECT House_Id FROM HOUSE ORDER BY Points DESC");
-    string position = "";
-    int count = 1;
-
-    foreach (var house in positions)
+    int TotalGryfDing = 0;
+    var SelectTotalPointsGryf = db.QuerySingle("SELECT SUM(User_Points) AS Total FROM Profiel Where House_House_Id = 1 AND Rank = 'Student'").Total;
+    if (SelectTotalPointsGryf != null)
     {
-        switch (count)
-        {
-            case 1 when house.House_Id == 4:
-                position = "1st";
-                break;
-            case 2 when house.House_Id == 4:
-                position = "2nd";
-                break;
-            case 3 when house.House_Id == 4:
-                position = "3rd";
-                break;
-            case 4 when house.House_Id == 4:
-                position = "4th";
-                break;
-        }
-        count++;
+        TotalGryfDing = SelectTotalPointsGryf;
+    }
+
+    int TotalHufDing = 0;
+    var SelectTotalPointsHuf = db.QuerySingle("SELECT SUM(User_Points) AS Total FROM Profiel Where House_House_Id = 2 AND Rank = 'Student'").Total;
+    if (SelectTotalPointsHuf != null)
+    {
+        TotalHufDing = SelectTotalPointsHuf;
+    }
+
+    int TotalRavDing = 0;
+    var SelectTotalPointsRav = db.QuerySingle("SELECT SUM(User_Points) AS Total FROM Profiel Where House_House_Id = 3 AND Rank = 'Student'").Total;
+    if (SelectTotalPointsRav != null)
+    {
+        TotalRavDing = SelectTotalPointsRav;
+    }
+
+    int TotalSlythDing = 0;
+    var SelectTotalPointsSlyth = db.QuerySingle("SELECT SUM(User_Points) AS Total FROM Profiel Where House_House_Id = 4 AND Rank = 'Student'").Total;
+    if (SelectTotalPointsSlyth != null)
+    {
+        TotalSlythDing = SelectTotalPointsSlyth;
+    }
+
+    Functions functions = new Functions();
+    int[] positions = functions.GetPositions(TotalGryfDing, TotalHufDing, TotalRavDing, TotalSlythDing);
+
+    if (positions[3] == 1)
+    {
+        position = "1st";
+    }
+    if (positions[3] == 2)
+    {
+        position = "2nd";
+    }
+    if (positions[3] == 3)
+    {
+        position = "3rd";
+    }
+    if (positions[3] == 4)
+    {
+        position = "4th";
     }
 }
 
@@ -99,7 +132,7 @@
                                 <div style="padding-left: 35px;"></div>
                                 <li role="presentation">
                                     <h3>
-                                        @points<br>
+                                        @TotalSlythDing<br>
                                         <small class="sub-text">POINTS</small>
                                     </h3>
                                 </li>
