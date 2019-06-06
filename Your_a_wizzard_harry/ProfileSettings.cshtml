@@ -62,7 +62,7 @@
             var updatedescription = "UPDATE Profiel SET Description = @0 WHERE Username = @1";
             db.Execute(updatedescription, newdescription, username);
         }
-        Response.Redirect("~/ProfilePage.cshtml?username=" + username);
+        Response.Redirect(Request.RawUrl);
     }
 }
 
@@ -546,7 +546,6 @@
             <div class="col-md-12 text-center ">
                 <div class="panel panel-default" style="background-color:rgba(44, 47, 51, 0);">
                     <div class="userprofile social">
-
                         <img style="max-height:130px; min-height:130px; max-width: 100px; min-width:100px; border: 2px; border-color: gray " src="@currentimage" />
                         <h3 class="username">@username</h3>
                         <form method="post" enctype="multipart/form-data">

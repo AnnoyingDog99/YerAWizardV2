@@ -17,12 +17,12 @@
         mail = Request.Cookies["User"].Value;
         password = Request.Cookies["Pass"].Value;
 
-        string getsalt = "SELECT Salt, Password FROM Profiel WHERE Email = @0";
+        string getsalt = "SELECT Salt, Password, Is_Blocked FROM Profiel WHERE Email = @0";
         if (db.QuerySingle(getsalt, mail) != null)
         {
             checkpassword = db.QuerySingle(getsalt, mail).Password;
-
-            if (password == checkpassword)
+            var checkblock = db.QuerySingle(getsalt, mail).Is_Blocked;
+            if (password == checkpassword && checkblock == null || checkblock == false)
             {
                 Session["mail"] = mail;
                 HttpCookie Login_Mail = new HttpCookie("User");
@@ -37,8 +37,23 @@
                 Login_Pass.Value = password;
                 Login_Pass.Expires = DateTime.Now.AddDays(1);
                 Response.Cookies.Add(Login_Pass);
-
-                Response.Redirect("~/HomePage.cshtml");
+                Functions functions = new Functions();
+                string rank = functions.Rank(mail);
+                if (rank == "Owner")
+                {
+                    Response.Redirect("~/Admin page.cshtml");
+                }
+                else if (rank == "Student" || rank == "Teacher")
+                {
+                    Response.Redirect("~/HomePage.cshtml");
+                }
+            }
+            else if (checkblock == true)
+            {
+                Session.Abandon();
+                <div class="alert">
+                    Account blocked
+                </div>
             }
         }
     }
@@ -87,27 +102,31 @@
                             Session["mail"] = Request.Form["mail"];
                             var selectrank = "SELECT Rank FROM [Profiel] WHERE Email = @0";
                             var ownerrank = db.QuerySingle(selectrank, mail).rank;
+
+                            /// Creates a cookie ///
+                            if (Request.Form["remember_me"] != null)
+                            {
+                                HttpCookie Login_Mail = new HttpCookie("User");
+                                HttpCookie Login_Pass = new HttpCookie("Pass"); //Authentication token would be more seu
+
+                                Login_Mail.HttpOnly = true;
+                                Login_Mail.Value = mail;
+                                Login_Mail.Expires = DateTime.Now.AddDays(1);
+                                Response.Cookies.Add(Login_Mail);
+
+                                Login_Pass.HttpOnly = true;
+                                Login_Pass.Value = db.QuerySingle("Select Password FROM Profiel WHERE Email = @0", mail).Password;
+                                Login_Pass.Expires = DateTime.Now.AddDays(1);
+                                Response.Cookies.Add(Login_Pass);
+                            }
+                            /// ---------------- ///
                             if (ownerrank == "Owner")
                             {
                                 Response.Redirect("~/Admin page.cshtml");
                             }
                             else
                             {
-                                if (Request.Form["remember_me"] != null)
-                                {
-                                    HttpCookie Login_Mail = new HttpCookie("User");
-                                    HttpCookie Login_Pass = new HttpCookie("Pass"); //Authentication token would be more seu
 
-                                    Login_Mail.HttpOnly = true;
-                                    Login_Mail.Value = mail;
-                                    Login_Mail.Expires = DateTime.Now.AddDays(1);
-                                    Response.Cookies.Add(Login_Mail);
-
-                                    Login_Pass.HttpOnly = true;
-                                    Login_Pass.Value = db.QuerySingle("Select Password FROM Profiel WHERE Email = @0", mail).Password;
-                                    Login_Pass.Expires = DateTime.Now.AddDays(1);
-                                    Response.Cookies.Add(Login_Pass);
-                                }
                                 Response.Redirect("~/HomePage.cshtml");
                             }
                         }
@@ -128,6 +147,7 @@
                 }
                 else
                 {
+                    Session.Abandon();
                     <div class="alert">
                         Account blocked
                     </div>
@@ -192,8 +212,8 @@
                 color: black;
             }
     </style>
-
-    <link rel="icon" type="image/png" href="~/favicon/favicon-32x32.png" />
+    <title>Login</title>
+    <link rel="icon" type="image/x-icon" href="~/favicon/favicon.ico" />
 </head>
 <body>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
