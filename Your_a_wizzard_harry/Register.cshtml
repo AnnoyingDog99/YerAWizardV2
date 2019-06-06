@@ -50,45 +50,42 @@
             <div class="alert">
                 Mail already in use
             </div>
-    }
+        }
         else
         {
             if (Password == ConfirmPassword && Email == ConfirmEmail)
             {
-                var InsertUser = "INSERT INTO [Profiel] (Username, Password, Email, Rank, User_Points, salt) Values (@0, @1, @2, @3, @4, @5)";
-                db.Execute(InsertUser, Username, sha256, Email, Rank, userpoints, salt);
+                string prof_picture = @"\ProfilePicture\default.png";
+                var InsertUser = "INSERT INTO [Profiel] (Username, Password, Email, Rank, User_Points, Prof_Picture, salt) Values (@0, @1, @2, @3, @4, @5, @6)";
+                db.Execute(InsertUser, Username, sha256, Email, Rank, userpoints, prof_picture, salt);
                 Response.Redirect("~/login.cshtml");
             }
             else if (Password == ConfirmPassword && Email != ConfirmEmail)
             {
                 //Better error handeling needed
-            <div class="alert">
-                Confirm Email doesn't match Email
-            </div>
+                <div class="alert">
+                    Confirm Email doesn't match Email
+                </div>
 
             }
             else if (Password != ConfirmPassword && Email == ConfirmEmail)
             {
                 //Better error handeling needed
-            <div class="alert">
-                Confirm Password doesn't match Password
-            </div>
+                <div class="alert">
+                    Confirm Password doesn't match Password
+                </div>
             }
             else
             {
-            <div class="alert">
-                Confirm Email doesn't match Email
-            </div><br />
-            <div class="alert">
-                Confirm Password doesn't match Password
-            </div>
+                <div class="alert">
+                    Confirm Email doesn't match Email
+                </div><br />
+                <div class="alert">
+                    Confirm Password doesn't match Password
+                </div>
 
-                }
             }
         }
-
-
-
     }
 }
 
@@ -96,7 +93,7 @@
 <html>
 <head>
     <link href="~/Stylesheets/StyleSheetLogin.css" rel="stylesheet">
-    <title>Page Title</title>
+    <title>Register</title>
     <style>
         .field-validation-error {
             color: red;
@@ -144,6 +141,7 @@
                 color: black;
             }
     </style>
+    <link rel="icon" type="image/x-icon" href="~/favicon/favicon.ico" />
 </head>
 <body>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
