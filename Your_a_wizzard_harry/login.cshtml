@@ -66,8 +66,8 @@
         }
 
         var dbcountuser = "SELECT COUNT(*) AS Counter FROM [Profiel] WHERE Email = @0";
-    var dbcountuserquery = db.QuerySingle(dbcountuser, mail);
-    int counter = dbcountuserquery.Counter;
+        var dbcountuserquery = db.QuerySingle(dbcountuser, mail);
+        int counter = dbcountuserquery.Counter;
 
         if (counter == 0)
         {
@@ -79,7 +79,7 @@
         {
             string getsalt = "SELECT Salt, Password, Is_Blocked FROM Profiel WHERE Email = @0";
 
-    salt = db.QuerySingle(getsalt, mail).salt;
+            salt = db.QuerySingle(getsalt, mail).salt;
             checkpassword = db.QuerySingle(getsalt, mail).Password;
             var block = db.QuerySingle(getsalt, mail).Is_Blocked;
             if (Request.Cookies["Pass"] != null)
@@ -100,15 +100,15 @@
                         {
                             Session["mail"] = Request.Form["mail"];
                             var selectrank = "SELECT Rank FROM [Profiel] WHERE Email = @0";
-    var ownerrank = db.QuerySingle(selectrank, mail).rank;
+                            var ownerrank = db.QuerySingle(selectrank, mail).rank;
 
                             /// Creates a cookie ///
                             if (Request.Form["remember_me"] != null)
                             {
                                 HttpCookie Login_Mail = new HttpCookie("User");
-    HttpCookie Login_Pass = new HttpCookie("Pass"); //Authentication token would be more seu
+                                HttpCookie Login_Pass = new HttpCookie("Pass"); //Authentication token would be more seu
 
-    Login_Mail.HttpOnly = true;
+                                Login_Mail.HttpOnly = true;
                                 Login_Mail.Value = mail;
                                 Login_Mail.Expires = DateTime.Now.AddDays(1);
                                 Response.Cookies.Add(Login_Mail);
@@ -132,7 +132,7 @@
                         else
                         {
                             var selectrank = "SELECT Rank FROM [Profiel] WHERE Email = @0";
-    var ownerrank = db.QuerySingle(selectrank, mail).rank;
+                            var ownerrank = db.QuerySingle(selectrank, mail).rank;
                             if (ownerrank == "Owner")
                             {
                                 Response.Redirect("~/Admin page.cshtml");
