@@ -243,6 +243,14 @@ public class Functions
         }
     }
 
+    /// <summary>
+    /// Gets the postions of the houses
+    /// </summary>
+    /// <param name="Gr">Total points of Gryffindor</param>
+    /// <param name="Hu">Total points of HufflePuff</param>
+    /// <param name="Ra">Total points of Ravenclaw</param>
+    /// <param name="Sl">Total points of SLytherin</param>
+    /// <returns>Returns an integer array containing all positions</returns>
     public int[] GetPositions(int Gr, int Hu, int Ra, int Sl)
     {
         int[] position_Array = new int[4];
@@ -252,7 +260,6 @@ public class Functions
         int Ra_Pos = 0;
         int Sl_Pos = 0;
 
-
         int[] points_Array = new int[4];
 
         points_Array[0] = Gr;
@@ -260,7 +267,7 @@ public class Functions
         points_Array[2] = Ra;
         points_Array[3] = Sl;
 
-        for (int x = 0; x <= 3; x++)
+        for (int x = 0; x < points_Array.Length; x++)
         {
             int position_int = 1;
             int position_from_first = 0;
